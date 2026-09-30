@@ -1,0 +1,1635 @@
+{
+  "settings": {
+    "vocab": [
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_seq_len": 6,
+    "causal": false,
+    "tracr_version": "1.0.0",
+    "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
+    "python_version": "3.12.14"
+  },
+  "programs": [
+    {
+      "program": "P01_absolute",
+      "transformer_layers": 1,
+      "residual_width": 22,
+      "sequence_variable_count": 2,
+      "computed_variable_count": 1,
+      "selector_count": 0,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P02_index_parity",
+      "transformer_layers": 1,
+      "residual_width": 19,
+      "sequence_variable_count": 3,
+      "computed_variable_count": 1,
+      "selector_count": 0,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P03_increment_by_index",
+      "transformer_layers": 1,
+      "residual_width": 30,
+      "sequence_variable_count": 3,
+      "computed_variable_count": 1,
+      "selector_count": 0,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P04_first_element",
+      "transformer_layers": 1,
+      "residual_width": 25,
+      "sequence_variable_count": 3,
+      "computed_variable_count": 1,
+      "selector_count": 1,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P05_histogram",
+      "transformer_layers": 1,
+      "residual_width": 25,
+      "sequence_variable_count": 2,
+      "computed_variable_count": 1,
+      "selector_count": 1,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P06_count_greater_than",
+      "transformer_layers": 1,
+      "residual_width": 25,
+      "sequence_variable_count": 2,
+      "computed_variable_count": 1,
+      "selector_count": 1,
+      "max_dependency_depth": 1,
+      "checks_passed": 5
+    },
+    {
+      "program": "P07_sum_with_next",
+      "transformer_layers": 3,
+      "residual_width": 55,
+      "sequence_variable_count": 6,
+      "computed_variable_count": 4,
+      "selector_count": 2,
+      "max_dependency_depth": 4,
+      "checks_passed": 5
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "transformer_layers": 3,
+      "residual_width": 54,
+      "sequence_variable_count": 6,
+      "computed_variable_count": 4,
+      "selector_count": 2,
+      "max_dependency_depth": 4,
+      "checks_passed": 5
+    },
+    {
+      "program": "P09_check_increasing",
+      "transformer_layers": 3,
+      "residual_width": 37,
+      "sequence_variable_count": 6,
+      "computed_variable_count": 4,
+      "selector_count": 2,
+      "max_dependency_depth": 4,
+      "checks_passed": 5
+    },
+    {
+      "program": "P10_rotate_left",
+      "transformer_layers": 3,
+      "residual_width": 39,
+      "sequence_variable_count": 5,
+      "computed_variable_count": 3,
+      "selector_count": 2,
+      "max_dependency_depth": 3,
+      "checks_passed": 5
+    },
+    {
+      "program": "P11_check_palindrome",
+      "transformer_layers": 6,
+      "residual_width": 69,
+      "sequence_variable_count": 9,
+      "computed_variable_count": 7,
+      "selector_count": 3,
+      "max_dependency_depth": 7,
+      "checks_passed": 5
+    },
+    {
+      "program": "P12_sorting",
+      "transformer_layers": 3,
+      "residual_width": 81,
+      "sequence_variable_count": 5,
+      "computed_variable_count": 3,
+      "selector_count": 2,
+      "max_dependency_depth": 3,
+      "checks_passed": 5
+    }
+  ],
+  "variables": [
+    {
+      "program": "P01_absolute",
+      "variable": "absolute_1",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "residual_lane_labels": [
+        "absolute_1:0",
+        "absolute_1:1",
+        "absolute_1:2",
+        "absolute_1:3",
+        "absolute_1:4",
+        "absolute_1:5"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P01_absolute",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P02_index_parity",
+      "variable": "index_parity_2",
+      "residual_lane_indices": [
+        0,
+        1
+      ],
+      "residual_lane_labels": [
+        "index_parity_2:0",
+        "index_parity_2:1"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P02_index_parity",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P02_index_parity",
+      "variable": "indices",
+      "residual_lane_indices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P03_increment_by_index",
+      "variable": "increment_by_index_3",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "residual_lane_labels": [
+        "increment_by_index_3:-2",
+        "increment_by_index_3:-1",
+        "increment_by_index_3:0",
+        "increment_by_index_3:1",
+        "increment_by_index_3:2",
+        "increment_by_index_3:3",
+        "increment_by_index_3:4",
+        "increment_by_index_3:5",
+        "increment_by_index_3:6",
+        "increment_by_index_3:7",
+        "increment_by_index_3:8",
+        "increment_by_index_3:9",
+        "increment_by_index_3:10"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P03_increment_by_index",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P03_increment_by_index",
+      "variable": "indices",
+      "residual_lane_indices": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P04_first_element",
+      "variable": "first_element_4",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "residual_lane_labels": [
+        "first_element_4:-2",
+        "first_element_4:-1",
+        "first_element_4:0",
+        "first_element_4:1",
+        "first_element_4:2",
+        "first_element_4:3",
+        "first_element_4:4",
+        "first_element_4:5"
+      ],
+      "first_write_half_layer_index": 0,
+      "first_write_after": "after attention1",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P04_first_element",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P04_first_element",
+      "variable": "indices",
+      "residual_lane_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P05_histogram",
+      "variable": "histogram_6",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "residual_lane_labels": [
+        "histogram_6:0",
+        "histogram_6:1",
+        "histogram_6:2",
+        "histogram_6:3",
+        "histogram_6:4",
+        "histogram_6:5",
+        "histogram_6:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P05_histogram",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P06_count_greater_than",
+      "variable": "count_greater_than_8",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "residual_lane_labels": [
+        "count_greater_than_8:0",
+        "count_greater_than_8:1",
+        "count_greater_than_8:2",
+        "count_greater_than_8:3",
+        "count_greater_than_8:4",
+        "count_greater_than_8:5",
+        "count_greater_than_8:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P06_count_greater_than",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "sum_with_next_10",
+      "residual_lane_indices": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44
+      ],
+      "residual_lane_labels": [
+        "sum_with_next_10:-4",
+        "sum_with_next_10:-3",
+        "sum_with_next_10:-2",
+        "sum_with_next_10:-1",
+        "sum_with_next_10:0",
+        "sum_with_next_10:1",
+        "sum_with_next_10:2",
+        "sum_with_next_10:3",
+        "sum_with_next_10:4",
+        "sum_with_next_10:5",
+        "sum_with_next_10:6",
+        "sum_with_next_10:7",
+        "sum_with_next_10:8",
+        "sum_with_next_10:9",
+        "sum_with_next_10:10"
+      ],
+      "first_write_half_layer_index": 5,
+      "first_write_after": "after mlp3",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "next_value_11",
+      "residual_lane_indices": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "residual_lane_labels": [
+        "next_value_11:-2",
+        "next_value_11:-1",
+        "next_value_11:0",
+        "next_value_11:1",
+        "next_value_11:2",
+        "next_value_11:3",
+        "next_value_11:4",
+        "next_value_11:5"
+      ],
+      "first_write_half_layer_index": 4,
+      "first_write_after": "after attention3",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "indices",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "next_clamped_index_13",
+      "residual_lane_indices": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "residual_lane_labels": [
+        "next_clamped_index_13:-1",
+        "next_clamped_index_13:0",
+        "next_clamped_index_13:1",
+        "next_clamped_index_13:2",
+        "next_clamped_index_13:3",
+        "next_clamped_index_13:4",
+        "next_clamped_index_13:5"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "variable": "length_14",
+      "residual_lane_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "residual_lane_labels": [
+        "length_14:0",
+        "length_14:1",
+        "length_14:2",
+        "length_14:3",
+        "length_14:4",
+        "length_14:5",
+        "length_14:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "pairwise_sum_16",
+      "residual_lane_indices": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "residual_lane_labels": [
+        "pairwise_sum_16:-4",
+        "pairwise_sum_16:-3",
+        "pairwise_sum_16:-2",
+        "pairwise_sum_16:-1",
+        "pairwise_sum_16:0",
+        "pairwise_sum_16:1",
+        "pairwise_sum_16:2",
+        "pairwise_sum_16:3",
+        "pairwise_sum_16:4",
+        "pairwise_sum_16:5",
+        "pairwise_sum_16:6",
+        "pairwise_sum_16:7",
+        "pairwise_sum_16:8",
+        "pairwise_sum_16:9",
+        "pairwise_sum_16:10"
+      ],
+      "first_write_half_layer_index": 5,
+      "first_write_after": "after mlp3",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "previous_value_17",
+      "residual_lane_indices": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "residual_lane_labels": [
+        "previous_value_17:-2",
+        "previous_value_17:-1",
+        "previous_value_17:0",
+        "previous_value_17:1",
+        "previous_value_17:2",
+        "previous_value_17:3",
+        "previous_value_17:4",
+        "previous_value_17:5"
+      ],
+      "first_write_half_layer_index": 4,
+      "first_write_after": "after attention3",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "indices",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "previous_cyclic_index_19",
+      "residual_lane_indices": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "residual_lane_labels": [
+        "previous_cyclic_index_19:0",
+        "previous_cyclic_index_19:1",
+        "previous_cyclic_index_19:2",
+        "previous_cyclic_index_19:3",
+        "previous_cyclic_index_19:4",
+        "previous_cyclic_index_19:5"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "variable": "length_20",
+      "residual_lane_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "residual_lane_labels": [
+        "length_20:0",
+        "length_20:1",
+        "length_20:2",
+        "length_20:3",
+        "length_20:4",
+        "length_20:5",
+        "length_20:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "check_increasing_22",
+      "residual_lane_indices": [
+        0,
+        1
+      ],
+      "residual_lane_labels": [
+        "check_increasing_22:0",
+        "check_increasing_22:1"
+      ],
+      "first_write_half_layer_index": 5,
+      "first_write_after": "after mlp3",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "decrease_count_23",
+      "residual_lane_indices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "residual_lane_labels": [
+        "decrease_count_23:0",
+        "decrease_count_23:1",
+        "decrease_count_23:2",
+        "decrease_count_23:3",
+        "decrease_count_23:4",
+        "decrease_count_23:5",
+        "decrease_count_23:6"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "locally_increasing_25",
+      "residual_lane_indices": [
+        16,
+        17
+      ],
+      "residual_lane_labels": [
+        "locally_increasing_25:False",
+        "locally_increasing_25:True"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "indices",
+      "residual_lane_indices": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P09_check_increasing",
+      "variable": "shift_by(1)_26",
+      "residual_lane_indices": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "residual_lane_labels": [
+        "shift_by(1)_26:-2",
+        "shift_by(1)_26:-1",
+        "shift_by(1)_26:0",
+        "shift_by(1)_26:1",
+        "shift_by(1)_26:2",
+        "shift_by(1)_26:3",
+        "shift_by(1)_26:4",
+        "shift_by(1)_26:5"
+      ],
+      "first_write_half_layer_index": 0,
+      "first_write_after": "after attention1",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P10_rotate_left",
+      "variable": "rotate_left_28",
+      "residual_lane_indices": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "residual_lane_labels": [
+        "rotate_left_28:-2",
+        "rotate_left_28:-1",
+        "rotate_left_28:0",
+        "rotate_left_28:1",
+        "rotate_left_28:2",
+        "rotate_left_28:3",
+        "rotate_left_28:4",
+        "rotate_left_28:5"
+      ],
+      "first_write_half_layer_index": 4,
+      "first_write_after": "after attention3",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P10_rotate_left",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P10_rotate_left",
+      "variable": "indices",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P10_rotate_left",
+      "variable": "next_index_30",
+      "residual_lane_indices": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "residual_lane_labels": [
+        "next_index_30:0",
+        "next_index_30:1",
+        "next_index_30:2",
+        "next_index_30:3",
+        "next_index_30:4",
+        "next_index_30:5"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P10_rotate_left",
+      "variable": "length_31",
+      "residual_lane_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "residual_lane_labels": [
+        "length_31:0",
+        "length_31:1",
+        "length_31:2",
+        "length_31:3",
+        "length_31:4",
+        "length_31:5",
+        "length_31:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "check_palindrome_33",
+      "residual_lane_indices": [
+        0,
+        1
+      ],
+      "residual_lane_labels": [
+        "check_palindrome_33:0",
+        "check_palindrome_33:1"
+      ],
+      "first_write_half_layer_index": 11,
+      "first_write_after": "after mlp6",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "mismatch_count_34",
+      "residual_lane_indices": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "residual_lane_labels": [
+        "mismatch_count_34:0",
+        "mismatch_count_34:1",
+        "mismatch_count_34:2",
+        "mismatch_count_34:3",
+        "mismatch_count_34:4",
+        "mismatch_count_34:5",
+        "mismatch_count_34:6"
+      ],
+      "first_write_half_layer_index": 9,
+      "first_write_after": "after mlp5",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "mirror_matches_36",
+      "residual_lane_indices": [
+        16,
+        17
+      ],
+      "residual_lane_labels": [
+        "mirror_matches_36:False",
+        "mirror_matches_36:True"
+      ],
+      "first_write_half_layer_index": 7,
+      "first_write_after": "after mlp4",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "indices",
+      "residual_lane_indices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "reverse_37",
+      "residual_lane_indices": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58
+      ],
+      "residual_lane_labels": [
+        "reverse_37:-2",
+        "reverse_37:-1",
+        "reverse_37:0",
+        "reverse_37:1",
+        "reverse_37:2",
+        "reverse_37:3",
+        "reverse_37:4",
+        "reverse_37:5"
+      ],
+      "first_write_half_layer_index": 6,
+      "first_write_after": "after attention4",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "opp_idx-1_39",
+      "residual_lane_indices": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38
+      ],
+      "residual_lane_labels": [
+        "opp_idx-1_39:-6",
+        "opp_idx-1_39:-5",
+        "opp_idx-1_39:-4",
+        "opp_idx-1_39:-3",
+        "opp_idx-1_39:-2",
+        "opp_idx-1_39:-1",
+        "opp_idx-1_39:0",
+        "opp_idx-1_39:1",
+        "opp_idx-1_39:2",
+        "opp_idx-1_39:3",
+        "opp_idx-1_39:4",
+        "opp_idx-1_39:5"
+      ],
+      "first_write_half_layer_index": 5,
+      "first_write_after": "after mlp3",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "opp_idx_40",
+      "residual_lane_indices": [
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "residual_lane_labels": [
+        "opp_idx_40:-5",
+        "opp_idx_40:-4",
+        "opp_idx_40:-3",
+        "opp_idx_40:-2",
+        "opp_idx_40:-1",
+        "opp_idx_40:0",
+        "opp_idx_40:1",
+        "opp_idx_40:2",
+        "opp_idx_40:3",
+        "opp_idx_40:4",
+        "opp_idx_40:5",
+        "opp_idx_40:6"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "MLP"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "variable": "length_41",
+      "residual_lane_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "residual_lane_labels": [
+        "length_41:0",
+        "length_41:1",
+        "length_41:2",
+        "length_41:3",
+        "length_41:4",
+        "length_41:5",
+        "length_41:6"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P12_sorting",
+      "variable": "sorting_43",
+      "residual_lane_indices": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "residual_lane_labels": [
+        "sorting_43:-2",
+        "sorting_43:-1",
+        "sorting_43:0",
+        "sorting_43:1",
+        "sorting_43:2",
+        "sorting_43:3",
+        "sorting_43:4",
+        "sorting_43:5"
+      ],
+      "first_write_half_layer_index": 4,
+      "first_write_after": "after attention3",
+      "compiled_block": "AttentionHead"
+    },
+    {
+      "program": "P12_sorting",
+      "variable": "tokens",
+      "residual_lane_indices": [
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78
+      ],
+      "residual_lane_labels": [
+        "tokens:-2",
+        "tokens:-1",
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P12_sorting",
+      "variable": "target_pos_45",
+      "residual_lane_indices": [
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "residual_lane_labels": [
+        "target_pos_45:0",
+        "target_pos_45:1",
+        "target_pos_45:2",
+        "target_pos_45:3",
+        "target_pos_45:4",
+        "target_pos_45:5",
+        "target_pos_45:6"
+      ],
+      "first_write_half_layer_index": 3,
+      "first_write_after": "after mlp2",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "program": "P12_sorting",
+      "variable": "indices",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "residual_lane_labels": [
+        "indices:0",
+        "indices:1",
+        "indices:2",
+        "indices:3",
+        "indices:4",
+        "indices:5"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    },
+    {
+      "program": "P12_sorting",
+      "variable": "sequence_map_47",
+      "residual_lane_indices": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54
+      ],
+      "residual_lane_labels": [
+        "sequence_map_47:-2.0",
+        "sequence_map_47:-1.8333333333333333",
+        "sequence_map_47:-1.6666666666666667",
+        "sequence_map_47:-1.5",
+        "sequence_map_47:-1.3333333333333335",
+        "sequence_map_47:-1.1666666666666665",
+        "sequence_map_47:-1.0",
+        "sequence_map_47:-0.8333333333333334",
+        "sequence_map_47:-0.6666666666666667",
+        "sequence_map_47:-0.5",
+        "sequence_map_47:-0.33333333333333337",
+        "sequence_map_47:-0.16666666666666663",
+        "sequence_map_47:0.0",
+        "sequence_map_47:0.16666666666666666",
+        "sequence_map_47:0.3333333333333333",
+        "sequence_map_47:0.5",
+        "sequence_map_47:0.6666666666666666",
+        "sequence_map_47:0.8333333333333334",
+        "sequence_map_47:1.0",
+        "sequence_map_47:1.1666666666666667",
+        "sequence_map_47:1.3333333333333333",
+        "sequence_map_47:1.5",
+        "sequence_map_47:1.6666666666666665",
+        "sequence_map_47:1.8333333333333335",
+        "sequence_map_47:2.0",
+        "sequence_map_47:2.1666666666666665",
+        "sequence_map_47:2.3333333333333335",
+        "sequence_map_47:2.5",
+        "sequence_map_47:2.6666666666666665",
+        "sequence_map_47:2.8333333333333335",
+        "sequence_map_47:3.0",
+        "sequence_map_47:3.1666666666666665",
+        "sequence_map_47:3.3333333333333335",
+        "sequence_map_47:3.5",
+        "sequence_map_47:3.6666666666666665",
+        "sequence_map_47:3.8333333333333335",
+        "sequence_map_47:4.0",
+        "sequence_map_47:4.166666666666667",
+        "sequence_map_47:4.333333333333333",
+        "sequence_map_47:4.5",
+        "sequence_map_47:4.666666666666667",
+        "sequence_map_47:4.833333333333333",
+        "sequence_map_47:5.0",
+        "sequence_map_47:5.166666666666667",
+        "sequence_map_47:5.333333333333333",
+        "sequence_map_47:5.5",
+        "sequence_map_47:5.666666666666667",
+        "sequence_map_47:5.833333333333333"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "MLP"
+    }
+  ],
+  "selectors": [
+    {
+      "program": "P04_first_element",
+      "selector": "first_position_5",
+      "node_id": "first_position_5"
+    },
+    {
+      "program": "P05_histogram",
+      "selector": "same_tok_7",
+      "node_id": "same_tok_7"
+    },
+    {
+      "program": "P06_count_greater_than",
+      "selector": "greater_than_selector_9",
+      "node_id": "greater_than_selector_9"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "selector": "next_selector_12",
+      "node_id": "next_selector_12"
+    },
+    {
+      "program": "P07_sum_with_next",
+      "selector": "all_true_selector_15",
+      "node_id": "all_true_selector_15"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "selector": "previous_selector_18",
+      "node_id": "previous_selector_18"
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "selector": "all_true_selector_21",
+      "node_id": "all_true_selector_21"
+    },
+    {
+      "program": "P09_check_increasing",
+      "selector": "decrease_selector_24",
+      "node_id": "decrease_selector_24"
+    },
+    {
+      "program": "P09_check_increasing",
+      "selector": "select_27",
+      "node_id": "select_27"
+    },
+    {
+      "program": "P10_rotate_left",
+      "selector": "rotate_selector_29",
+      "node_id": "rotate_selector_29"
+    },
+    {
+      "program": "P10_rotate_left",
+      "selector": "all_true_selector_32",
+      "node_id": "all_true_selector_32"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "selector": "mismatch_selector_35",
+      "node_id": "mismatch_selector_35"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "selector": "reverse_selector_38",
+      "node_id": "reverse_selector_38"
+    },
+    {
+      "program": "P11_check_palindrome",
+      "selector": "all_true_selector_42",
+      "node_id": "all_true_selector_42"
+    },
+    {
+      "program": "P12_sorting",
+      "selector": "select_44",
+      "node_id": "select_44"
+    },
+    {
+      "program": "P12_sorting",
+      "selector": "smaller_46",
+      "node_id": "smaller_46"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+.venv/
+.codex/
+notebooks/results/logs/
+**/.ipynb_checkpoints/
