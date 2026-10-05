@@ -1,0 +1,4 @@
+,Embedding,L1/Attn,L1/MLP
+Embedding,,,
+L1/Attn,,1.0,0.5976813560216935
+L1/MLP,,0.5976813560216935,1.0
