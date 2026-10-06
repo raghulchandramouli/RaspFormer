@@ -1,3 +1,5 @@
 .venv/
 .codex/
 **/.ipynb_checkpoints/
+__pycache__/
+.ruff_cache/

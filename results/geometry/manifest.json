@@ -1,37 +1,77 @@
 {
-  "seed": 42,
-  "probe_length": 6,
-  "samples_per_class": 64,
-  "random_candidates": 2048,
-  "structured_candidates": 128,
-  "candidate_sequences": 3383,
+  "status": "completed",
+  "stage": "completed",
+  "planned_programs": [
+    "P01_absolute",
+    "P02_index_parity",
+    "P03_increment_by_index",
+    "P04_first_element",
+    "P05_histogram",
+    "P06_count_greater_than",
+    "P07_sum_with_next",
+    "P08_pairwise_sum",
+    "P09_check_increasing",
+    "P10_rotate_left",
+    "P11_check_palindrome",
+    "P12_sorting",
+    "A_prev_token_class",
+    "B_histogram_then_repeated_class"
+  ],
+  "probe_config": {
+    "seed": 42,
+    "length": 6,
+    "samples_per_class": 64,
+    "random_candidates": 2048,
+    "structured_candidates": 128
+  },
+  "compiler_config": {
+    "vocab": [
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_seq_len": 6,
+    "causal": false,
+    "bos": "BOS",
+    "pad": "PAD",
+    "mlp_exactness": 100,
+    "rel_tol": 0.0001,
+    "abs_tol": 0.0001
+  },
+  "tracr_version": "1.0.0",
+  "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
+  "python_version": "3.12.14",
+  "dependencies": {
+    "tracr": "1.0.0",
+    "jax": "0.11.2",
+    "jaxlib": "0.11.2",
+    "numpy": "2.5.3",
+    "dm-haiku": "0.0.17",
+    "networkx": "3.7",
+    "pandas": "3.0.6",
+    "matplotlib": "3.11.2",
+    "ipywidgets": "8.1.9"
+  },
+  "devices": [
+    "cpu:0"
+  ],
+  "source_sha256": {
+    "__init__.py": "19c753fcc1f46e0bfbaa9cca8bfee6128537e5f436c1c9f6447bb4c23e490f86",
+    "compiler.py": "469a476ee7e54d069e6629a9342cb0c9ca83f6079c9def6c3bf7e9e0b422d11a",
+    "geometry.py": "090db89b9dff531836737ce40c14f302d327f5af95ed2387b9fc54141d024b37",
+    "programs.py": "4f881768b9f92de97a9dafac85d9e146b1e0d428fafb3da96ca8eb081124f82f"
+  },
+  "failures": [],
   "sampling": "separate program probes; equal observations per reachable output class; positions stratified; repeats retain weight",
   "observation": "one target token per probe; BOS excluded; no PAD; same row order within each program",
   "centering": "global feature centering; no whitening or standardization",
   "zero_variance": "PCA spectrum and PR recorded as zero; CKA undefined",
-  "vocab": [
-    -2,
-    -1,
-    0,
-    1,
-    2,
-    3,
-    4,
-    5
-  ],
-  "max_seq_len": 6,
-  "causal": false,
-  "mlp_exactness": 100,
-  "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
-  "python": "3.12.14",
-  "versions": {
-    "tracr": "1.0.0",
-    "numpy": "2.5.3",
-    "jax": "0.11.2",
-    "matplotlib": "3.11.2",
-    "pandas": "3.0.6",
-    "ipywidgets": "8.1.9"
-  },
+  "candidate_sequences": 3383,
   "models": {
     "P01_absolute": {
       "layers": 1,
