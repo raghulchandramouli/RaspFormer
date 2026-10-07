@@ -1,6 +1,6 @@
 # Step 2: Manual forward-pass trace summary
 
-Source: [step2_manual_trace.json](step2_manual_trace.json). The trace code and saved execution output are in [compile.ipynb](../../compile.ipynb).
+Source: [step2_manual_trace.json](step2_manual_trace.json). The trace code and saved execution output are in [compile.ipynb](../../../notebooks/02_trace.ipynb).
 
 ## What this experiment does
 
@@ -69,7 +69,7 @@ Score and residual arrays include the `BOS` row. The saved `rasp_output` and `mo
 
 ## Focused examples: A and B
 
-Both examples below use the saved input `[1, 2, 1]`. Their variable timing is documented in the [Step 1 progression schedule](../tables/step1_progression_schedule.md).
+Both examples below use the saved input `[1, 2, 1]`. Their variable timing is documented in the [Step 1 progression schedule](step1_progression_schedule.md).
 
 ### A: Previous token class
 

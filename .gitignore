@@ -3,3 +3,6 @@
 **/.ipynb_checkpoints/
 __pycache__/
 .ruff_cache/
+.context/
+# New study runs are local. Checked-in reference results stay visible.
+results/*/20*/
