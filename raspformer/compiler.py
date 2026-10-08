@@ -1,4 +1,4 @@
-"""Compilation, sampled correctness checks, writer schedules, and manual traces.
+"""Compile, check, and trace RASP programs; save evidence for each study.
 
 Tracr's private allocation and assembly helpers are isolated here because
 there is no public scheduling API. Every study records the installed revision.
@@ -6,8 +6,8 @@ there is no public scheduling API. Every study records the installed revision.
 
 import hashlib
 import json
-import logging
 import platform
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from importlib.metadata import distribution, version
@@ -137,8 +137,9 @@ def variable_schedule(node, first_write, model):
     }
 
 
-def extract_schedule(program, model, config):
-    traced = trace_craft_graph(program, config)
+def extract_schedule(program, model, config, *, traced=None):
+    if traced is None:
+        traced = trace_craft_graph(program, config)
     graph, sources = traced.graph, traced.sources
     allocation = craft_graph_to_model._allocate_modules_to_layers(graph, sources)
     if len(set(model.residual_labels)) != len(model.residual_labels):
@@ -239,97 +240,35 @@ def schedule_table(variables, program_name):
     return "\n".join(lines)
 
 
-def save_artifacts(evidence, run_dir):
+def save_schedule(evidence, run_dir):
+    """The manifest holds the data; this report makes the allocation readable."""
     lines = [
-        "# Tracr compiler-derived schedules",
+        "# Compiler writer schedules",
         "",
-        (
-            f"Status: {evidence['status']}; "
-            f"{len(evidence['programs'])}/{len(evidence['planned_programs'])} programs passed; "
-            f"{len(evidence['checks'])} sampled sequences matched RASP."
-        ),
-        "",
+        "See [manifest.json](manifest.json) for run status and sampled checks.",
         "Compiler allocations do not measure activation onset.",
         "",
         summary_table(evidence["programs"]),
     ]
     for row in evidence["programs"]:
         name = row["program"]
-        lines.extend(
-            ["", f"## {name}", "", schedule_table(evidence["variables"], name)]
-        )
-    for failure in evidence["failures"]:
-        lines.extend(
-            ["", f"Failed: {failure['program']}", "", f"    {failure['error']}"]
-        )
-    for filename, text in (
-        (
-            "step1_ground_truth_schedule.json",
-            json.dumps(evidence, indent=2, allow_nan=False) + "\n",
-        ),
-        ("step1_ground_truth_schedule.md", "\n".join(lines) + "\n"),
-    ):
-        path = run_dir / filename
-        temporary = path.with_suffix(path.suffix + ".tmp")
-        temporary.write_text(text, encoding="utf-8")
-        temporary.replace(path)
-
-
-def compile_and_check(name, program, config, samples):
-    model = compile_program(program, config)
-    summary, variables, selectors = extract_schedule(program, model, config)
-    checks = validate_outputs(name, program, model, samples, config)
-    return model, summary, variables, selectors, checks
+        lines.extend(["", f"## {name}", "", schedule_table(evidence["variables"], name)])
+    write_text(run_dir / "schedule.md", "\n".join(lines) + "\n")
 
 
 def run_study(programs, config, samples, output_root):
-    if not programs:
-        raise ValueError("Supply at least one program.")
-    samples = tuple(tuple(tokens) for tokens in samples)
+    """Compile every program, check sampled outputs, and record writer schedules."""
+    samples = [list(tokens) for tokens in samples]
     config.validate_samples(samples)
-    settings = {**asdict(config), **environment_metadata(), "samples": samples}
-    run_dir = new_run_directory(output_root)
-    evidence = {
-        "schema_version": 1,
-        "status": "running",
-        "planned_programs": list(programs),
-        "settings": settings,
-        "programs": [],
-        "variables": [],
-        "selectors": [],
-        "checks": [],
-        "failures": [],
-    }
     models = {}
-    save_artifacts(evidence, run_dir)
-    logger = logging.getLogger(f"raspformer.programs.{run_dir.name}")
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
-    handler = logging.FileHandler(run_dir / "tracr.log", encoding="utf-8")
-    handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
-    logger.addHandler(handler)
-    try:
+    with record_run(output_root, programs, config, samples=samples) as (run_dir, evidence):
+        evidence.update(variables=[], selectors=[], checks=[])
         for name, program in programs.items():
-            logger.info("START %s", name)
-            try:
-                model, summary, variables, selectors, checks = compile_and_check(
-                    name,
-                    program,
-                    config,
-                    samples,
-                )
-            except Exception as error:
-                evidence["status"] = "failed"
-                evidence["failures"].append(
-                    {
-                        "program": name,
-                        "error_type": type(error).__name__,
-                        "error": str(error),
-                    }
-                )
-                save_artifacts(evidence, run_dir)
-                logger.exception("FAILED %s", name)
-                raise
+            evidence.update(stage="compile and check", current_program=name)
+            write_json(run_dir / "manifest.json", evidence)
+            model = compile_program(program, config)
+            summary, variables, selectors = extract_schedule(program, model, config)
+            checks = validate_outputs(name, program, model, samples, config)
             models[name] = model
             evidence["programs"].append(
                 {"program": name, **summary, "checks_passed": len(checks)}
@@ -337,16 +276,9 @@ def run_study(programs, config, samples, output_root):
             evidence["variables"].extend({"program": name, **row} for row in variables)
             evidence["selectors"].extend({"program": name, **row} for row in selectors)
             evidence["checks"].extend(checks)
-            save_artifacts(evidence, run_dir)
-            logger.info("PASS %s: %d/%d checks", name, len(checks), len(samples))
-            print(
-                f"{name}: {summary['transformer_layers']} layers; {len(checks)}/{len(samples)} checks"
-            )
-        evidence["status"] = "completed"
-        save_artifacts(evidence, run_dir)
-    finally:
-        logger.removeHandler(handler)
-        handler.close()
+            write_json(run_dir / "manifest.json", evidence)
+            save_schedule(evidence, run_dir)
+            print(f"{name}: {summary['transformer_layers']} layers; {len(checks)} checks passed")
     return {"models": models, "evidence": evidence, "run_dir": run_dir}
 
 
@@ -363,13 +295,40 @@ def compile_program(program, config: CompilerConfig):
     )
 
 
-def new_run_directory(output_root: Path, label: str = "") -> Path:
-    """Never overwrite an earlier run, even with identical settings."""
+@contextmanager
+def record_run(output_root, programs, config, **settings):
+    """Give all three studies one manifest format and preserve partial failures."""
+    if not programs:
+        raise ValueError("Supply at least one program.")
+    evidence = {
+        "schema_version": 2,
+        "status": "running",
+        "stage": "setup",
+        "planned_programs": list(programs),
+        "settings": {**asdict(config), **environment_metadata(), **settings},
+        "programs": [],
+        "failures": [],
+    }
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
-    name = f"{label + '_' if label else ''}{stamp}_{uuid4().hex[:8]}"
-    path = Path(output_root).resolve() / name
-    path.mkdir(parents=True, exist_ok=False)
-    return path
+    run_dir = Path(output_root).resolve() / f"{stamp}_{uuid4().hex[:8]}"
+    run_dir.mkdir(parents=True, exist_ok=False)
+    write_json(run_dir / "manifest.json", evidence)
+    try:
+        yield run_dir, evidence
+    except BaseException as error:
+        evidence["status"] = "failed"
+        evidence["failures"].append({
+            "stage": evidence["stage"],
+            "program": evidence.get("current_program"),
+            "error_type": type(error).__name__,
+            "error": str(error),
+        })
+        raise
+    else:
+        evidence.update(status="completed", stage="completed")
+        evidence.pop("current_program", None)
+    finally:
+        write_json(run_dir / "manifest.json", evidence)
 
 
 def environment_metadata() -> dict:
@@ -404,9 +363,10 @@ class TraceModel:
     module_names: list[str]
 
 
-def build_trace_model(program: rasp.SOp, config: CompilerConfig) -> TraceModel:
+def build_trace_model(program: rasp.SOp, config: CompilerConfig, *, traced=None) -> TraceModel:
     """Keep the Craft graph and the assembled model from the same compilation."""
-    traced = trace_craft_graph(program, config)
+    if traced is None:
+        traced = trace_craft_graph(program, config)
     graph, sources, sink = traced.graph, traced.sources, traced.sink
     output_basis = list(graph.nodes[sink[nodes.ID]][nodes.OUTPUT_BASIS])
     craft = craft_graph_to_model.craft_graph_to_model(graph, sources)
@@ -439,8 +399,8 @@ def build_trace_model(program: rasp.SOp, config: CompilerConfig) -> TraceModel:
     return TraceModel(program, craft, model, full_space, output_space, module_names)
 
 
-def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str):
-    """Trace active Craft blocks with the assembled model's attention scaling."""
+def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str, after_block=None):
+    """Trace active blocks; an optional intervention returns the residual after a block."""
     sequence = [bos, *tokens]
     full_space = trace.full_space
     x = np.zeros((len(sequence), full_space.num_dims), dtype=np.float64)
@@ -487,6 +447,8 @@ def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str):
         else:
             raise TypeError(f"Unsupported block: {type(block).__name__}")
         residual = residual + delta.project(full_space)
+        if after_block is not None:
+            residual = after_block(module_name, residual)
         block_trace.append(
             {
                 "module": module_name,
@@ -574,75 +536,48 @@ def check_trace_sample(
     return record, warnings
 
 
-def write_json(path: Path, value) -> None:
+def write_text(path: Path, text: str) -> None:
+    """Replace evidence only after the new file has been written successfully."""
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8"
-    )
+    temporary.write_text(text, encoding="utf-8")
     temporary.replace(path)
 
 
+def write_json(path: Path, value) -> None:
+    write_text(path, json.dumps(value, indent=2, allow_nan=False) + "\n")
+
+
 def run_trace_study(programs, config: CompilerConfig, samples, output_root: Path):
-    """Trace all supplied programs, retaining partial evidence on strict failure."""
-    if not programs:
-        raise ValueError("Supply at least one program.")
+    """Trace circuits, keeping strict output checks and residual diagnostics distinct."""
     samples = [list(tokens) for tokens in samples]
     config.validate_samples(samples)
-    run_dir = new_run_directory(output_root)
-    evidence = {
-        "status": "running",
-        "planned_programs": list(programs),
-        "settings": {**asdict(config), **environment_metadata(), "samples": samples},
-        "programs": [],
-        "traces": [],
-        "residual_warnings": [],
-        "failures": [],
-    }
-    models = {}
-    write_json(run_dir / "manifest.json", evidence)
-    for name, program in programs.items():
-        try:
+    models, traces = {}, []
+    with record_run(output_root, programs, config, samples=samples) as (run_dir, evidence):
+        evidence.update(residual_warnings=[], trace_file="traces.json")
+        write_json(run_dir / "traces.json", traces)
+        for name, program in programs.items():
+            evidence.update(stage="trace", current_program=name)
+            write_json(run_dir / "manifest.json", evidence)
             trace = build_trace_model(program, config)
             records, warnings = [], []
             for tokens in samples:
-                record, sample_warnings = check_trace_sample(
-                    name, trace, tokens, config
-                )
+                record, sample_warnings = check_trace_sample(name, trace, tokens, config)
                 records.append(record)
+                traces.append(record)
                 warnings.extend(sample_warnings)
+                evidence["residual_warnings"].extend(sample_warnings)
+                write_json(run_dir / "traces.json", traces)
+
             models[name] = trace
-            evidence["traces"].extend(records)
-            evidence["residual_warnings"].extend(warnings)
-            evidence["programs"].append(
-                {
-                    "program": name,
-                    "inputs_checked": len(records),
-                    "max_abs_score_error": max(
-                        row["max_abs_score_error"] for row in records
-                    ),
-                    "residual_max_abs_error": max(
-                        row["residual_max_abs_error"] for row in records
-                    ),
-                    "residual_mismatches": len(warnings),
-                    "status": "PASS_WITH_RESIDUAL_WARN" if warnings else "PASS",
-                }
-            )
+            evidence["programs"].append({
+                "program": name,
+                "inputs_checked": len(records),
+                "max_abs_score_error": max(row["max_abs_score_error"] for row in records),
+                "residual_max_abs_error": max(row["residual_max_abs_error"] for row in records),
+                "residual_mismatches": len(warnings),
+                "residual_labels": trace.assembled.residual_labels,
+                "status": "PASS_WITH_RESIDUAL_WARN" if warnings else "PASS",
+            })
             write_json(run_dir / "manifest.json", evidence)
-            print(
-                f"{name}: {len(records)} output checks; {len(warnings)} residual warnings"
-            )
-        except Exception as error:
-            evidence["status"] = "failed"
-            evidence["failures"].append(
-                {
-                    "program": name,
-                    "error_type": type(error).__name__,
-                    "error": str(error),
-                }
-            )
-            write_json(run_dir / "manifest.json", evidence)
-            raise
-    evidence["status"] = "completed"
-    write_json(run_dir / "manifest.json", evidence)
-    write_json(run_dir / "step2_manual_trace.json", evidence["traces"])
-    return {"models": models, "evidence": evidence, "run_dir": run_dir}
+            print(f"{name}: {len(records)} output checks; {len(warnings)} residual warnings")
+    return {"models": models, "evidence": evidence, "traces": traces, "run_dir": run_dir}

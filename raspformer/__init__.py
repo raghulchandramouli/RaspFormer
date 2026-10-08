@@ -1,1 +1,1 @@
-"""Reusable functions for the RaspFormer research notebooks."""
+"""RaspFormer: define sequence programs, trace compiled circuits, study geometry."""

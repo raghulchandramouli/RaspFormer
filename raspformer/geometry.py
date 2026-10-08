@@ -1,4 +1,4 @@
-"""Balanced target-token probes and representation geometry, without plotting."""
+"""Sample targets, collect residuals, measure geometry, and export the study."""
 
 import json
 from dataclasses import asdict, dataclass
@@ -14,8 +14,7 @@ from tracr.rasp import rasp
 from .compiler import (
     CompilerConfig,
     compile_program,
-    environment_metadata,
-    new_run_directory,
+    record_run,
     write_json,
 )
 
@@ -207,6 +206,42 @@ def build_balanced_probes(
     )
 
 
+def build_matched_probes(
+    programs, compiler_config: CompilerConfig, config: ProbeConfig
+) -> ProbeSet:
+    """Use every candidate at every position, in identical order for each program."""
+    candidates, families = candidate_pool(compiler_config, config)
+    supports = output_classes(compiler_config, config.length)
+    common = pd.DataFrame([
+        {
+            "candidate_id": candidate_id, "position": position,
+            "token": token, "family": families[candidate_id], "tokens": tokens,
+        }
+        for candidate_id, tokens in enumerate(candidates)
+        for position, token in enumerate(tokens)
+    ])
+    common.insert(0, "probe_id", range(len(common)))
+    evaluator = rasp.DefaultRASPEvaluator()
+    observations, audit = {}, []
+    for name, program in programs.items():
+        table = common.copy()
+        values = [value for tokens in candidates for value in evaluator.evaluate(program, tokens)]
+        if set(values) != set(supports[name]):
+            raise ValueError(f"{name}: matched pool does not cover exactly the expected output classes.")
+        table.insert(3, "target_class", values)
+        observations[name] = table
+        for label, group in table.groupby("target_class"):
+            audit.append({
+                "program": name, "output_class": label, "observations": len(group),
+                "unique_sequences": group.candidate_id.nunique(), "unique_targets": len(group),
+            })
+        print(f"{name}: {len(candidates)} matched sequences × {config.length} positions")
+    return ProbeSet(
+        candidates, families, observations, pd.DataFrame(audit),
+        {name: supports[name] for name in programs},
+    )
+
+
 def target_rows(array, positions) -> np.ndarray:
     """One target per sequence; positions include the BOS offset."""
     return np.asarray(array)[np.arange(len(positions)), positions, :].astype(np.float64)
@@ -220,26 +255,27 @@ def collect_activations(
         started = perf_counter()
         model = compile_program(program, config)
         table = probes.observations[name].copy()
-        encoded = np.asarray(
-            [
-                model.input_encoder.encode([config.bos, *tokens])
-                for tokens in table.tokens
-            ],
-            dtype=np.int32,
+        encoded = jnp.asarray(
+            [model.input_encoder.encode([config.bos, *tokens]) for tokens in table.tokens],
+            dtype=jnp.int32,
         )
-        result = jax.jit(model.forward)(model.params, jnp.asarray(encoded))
-        jax.block_until_ready(result)
-        positions = table.position.to_numpy() + 1
-        transformer = result.transformer_output
-        stages = {"Embedding": target_rows(transformer.input_embeddings, positions)}
-        for layer in range(model.model_config.num_layers):
-            stages[f"L{layer + 1}/Attn"] = target_rows(
-                transformer.residuals[2 * layer], positions
-            )
-            stages[f"L{layer + 1}/MLP"] = target_rows(
-                transformer.residuals[2 * layer + 1], positions
-            )
-        raw = np.asarray(result.unembedded_output)[np.arange(len(table)), positions]
+        forward = jax.jit(model.forward)
+        stage_batches, raw_batches = {}, []
+        # Bound full-sequence intermediate tensors; retain only the target vectors.
+        for start in range(0, len(table), 256):
+            result = forward(model.params, encoded[start:start + 256])
+            jax.block_until_ready(result)
+            positions = table.position.iloc[start:start + 256].to_numpy() + 1  # Skip BOS.
+            transformer = result.transformer_output
+            batch_stages = {"Embedding": target_rows(transformer.input_embeddings, positions)}
+            for step, residual in enumerate(transformer.residuals):
+                kind = "Attn" if step % 2 == 0 else "MLP"
+                batch_stages[f"L{step // 2 + 1}/{kind}"] = target_rows(residual, positions)
+            for stage, values in batch_stages.items():
+                stage_batches.setdefault(stage, []).append(values)
+            raw_batches.append(np.asarray(result.unembedded_output)[np.arange(len(positions)), positions])
+        stages = {stage: np.concatenate(batches) for stage, batches in stage_batches.items()}
+        raw = np.concatenate(raw_batches)
         decoded = (
             model.output_encoder.decode(raw.tolist())
             if model.output_encoder
@@ -334,30 +370,24 @@ def analyze_geometry(data: ActivationData) -> GeometryAnalysis:
     profiles, rows = {}, []
     for name, stages in data.stages.items():
         profiles[name] = {}
-        for view in ("full", "computed"):
+        for view, columns in data.columns[name].items():
             matrices = [representation(data, name, view, stage) for stage in stages]
-            pca = {
-                stage: pca_profile(matrix) for stage, matrix in zip(stages, matrices)
-            }
+            pca = {stage: pca_profile(matrix) for stage, matrix in zip(stages, matrices)}
             profiles[name][view] = {"pca": pca, "cka": all_pair_cka(matrices)}
-            for step, (stage, matrix) in enumerate(zip(stages, matrices)):
-                profile = pca[stage]
-                rows.append(
-                    {
-                        "program": name,
-                        "view": view,
-                        "stage": stage,
-                        "step": step,
-                        "observations": matrix.shape[0],
-                        "features": matrix.shape[1],
-                        "total_variance": profile["total_variance"],
-                        "participation_ratio": profile["participation_ratio"],
-                        "pr_over_width": profile["participation_ratio"]
-                        / matrix.shape[1],
-                        "pc95": profile["pc95"],
-                        "pc99": profile["pc99"],
-                    }
-                )
+            for step, (stage, profile) in enumerate(pca.items()):
+                rows.append({
+                    "program": name,
+                    "view": view,
+                    "stage": stage,
+                    "step": step,
+                    "observations": len(data.observations[name]),
+                    "features": len(columns),
+                    "total_variance": profile["total_variance"],
+                    "participation_ratio": profile["participation_ratio"],
+                    "pr_over_width": profile["participation_ratio"] / len(columns),
+                    "pc95": profile["pc95"],
+                    "pc99": profile["pc99"],
+                })
         print(f"{name}: PCA and all stage-pair CKA complete")
     return GeometryAnalysis(profiles, pd.DataFrame(rows))
 
@@ -440,68 +470,42 @@ def export_geometry(
 def run_geometry_study(
     programs, compiler_config: CompilerConfig, config: ProbeConfig, output_root: Path
 ):
-    """Run the original descriptive study and retain failure status in its manifest."""
-    if not programs:
-        raise ValueError("Supply at least one program.")
-    run_dir = new_run_directory(
-        output_root,
-        f"output_balanced_L{config.length}_seed{config.seed}_n{config.samples_per_class}",
-    )
-    manifest = {
-        "status": "running",
-        "stage": "probes",
-        "planned_programs": list(programs),
+    """Run a descriptive study; plots are made afterward by the notebook."""
+    settings = {
         "probe_config": asdict(config),
-        "compiler_config": asdict(compiler_config),
-        **environment_metadata(),
-        "failures": [],
         "sampling": "separate program probes; equal observations per reachable output class; positions stratified; repeats retain weight",
         "observation": "one target token per probe; BOS excluded; no PAD; same row order within each program",
         "centering": "global feature centering; no whitening or standardization",
         "zero_variance": "PCA spectrum and PR recorded as zero; CKA undefined",
     }
-    write_json(run_dir / "manifest.json", manifest)
-    try:
+    with record_run(output_root, programs, compiler_config, **settings) as (run_dir, evidence):
+        evidence["stage"] = "probes"
+        write_json(run_dir / "manifest.json", evidence)
         probes = build_balanced_probes(programs, compiler_config, config)
-        manifest.update(stage="activations", candidate_sequences=len(probes.candidates))
-        write_json(run_dir / "manifest.json", manifest)
+        evidence.update(stage="activations", candidate_sequences=len(probes.candidates))
+        write_json(run_dir / "manifest.json", evidence)
         data = collect_activations(programs, compiler_config, probes)
-        manifest["stage"] = "geometry"
-        write_json(run_dir / "manifest.json", manifest)
+        evidence["stage"] = "geometry"
+        write_json(run_dir / "manifest.json", evidence)
         analysis = analyze_geometry(data)
-        manifest["stage"] = "export"
-        write_json(run_dir / "manifest.json", manifest)
+        evidence["stage"] = "export"
+        write_json(run_dir / "manifest.json", evidence)
         export_geometry(run_dir, probes, data, analysis)
-        manifest["models"] = {
-            name: {
+        evidence["programs"] = [
+            {
+                "program": name,
                 "layers": model.model_config.num_layers,
                 "residual_labels": model.residual_labels,
                 "stages": list(data.stages[name]),
                 "observations": len(data.observations[name]),
                 "output_classes": probes.expected_classes[name],
                 "view_columns": {
-                    view: columns.tolist()
-                    for view, columns in data.columns[name].items()
+                    view: columns.tolist() for view, columns in data.columns[name].items()
                 },
             }
             for name, model in data.models.items()
-        }
-        manifest.update(status="completed", stage="completed")
-        write_json(run_dir / "manifest.json", manifest)
-    except Exception as error:
-        manifest["status"] = "failed"
-        manifest["failures"].append(
-            {
-                "stage": manifest["stage"],
-                "error_type": type(error).__name__,
-                "error": str(error),
-            }
-        )
-        write_json(run_dir / "manifest.json", manifest)
-        raise
+        ]
     return {
-        "probes": probes,
-        "activations": data,
-        "analysis": analysis,
-        "run_dir": run_dir,
+        "probes": probes, "activations": data, "analysis": analysis,
+        "evidence": evidence, "run_dir": run_dir,
     }

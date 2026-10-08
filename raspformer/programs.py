@@ -1,4 +1,4 @@
-"""Fresh RASP program factories; importing this module never compiles a model."""
+"""Define the sequence algorithms. Each factory returns a fresh RASP expression."""
 
 from tracr.compiler import lib
 from tracr.rasp import rasp
@@ -23,132 +23,94 @@ PROGRAM_DESCRIPTIONS = {
 
 def make_absolute() -> rasp.SOp:
     """Absolute value of each token."""
-    program = rasp.Map(
-        lambda x: abs(x),
-        rasp.tokens,
-    ).named("absolute")
-    return program
+    return rasp.Map(abs, rasp.tokens).named("absolute")
 
 
 def make_index_parity() -> rasp.SOp:
     """Zero-based position modulo two."""
-    program = rasp.SequenceMap(
-        lambda token, index: index % 2,
-        rasp.tokens,
-        rasp.indices,
+    return rasp.SequenceMap(
+        lambda token, index: index % 2, rasp.tokens, rasp.indices
     ).named("index_parity")
-    return program
 
 
 def make_increment_by_index() -> rasp.SOp:
     """Token plus its zero-based position."""
-    program = rasp.SequenceMap(
-        lambda token, index: token + index,
-        rasp.tokens,
-        rasp.indices,
+    return rasp.SequenceMap(
+        lambda token, index: token + index, rasp.tokens, rasp.indices
     ).named("increment_by_index")
-    return program
 
 
 def make_first_element() -> rasp.SOp:
     """First token repeated at every position."""
     first_position = rasp.Select(
-        rasp.indices,
-        rasp.indices,
-        lambda key, query: key == 0,
+        rasp.indices, rasp.indices, lambda key, query: key == 0
     ).named("first_position")
 
-    program = rasp.Aggregate(
-        first_position,
-        rasp.tokens,
-    ).named("first_element")
-    return program
+    return rasp.Aggregate(first_position, rasp.tokens).named("first_element")
 
 
 def make_histogram() -> rasp.SOp:
     """Occurrences of each token in the full sequence."""
-    program = lib.make_hist().named("histogram")
-    return program
+    return lib.make_hist().named("histogram")
 
 
 def make_count_greater_than() -> rasp.SOp:
     """Number of tokens strictly greater than the current token."""
     greater_than_selector = rasp.Select(
-        rasp.tokens,
-        rasp.tokens,
-        rasp.Comparison.GT,
+        rasp.tokens, rasp.tokens, rasp.Comparison.GT
     ).named("greater_than_selector")
 
-    program = rasp.SelectorWidth(greater_than_selector).named("count_greater_than")
-    return program
+    return rasp.SelectorWidth(greater_than_selector).named("count_greater_than")
 
 
 def make_sum_with_next() -> rasp.SOp:
     """Token plus successor; the final token adds itself."""
-    length_for_next = lib.make_length()
-
     next_clamped_index = rasp.SequenceMap(
         lambda index, length: min(index + 1, length - 1),
         rasp.indices,
-        length_for_next,
+        lib.make_length(),
     ).named("next_clamped_index")
 
     next_selector = rasp.Select(
-        rasp.indices,
-        next_clamped_index,
-        rasp.Comparison.EQ,
+        rasp.indices, next_clamped_index, rasp.Comparison.EQ
     ).named("next_selector")
 
-    next_value = rasp.Aggregate(
-        next_selector,
-        rasp.tokens,
-    ).named("next_value")
+    next_value = rasp.Aggregate(next_selector, rasp.tokens).named("next_value")
 
-    program = rasp.SequenceMap(
+    return rasp.SequenceMap(
         lambda current, following: current + following,
         rasp.tokens,
         next_value,
     ).named("sum_with_next")
-    return program
 
 
 def make_pairwise_sum() -> rasp.SOp:
     """Token plus predecessor; the first wraps to the final token."""
-    length_for_previous = lib.make_length()
-
     previous_cyclic_index = rasp.SequenceMap(
         lambda index, length: (index - 1) % length if length else 0,
         rasp.indices,
-        length_for_previous,
+        lib.make_length(),
     ).named("previous_cyclic_index")
 
     previous_selector = rasp.Select(
-        rasp.indices,
-        previous_cyclic_index,
-        rasp.Comparison.EQ,
+        rasp.indices, previous_cyclic_index, rasp.Comparison.EQ
     ).named("previous_selector")
 
-    previous_value = rasp.Aggregate(
-        previous_selector,
-        rasp.tokens,
-    ).named("previous_value")
+    previous_value = rasp.Aggregate(previous_selector, rasp.tokens).named("previous_value")
 
-    program = rasp.SequenceMap(
+    return rasp.SequenceMap(
         lambda current, previous: current + previous,
         rasp.tokens,
         previous_value,
     ).named("pairwise_sum")
-    return program
 
 
 def make_check_increasing() -> rasp.SOp:
     """One everywhere iff the sequence is nondecreasing."""
-    previous_for_order = lib.shift_by(1, rasp.tokens)
-
     locally_increasing = rasp.SequenceMap(
         lambda current, previous: True if previous is None else previous <= current,
         rasp.tokens,
-        previous_for_order,
+        lib.shift_by(1, rasp.tokens),
     ).named("locally_increasing")
 
     decrease_selector = rasp.Select(
@@ -159,44 +121,30 @@ def make_check_increasing() -> rasp.SOp:
 
     decrease_count = rasp.SelectorWidth(decrease_selector).named("decrease_count")
 
-    program = rasp.Map(
-        lambda count: 1 if count == 0 else 0,
-        decrease_count,
-    ).named("check_increasing")
-    return program
+    return rasp.Map(lambda count: int(count == 0), decrease_count).named("check_increasing")
 
 
 def make_rotate_left() -> rasp.SOp:
     """Cyclic left rotation by one position."""
-    sequence_length = lib.make_length()
-
     next_index = rasp.SequenceMap(
         lambda index, length: 0 if length == 0 else (index + 1) % length,
         rasp.indices,
-        sequence_length,
+        lib.make_length(),
     ).named("next_index")
 
     rotate_selector = rasp.Select(
-        rasp.indices,
-        next_index,
-        rasp.Comparison.EQ,
+        rasp.indices, next_index, rasp.Comparison.EQ
     ).named("rotate_selector")
 
-    program = rasp.Aggregate(
-        rotate_selector,
-        rasp.tokens,
-    ).named("rotate_left")
-    return program
+    return rasp.Aggregate(rotate_selector, rasp.tokens).named("rotate_left")
 
 
 def make_check_palindrome() -> rasp.SOp:
     """One everywhere iff the sequence is a palindrome."""
-    reversed_values = lib.make_reverse(rasp.tokens)
-
     mirror_matches = rasp.SequenceMap(
         lambda current, mirror: current == mirror,
         rasp.tokens,
-        reversed_values,
+        lib.make_reverse(rasp.tokens),
     ).named("mirror_matches")
 
     mismatch_selector = rasp.Select(
@@ -207,22 +155,17 @@ def make_check_palindrome() -> rasp.SOp:
 
     mismatch_count = rasp.SelectorWidth(mismatch_selector).named("mismatch_count")
 
-    program = rasp.Map(
-        lambda count: 1 if count == 0 else 0,
-        mismatch_count,
-    ).named("check_palindrome")
-    return program
+    return rasp.Map(lambda count: int(count == 0), mismatch_count).named("check_palindrome")
 
 
 def make_sorting(max_seq_len: int) -> rasp.SOp:
     """Ascending sort, including duplicate tokens."""
-    program = lib.make_sort(
+    return lib.make_sort(
         rasp.tokens,
         rasp.tokens,
         max_seq_len=max_seq_len,
         min_key=1.0,
     ).named("sorting")
-    return program
 
 
 def make_previous_token_class() -> rasp.SOp:

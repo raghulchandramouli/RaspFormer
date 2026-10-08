@@ -1,6 +1,6 @@
 # Focused Step 1 RASP progression
 
-Tracr 1.0.0 (`9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd`); 2/2 programs compiled and schedules extracted. Step 2 manual forward-pass/logit tracing is pending.
+Tracr 1.0.0 (`9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd`); 2/2 programs compiled and schedules extracted. Historical Step 1 snapshot. Step 2 tracing was subsequently completed; see [the trace notebook](../../../notebooks/02_trace.ipynb).
 
 A treats each input token as a categorical class ID. At position zero it carries the current class; later positions receive the immediately previous class.
 
