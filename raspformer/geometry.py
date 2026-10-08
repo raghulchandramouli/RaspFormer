@@ -206,6 +206,42 @@ def build_balanced_probes(
     )
 
 
+def build_matched_probes(
+    programs, compiler_config: CompilerConfig, config: ProbeConfig
+) -> ProbeSet:
+    """Use every candidate at every position, in identical order for each program."""
+    candidates, families = candidate_pool(compiler_config, config)
+    supports = output_classes(compiler_config, config.length)
+    common = pd.DataFrame([
+        {
+            "candidate_id": candidate_id, "position": position,
+            "token": token, "family": families[candidate_id], "tokens": tokens,
+        }
+        for candidate_id, tokens in enumerate(candidates)
+        for position, token in enumerate(tokens)
+    ])
+    common.insert(0, "probe_id", range(len(common)))
+    evaluator = rasp.DefaultRASPEvaluator()
+    observations, audit = {}, []
+    for name, program in programs.items():
+        table = common.copy()
+        values = [value for tokens in candidates for value in evaluator.evaluate(program, tokens)]
+        if set(values) != set(supports[name]):
+            raise ValueError(f"{name}: matched pool does not cover exactly the expected output classes.")
+        table.insert(3, "target_class", values)
+        observations[name] = table
+        for label, group in table.groupby("target_class"):
+            audit.append({
+                "program": name, "output_class": label, "observations": len(group),
+                "unique_sequences": group.candidate_id.nunique(), "unique_targets": len(group),
+            })
+        print(f"{name}: {len(candidates)} matched sequences × {config.length} positions")
+    return ProbeSet(
+        candidates, families, observations, pd.DataFrame(audit),
+        {name: supports[name] for name in programs},
+    )
+
+
 def target_rows(array, positions) -> np.ndarray:
     """One target per sequence; positions include the BOS offset."""
     return np.asarray(array)[np.arange(len(positions)), positions, :].astype(np.float64)
@@ -223,15 +259,23 @@ def collect_activations(
             [model.input_encoder.encode([config.bos, *tokens]) for tokens in table.tokens],
             dtype=jnp.int32,
         )
-        result = jax.jit(model.forward)(model.params, encoded)
-        jax.block_until_ready(result)
-        positions = table.position.to_numpy() + 1  # Skip BOS when selecting targets.
-        transformer = result.transformer_output
-        stages = {"Embedding": target_rows(transformer.input_embeddings, positions)}
-        for step, residual in enumerate(transformer.residuals):
-            kind = "Attn" if step % 2 == 0 else "MLP"
-            stages[f"L{step // 2 + 1}/{kind}"] = target_rows(residual, positions)
-        raw = np.asarray(result.unembedded_output)[np.arange(len(table)), positions]
+        forward = jax.jit(model.forward)
+        stage_batches, raw_batches = {}, []
+        # Bound full-sequence intermediate tensors; retain only the target vectors.
+        for start in range(0, len(table), 256):
+            result = forward(model.params, encoded[start:start + 256])
+            jax.block_until_ready(result)
+            positions = table.position.iloc[start:start + 256].to_numpy() + 1  # Skip BOS.
+            transformer = result.transformer_output
+            batch_stages = {"Embedding": target_rows(transformer.input_embeddings, positions)}
+            for step, residual in enumerate(transformer.residuals):
+                kind = "Attn" if step % 2 == 0 else "MLP"
+                batch_stages[f"L{step // 2 + 1}/{kind}"] = target_rows(residual, positions)
+            for stage, values in batch_stages.items():
+                stage_batches.setdefault(stage, []).append(values)
+            raw_batches.append(np.asarray(result.unembedded_output)[np.arange(len(positions)), positions])
+        stages = {stage: np.concatenate(batches) for stage, batches in stage_batches.items()}
+        raw = np.concatenate(raw_batches)
         decoded = (
             model.output_encoder.decode(raw.tolist())
             if model.output_encoder

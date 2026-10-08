@@ -1,4 +1,5 @@
 .venv/
+.DS_Store
 .codex/
 **/.ipynb_checkpoints/
 __pycache__/

@@ -137,8 +137,9 @@ def variable_schedule(node, first_write, model):
     }
 
 
-def extract_schedule(program, model, config):
-    traced = trace_craft_graph(program, config)
+def extract_schedule(program, model, config, *, traced=None):
+    if traced is None:
+        traced = trace_craft_graph(program, config)
     graph, sources = traced.graph, traced.sources
     allocation = craft_graph_to_model._allocate_modules_to_layers(graph, sources)
     if len(set(model.residual_labels)) != len(model.residual_labels):
@@ -362,9 +363,10 @@ class TraceModel:
     module_names: list[str]
 
 
-def build_trace_model(program: rasp.SOp, config: CompilerConfig) -> TraceModel:
+def build_trace_model(program: rasp.SOp, config: CompilerConfig, *, traced=None) -> TraceModel:
     """Keep the Craft graph and the assembled model from the same compilation."""
-    traced = trace_craft_graph(program, config)
+    if traced is None:
+        traced = trace_craft_graph(program, config)
     graph, sources, sink = traced.graph, traced.sources, traced.sink
     output_basis = list(graph.nodes[sink[nodes.ID]][nodes.OUTPUT_BASIS])
     craft = craft_graph_to_model.craft_graph_to_model(graph, sources)
@@ -397,8 +399,8 @@ def build_trace_model(program: rasp.SOp, config: CompilerConfig) -> TraceModel:
     return TraceModel(program, craft, model, full_space, output_space, module_names)
 
 
-def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str):
-    """Trace active Craft blocks with the assembled model's attention scaling."""
+def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str, after_block=None):
+    """Trace active blocks; an optional intervention returns the residual after a block."""
     sequence = [bos, *tokens]
     full_space = trace.full_space
     x = np.zeros((len(sequence), full_space.num_dims), dtype=np.float64)
@@ -445,6 +447,8 @@ def manual_craft_forward(trace: TraceModel, tokens: list[int], *, bos: str):
         else:
             raise TypeError(f"Unsupported block: {type(block).__name__}")
         residual = residual + delta.project(full_space)
+        if after_block is not None:
+            residual = after_block(module_name, residual)
         block_trace.append(
             {
                 "module": module_name,

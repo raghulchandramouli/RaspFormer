@@ -10,8 +10,12 @@ import numpy as np
 import pandas as pd
 from tracr.rasp import rasp
 
+from raspformer.alignment import measure_alignment, run_alignment_study
 from raspformer.compiler import CompilerConfig, check_trace_sample, run_study, run_trace_study
-from raspformer.geometry import ProbeConfig, all_pair_cka, pca_profile, run_geometry_study
+from raspformer.geometry import (
+    ProbeConfig, all_pair_cka, build_balanced_probes, collect_activations,
+    pca_profile, run_geometry_study,
+)
 from raspformer.programs import build_programs
 
 RESULTS = Path(__file__).resolve().parent / "results"
@@ -114,6 +118,53 @@ class StudyChecks(unittest.TestCase):
             all_pair_cka([values, values[:2]])
         with self.assertRaises(ValueError):
             pca_profile([[np.nan], [0]])
+
+    def test_alignment_and_causal_predictions(self):
+        result = run_alignment_study(
+            build_programs(include_examples=True), CompilerConfig(rel_tol=1e-4, abs_tol=1e-4),
+            ProbeConfig(), self.output,
+        )
+        self.assertEqual(result["evidence"]["status"], "completed")
+        self.assertEqual(result["stages"].program.nunique(), 14)
+        # Step 4 must use exactly Step 3's targets, including repeats and row order.
+        for reference in (RESULTS / "geometry/reference").glob("probes_*.csv"):
+            pd.testing.assert_frame_equal(
+                pd.read_csv(result["run_dir"] / reference.name), pd.read_csv(reference),
+            )
+        stages = result["stages"]
+        embedding = stages[stages.stage == "Embedding"]
+        np.testing.assert_allclose(embedding.actual_pr, embedding.expected_pr, atol=1e-10)
+        self.assertTrue(embedding.adjacent_cka.isna().all())
+        final = stages[stages.view == "computed"].groupby("program").tail(1).set_index("program")
+        for name, dimension in (("P01_absolute", 5), ("P02_index_parity", 1), ("A_prev_token_class", 7)):
+            self.assertAlmostEqual(final.loc[name, "expected_pr"], dimension)
+        for name, rows in stages[stages.view == "computed"].groupby("program"):
+            self.assertEqual(rows.new_variable_count.sum(), rows.computed_variable_count.iloc[0])
+        cases = result["interventions"]
+        self.assertEqual(len(cases), 1280)
+        self.assertTrue(cases.output_matches.all())
+        self.assertTrue(cases.scores_close.all())
+        for row in cases.itertuples():
+            expected_changes = [] if row.condition == "control" else [row.position]
+            self.assertEqual(json.loads(row.predicted_changed_positions), expected_changes)
+            self.assertEqual(json.loads(row.changed_positions), expected_changes)
+        manifest = json.loads((result["run_dir"] / "manifest.json").read_text())
+        self.assertIn("alignment.py", manifest["settings"]["source_sha256"])
+
+    def test_alignment_detects_incorrect_lane_values(self):
+        name = "A_prev_token_class"
+        programs = {name: build_programs(include_examples=True)[name]}
+        config = CompilerConfig(rel_tol=1e-4, abs_tol=1e-4)
+        probes = build_balanced_probes(programs, config, ProbeConfig(samples_per_class=4))
+        data = collect_activations(programs, config, probes)
+        normal = measure_alignment(name, programs[name], config, data)
+        self.assertTrue((normal["lanes"].fraction_close == 1).all())
+        # Correlation stays perfect under scaling; value agreement must still fail.
+        data.stages[name]["L1/Attn"][:, data.columns[name]["computed"]] *= 2
+        wrong = measure_alignment(name, programs[name], config, data)["lanes"]
+        written = wrong[wrong.stage == "L1/Attn"]
+        self.assertTrue((written.fraction_close < 1).any())
+        np.testing.assert_allclose(written.pearson_r.dropna(), 1, atol=1e-8)
 
     def test_failed_trace_preserves_completed_sample(self):
         calls = 0
