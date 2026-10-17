@@ -1,0 +1,57 @@
+{
+  "input_tokens": [
+    {
+      "token": -2,
+      "id": 0
+    },
+    {
+      "token": -1,
+      "id": 1
+    },
+    {
+      "token": 0,
+      "id": 2
+    },
+    {
+      "token": 1,
+      "id": 3
+    },
+    {
+      "token": 2,
+      "id": 4
+    },
+    {
+      "token": 3,
+      "id": 5
+    },
+    {
+      "token": 4,
+      "id": 6
+    },
+    {
+      "token": 5,
+      "id": 7
+    },
+    {
+      "token": "BOS",
+      "id": 8
+    },
+    {
+      "token": "PAD",
+      "id": 9
+    }
+  ],
+  "output_classes": [
+    -2,
+    -1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "bos": "BOS",
+  "pad": "PAD",
+  "sequence_length": 6
+}

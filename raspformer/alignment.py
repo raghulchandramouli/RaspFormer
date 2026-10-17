@@ -12,7 +12,10 @@ from .compiler import (
     build_trace_model, check_trace_sample, extract_schedule, manual_craft_forward,
     record_run, trace_craft_graph, write_json,
 )
-from .geometry import all_pair_cka, build_balanced_probes, collect_activations, pca_profile
+from .geometry import (
+    DEFAULT_VARIANCE_FLOOR, all_pair_cka, build_balanced_probes,
+    collect_activations, numerical_policy, pca_profile,
+)
 
 EXAMPLES = ("A_prev_token_class", "B_histogram_then_repeated_class")
 
@@ -30,8 +33,9 @@ def encode_values(expression, basis, values):
     return np.asarray([[0.0 if value is None else float(value)] for value in values])
 
 
-def measure_alignment(name, program, config, data):
+def measure_alignment(name, program, config, data, *, variance_floor: float = DEFAULT_VARIANCE_FLOOR):
     """Compare stage vectors with encoded variables written so far (not live variables)."""
+    policy = numerical_policy(variance_floor)
     model, table = data.models[name], data.observations[name]
     traced = trace_craft_graph(program, config)
     summary, variables, _ = extract_schedule(program, model, config, traced=traced)
@@ -84,10 +88,12 @@ def measure_alignment(name, program, config, data):
                 })
         for view, columns in data.columns[name].items():
             observed, target = actual[:, columns], expected[:, columns]
-            actual_pr = pca_profile(observed)["participation_ratio"]
-            expected_pr = pca_profile(target)["participation_ratio"]
-            cka = all_pair_cka([previous[view], observed])[0, 1] if step else np.nan
-            expected_cka = all_pair_cka([previous_expected[view], target])[0, 1] if step else np.nan
+            actual_profile = pca_profile(observed, variance_floor=variance_floor)
+            expected_profile = pca_profile(target, variance_floor=variance_floor)
+            actual_pr = actual_profile["participation_ratio"]
+            expected_pr = expected_profile["participation_ratio"]
+            cka = all_pair_cka([previous[view], observed], variance_floor=variance_floor)[0, 1] if step else np.nan
+            expected_cka = all_pair_cka([previous_expected[view], target], variance_floor=variance_floor)[0, 1] if step else np.nan
             stage_rows.append({
                 "program": name, "view": view, "stage": stage, "step": step,
                 "observations": len(table), "written_variables": len(written),
@@ -96,6 +102,15 @@ def measure_alignment(name, program, config, data):
                 "max_dependency_depth": summary["max_dependency_depth"],
                 "transformer_layers": summary["transformer_layers"],
                 "actual_pr": actual_pr, "expected_pr": expected_pr,
+                "actual_total_variance": actual_profile["total_variance"],
+                "expected_total_variance": expected_profile["total_variance"],
+                "actual_variance_active": actual_profile["variance_active"],
+                "expected_variance_active": expected_profile["variance_active"],
+                "actual_variance_reason": actual_profile["variance_reason"],
+                "expected_variance_reason": expected_profile["variance_reason"],
+                "variance_floor": policy["variance_floor"],
+                "variance_definition": policy["variance_definition"],
+                "variance_active_if": policy["active_if"],
                 "pr_gap": actual_pr - expected_pr, "adjacent_cka": cka,
                 "expected_adjacent_cka": expected_cka,
             })
@@ -130,6 +145,7 @@ def summarize_alignment(stages, lanes):
             "cka_observed_defined": int(observed.sum()),
             "cka_expected_defined": int(expected.sum()),
             "cka_paired_defined": len(paired),
+            "cka_paired_coverage": len(paired) / len(transitions) if len(transitions) else np.nan,
             "cka_definition_mismatches": int((observed != expected).sum()),
             "lane_agreement": first_writes.fraction_close.mean(),
             "first_write_lanes": len(first_writes),
@@ -223,6 +239,7 @@ def run_alignment_study(programs, config, probe_config, output_root):
     """Reuse Step 3's sampler and activation collector; export descriptive checks."""
     settings = {
         "probe_config": asdict(probe_config),
+        "numerical_policy": numerical_policy(),
         "ground_truth": "compiler-encoded RASP variables written so far; unwritten and scratch lanes zero; full view includes inputs",
         "complexity": ["computed_variable_count", "max_dependency_depth"],
         "intervention": "A output and B histogram; one target; first donor at same position with different output class; self-control",

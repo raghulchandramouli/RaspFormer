@@ -1,0 +1,154 @@
+{
+  "schema_version": 2,
+  "status": "completed",
+  "stage": "completed",
+  "planned_programs": [
+    "P01_absolute",
+    "P02_index_parity",
+    "P03_increment_by_index",
+    "P04_first_element",
+    "P05_histogram",
+    "P06_count_greater_than",
+    "P07_sum_with_next",
+    "P08_pairwise_sum",
+    "P09_check_increasing",
+    "P10_rotate_left",
+    "P11_check_palindrome",
+    "P12_sorting",
+    "A_prev_token_class",
+    "B_histogram_then_repeated_class"
+  ],
+  "settings": {
+    "vocab": [
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_seq_len": 6,
+    "causal": false,
+    "bos": "BOS",
+    "pad": "PAD",
+    "mlp_exactness": 100,
+    "rel_tol": 0.0001,
+    "abs_tol": 0.0001,
+    "git_commit": "2dc911844ce349f00b6dc5f6dce55338a04a7663",
+    "git_dirty": true,
+    "tracr_version": "1.0.0",
+    "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
+    "python_version": "3.12.14",
+    "dependencies": {
+      "tracr": "1.0.0",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2",
+      "numpy": "2.5.3",
+      "dm-haiku": "0.0.17",
+      "networkx": "3.7",
+      "pandas": "3.0.6",
+      "matplotlib": "3.11.2",
+      "ipywidgets": "8.1.9"
+    },
+    "devices": [
+      "cpu:0"
+    ],
+    "source_sha256": {
+      "__init__.py": "bcf02f54983a9dadfe4a790e7bbb9a88c75a1e8021c947228365b4865410b17e",
+      "alignment.py": "85e46c7910db528ccd8d61b452708958d80db8195cb2bbe22748c7683fe4833a",
+      "compiler.py": "1583ad8c2e5d0cb8e6afb6eeac3276c6b5d31d971b971877cf02833e75e3c8cb",
+      "geometry.py": "af2a737622f82e5a5e3bb71622fa5b1f89df8829722362fc749fcd5f989c0e20",
+      "models.py": "749319df68f7e7d38879f221308b69b1db15012dde20e44939374a7dd024481d",
+      "programs.py": "c6a404f02deacc48a86644b9ec59b22ad6ed8ef3add2d2b0861e7485550377c4",
+      "study.py": "48d35b1545299f642850decd9ea5c3700ed42d2f3a46bdd2382dd6aced454bb2"
+    },
+    "notebook_source_sha256": {
+      "notebooks/01_programs.ipynb": "8cd640e56f19f468ca4f3a0175721aca84255c3aefe3dfd7f6c5822b975e46cf",
+      "notebooks/02_trace.ipynb": "cd05eb9a49a1cc4a4ad1967195f9dcfcbb04c61de125db394a1e81a1fb68a89f",
+      "notebooks/03_geometry.ipynb": "7d3ac997a084066f801a8fd5afa00c73149d3376982df086eed1270a662507d9",
+      "notebooks/04_alignment.ipynb": "dc8c40123f1fa137f66b105ed02125316840c8b7ec1feeb2c439ecfb94f4bfc8",
+      "notebooks/05_comparison.ipynb": "f2bc315269e594c1b835ffad9e30c1b88bfdce7fdd18016abed662971980dd2c"
+    },
+    "probe_config": {
+      "seed": 42,
+      "length": 6,
+      "samples_per_class": 64,
+      "random_candidates": 2048,
+      "structured_candidates": 128
+    },
+    "numerical_policy": {
+      "variance_floor": 1e-12,
+      "variance_definition": "sum of feature sample variances, ddof=1",
+      "active_if": "total_variance > variance_floor"
+    },
+    "ground_truth": "compiler-encoded RASP variables written so far; unwritten and scratch lanes zero; full view includes inputs",
+    "complexity": [
+      "computed_variable_count",
+      "max_dependency_depth"
+    ],
+    "intervention": "A output and B histogram; one target; first donor at same position with different output class; self-control",
+    "scope": "observational alignment for supplied programs; causal checks only for A/B",
+    "interpretation": "descriptive hypotheses; separate program probes; repeats retain weight; no live-variable count; constant-lane correlation and zero-variance CKA undefined"
+  },
+  "programs": [
+    {
+      "program": "P01_absolute",
+      "observations": 384
+    },
+    {
+      "program": "P02_index_parity",
+      "observations": 128
+    },
+    {
+      "program": "P03_increment_by_index",
+      "observations": 832
+    },
+    {
+      "program": "P04_first_element",
+      "observations": 512
+    },
+    {
+      "program": "P05_histogram",
+      "observations": 384
+    },
+    {
+      "program": "P06_count_greater_than",
+      "observations": 384
+    },
+    {
+      "program": "P07_sum_with_next",
+      "observations": 960
+    },
+    {
+      "program": "P08_pairwise_sum",
+      "observations": 960
+    },
+    {
+      "program": "P09_check_increasing",
+      "observations": 128
+    },
+    {
+      "program": "P10_rotate_left",
+      "observations": 512
+    },
+    {
+      "program": "P11_check_palindrome",
+      "observations": 128
+    },
+    {
+      "program": "P12_sorting",
+      "observations": 512
+    },
+    {
+      "program": "A_prev_token_class",
+      "observations": 512
+    },
+    {
+      "program": "B_histogram_then_repeated_class",
+      "observations": 128
+    }
+  ],
+  "failures": []
+}
