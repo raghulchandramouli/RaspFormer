@@ -1,0 +1,14 @@
+{
+  "title": "Probing Computation with Representation Geometry: Evidence and Limits from RaspFormer",
+  "format": "Concise two-column research paper",
+  "prepared": "2026-10-17",
+  "engine": "Tectonic 0.17.0",
+  "pages": 3,
+  "vector_figures": 2,
+  "tables": 1,
+  "source_commit": "e06479ce09f10695aa5280162f80d880c060eaf5",
+  "scientific_evidence_date": "2026-10-15",
+  "scientific_experiments_rerun": false,
+  "pdf_sha256": "50e271669051b62da81b48e57681c9a527ec1c4770e64eb1321421b8f14382e8",
+  "review": "All three pages visually checked; independent scientific-content review passed."
+}

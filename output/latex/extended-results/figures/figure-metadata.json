@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "generator": "output/latex/reviewer-response/generate_figures.py",
+  "note": "All plotted experimental values are derived from saved canonical artifacts. No experiments are run by this generator.",
+  "style": {
+    "navy": "#19364D",
+    "teal": "#167D8D",
+    "orange": "#D46A35",
+    "font": "DejaVu Sans",
+    "raster_dpi": 300,
+    "vector_format": "PDF"
+  },
+  "figures": [
+    {
+      "stem": "01-numerical-floor",
+      "pdf": "figures/01-numerical-floor.pdf",
+      "caption": "Numerical artifact and absolute variance-floor sensitivity. (a) Twelve matched computed-view stages in P07, P08, P10, and P11 have centered total variance about 8.07\u00d710\u207b\u00b9\u2079: raw PR is one, whereas the selected 10\u207b\u00b9\u00b2 inactivity policy sets effective PR to zero. Stage codes 1A, 1M, and 2A denote L1/Attn, L1/MLP, and L2/Attn. (b) Counts of expected/observed adjacent-CKA availability mismatches across all 12 programs and 54 adjacent transitions at each saved floor. The matched design falls from 14 to two mismatches; the balanced design remains at two. The floor is an absolute numerical policy and is not scale invariant.",
+      "population": "All 12 original programs, computed residual view; 12 negligible-variance stages in P07/P08/P10/P11 highlighted in panel a.",
+      "aggregation": "Saved raw/effective PR per stage; exact counts of CKA definedness mismatches at each saved floor, with no interpolation.",
+      "counts": {
+        "programs": 12,
+        "highlighted_stages": 12,
+        "computed_adjacent_transitions": 54,
+        "floors": 5
+      },
+      "cautions": [
+        "A CKA value is undefined when either adjacent state is inactive.",
+        "Remaining helper-state mismatches are retained.",
+        "Absolute thresholds do not give a scale-invariant definition of signal."
+      ],
+      "sources": [
+        {
+          "path": "results/comparison/reference/balanced/variance-sensitivity.csv",
+          "sha256": "d42e62ff9c619cddd4b5b5419cf52e6ffaa530fc46965427795f27ac24f3496b"
+        },
+        {
+          "path": "results/comparison/reference/matched/stages.csv",
+          "sha256": "b2646f0d72c71c80da5ec1bf43b6f9a85202e8707da8a149667d672d332f0d5b"
+        },
+        {
+          "path": "results/comparison/reference/matched/variance-sensitivity.csv",
+          "sha256": "90a9c2f60e73cf1a495e4880995bf98e098e6ae07520208109f80bfaefff7e78"
+        }
+      ]
+    },
+    {
+      "stem": "02-sorting-attention",
+      "pdf": "figures/02-sorting-attention.pdf",
+      "caption": "Sorting row-set diagnosis and attention sweep. (a) Exact failure membership at the first output write (L3/Attn), at baseline attention scale one. Every one of the 512 saved probes fails in one output lane; each of eight lanes has its own disjoint set of 64 failing probes. Probe columns are reordered by membership, without dropping observations. (b) Multiplying QK logits before softmax reduces the maximum lane error from 8.52\u00d710\u207b\u2074 to zero at scale eight. The literal zero is annotated separately from the log scale; no positive replacement is introduced. Token accuracy is one at every scale, and MLP exactness is fixed.",
+      "population": "P12 sorting; 512 balanced probes at each of four attention scales, with eight output lanes and two saved stages.",
+      "aggregation": "Exact Boolean failure membership at baseline L3/Attn; saved maximum error across output observations for each attention scale.",
+      "counts": {
+        "programs": 1,
+        "probes_per_scale": 512,
+        "lanes": 8,
+        "unique_failure_patterns": 8,
+        "attention_scales": 4,
+        "scalar_rows": 32768
+      },
+      "cautions": [
+        "Distinct failure sets do not identify duplicates or ties as the sole cause.",
+        "A log axis cannot contain zero; the exact zero is explicitly annotated."
+      ],
+      "sources": [
+        {
+          "path": "results/validation/reference/p12-sorting/attention-sharpening.csv",
+          "sha256": "32a0ba588d7566067310551cd7923ea26dd5d1c63574240101ad0cc585626d66"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/failing-probe-sets.json",
+          "sha256": "005a42cb95ab5089692a7060c731e413425af5024c8058b1f3c042b034aba04a"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/per-observation-errors.csv",
+          "sha256": "8e2235d91542b4309510fa5609e802ac1dbbafc412d8c8d14d49845c17c341d2"
+        }
+      ]
+    },
+    {
+      "stem": "03-depth-count-controls",
+      "pdf": "figures/03-depth-count-controls.pdf",
+      "caption": "Separating depth and variable count. (a) In the 12 original programs, computed-variable count equals maximum dependency depth, giving a centered two-column design matrix of rank one; point area reflects the number of programs at each coordinate. (b) A crossed 3\u00d73 family of token-local modulo programs varies requested branch depth and branch count. Cells show realized computed-variable count and dependency depth. The realized centered design has rank two, and every family has token and sequence accuracy one. Serial merging adds depth, so requested branch depth differs from realized dependency depth.",
+      "population": "12 original programs and nine distinct controlled structural families.",
+      "aggregation": "Original duplicate depth/count coordinates pooled for display only; new cells retain each family separately. Ranks computed from saved realized axes after centering.",
+      "counts": {
+        "original_programs": 12,
+        "original_centered_rank": 1,
+        "structural_families": 9,
+        "new_centered_rank": 2
+      },
+      "cautions": [
+        "These structural examples do not establish a universal complexity scale.",
+        "Requested branch depth is not realized dependency depth."
+      ],
+      "sources": [
+        {
+          "path": "results/programs/reference/manifest.json",
+          "sha256": "80b8ba407069ce6578857e5bc0a1b76d4dacf0dd9471164eaebba29ce2cedc08"
+        },
+        {
+          "path": "results/validation/reference/complexity/factorial-families.csv",
+          "sha256": "75d2b02fb4dbb6c3672fe44211e9ed424826151e62a1008b539f7e71690afcce"
+        },
+        {
+          "path": "results/validation/reference/complexity/summary.json",
+          "sha256": "36c68f432cfd866c93709d6cae82f26bdba76196f5682376350642cb2732e7cc"
+        }
+      ]
+    },
+    {
+      "stem": "04-counterfactual-patches",
+      "pdf": "figures/04-counterfactual-patches.pdf",
+      "caption": "Geometry-directed patch controls on all 12 programs. Bars are descriptive macro means and dots are per-program means for 16 saved donor\u2013recipient pairs per condition. (a) Agreement with the complete independently evaluated output under a single mapped-variable substitution. (b) Fraction of patches that change the recipient's behavior. PCA ranks one and three are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle whose rank depends on the mapped variable. Undefined symbolic substitutions remain failures of the agreement comparison. Stages and PCA use calibration sequences; evaluated pairs use held-out sequences. Donor selection does not require different answers.",
+      "population": "All 12 original programs, 16 held-out donor\u2013recipient pairs per program and each of six patch conditions.",
+      "aggregation": "Per-program mean over pairs followed by a macro mean over programs; no inferential interval is claimed. Oracle ranks are pooled across their program-specific values.",
+      "counts": {
+        "programs": 12,
+        "pairs_per_program_condition": 16,
+        "conditions": 6,
+        "saved_patch_rows": 1152,
+        "undefined_symbolic_rows": 60
+      },
+      "cautions": [
+        "Behavioral effects do not establish named-variable recovery.",
+        "PCA-to-variable mapping uses supervised decoding after geometric stage selection.",
+        "Oracle rank varies by program and is not an equal-rank subspace control.",
+        "Undefined symbolic substitutions are scored as agreement failures."
+      ],
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/patches.csv",
+          "sha256": "ca5681409a3e4975e09350a3ded7edb09a0b688ae141f45d9a6a7dc561301414"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/patches.csv",
+          "sha256": "ae8e75c195da4871ac7c7975b9bc56c4e5cb867a77389180dd26477a354b8c00"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/patches.csv",
+          "sha256": "6d11267fe0d43958d1ca352321d5de5ee864b595ee2e176112adfc29a70c2539"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/patches.csv",
+          "sha256": "e1d3c58eab0ea469e7a08bb10f0b5ecc3bda87446e97890b813c0f896210f8b0"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/patches.csv",
+          "sha256": "28dec2a6de4aa60c368ea9da597f1d7f4fb6f8b25a4a3fe78ea794047325265d"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/patches.csv",
+          "sha256": "a82278f200e65daf6902968f5be2041fbc54d17474df6ea626f6dfa356e4b4ec"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/patches.csv",
+          "sha256": "51f352a32f2294c084087c2352815c0419e04cf3cd3a5280fbdc3ae9fa70d97f"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/patches.csv",
+          "sha256": "3816db0d6c43ab3f75b4c236dce699d0cffecd45db87e5c4344827d4b0d609a3"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/patches.csv",
+          "sha256": "3a79b2d9f089b1dc9cb4ce5de643a4383046aa4355a49e9ff352301b1a2c5106"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/patches.csv",
+          "sha256": "25588a75d430f617cdcf5501d525b3ea3b8a33b496aa304cc23065b7b8fd4840"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/patches.csv",
+          "sha256": "e4cb8e0280e7b04f670d9284c3f719b26e187441d7d0728fe98e25e52ff87952"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/patches.csv",
+          "sha256": "89e2de100f980041e9b55dc9a5380ec423fffd04f71d9fde53d501b8c4ebc93b"
+        }
+      ]
+    },
+    {
+      "stem": "05-orthogonal-rotations",
+      "pdf": "figures/05-orthogonal-rotations.pdf",
+      "caption": "Orthogonal basis change on all 12 programs, with three saved rotation seeds per program. (a) Maximum PR error and maximum linear-CKA error across saved stages and seeds remain at numerical precision. (b) Minimum canonical-coordinate lane agreement and executed token accuracy across stages and seeds. Coordinate checks deliberately retain the original lane map; executed model outputs preserve token accuracy one. Geometric invariance and finite-precision forward execution are measured separately.",
+      "population": "All 12 original programs; three rotation seeds (42\u201344) per program; calibration/test protocol of the validation reference.",
+      "aggregation": "Maximum absolute geometry errors and minimum saved lane/output agreements across stages and three seeds within each program.",
+      "counts": {
+        "programs": 12,
+        "rotation_seeds": 3,
+        "saved_stage_seed_rows": 198
+      },
+      "cautions": [
+        "Old coordinate labels are intentionally not rotated.",
+        "Invariance under orthogonal changes does not establish recovery of a computation.",
+        "Nonorthogonal rescaling is a separate control."
+      ],
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/rotations.csv",
+          "sha256": "7e50bbac2a08b06d7585955eefbe5a17ad01f26830d74b69fe6d4e99ddf92a95"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/rotations.csv",
+          "sha256": "022a5c6290dbeb02ea1945799c023ccfbf4444c6b0f7d0e982ac3f7addde1e00"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/rotations.csv",
+          "sha256": "0c74b111dca763c49a6e510e1f06632ad57a6ae893f3ba2d9641a782ce32d953"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/rotations.csv",
+          "sha256": "f028a650bc8060a82dc556d53c3a1114e5252a8fa9362e4bda11e0703ca2ca3f"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/rotations.csv",
+          "sha256": "29ad023f41934f8b1e5e23dae495218ff3ecf40ff18b017536d3a4e7465d4154"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/rotations.csv",
+          "sha256": "08561ff86252936dfb4a1d6d1b2087451ee720e219df9f7ca48b1eee4b4b1bf4"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/rotations.csv",
+          "sha256": "e258c0527c7b3a5cac7fe437edd4e2554a9475f20ed4ddf751da9ada0411aaed"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/rotations.csv",
+          "sha256": "aa535507fb0ddca0707d8e6569e8846d04be05b63f6f54395aec96a02c321b86"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/rotations.csv",
+          "sha256": "6b7d64b92792a2cf7ad8940a1af88dbb850177d9a6497b8d4f4d15009ecee91f"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/rotations.csv",
+          "sha256": "fe33718aa7c938cbec4b961863d45780130342f5140c093b7edf59591f7f5d61"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/rotations.csv",
+          "sha256": "3427e6c88c2ce754a2343401b8cd011fb2e332c54e87cb0e2832e9f0e426b478"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/rotations.csv",
+          "sha256": "a7b591d951295d9f56bd5bf6a8ddfb473cff4bf346e1cee3762f4a0135b1a6d4"
+        }
+      ]
+    },
+    {
+      "stem": "06-executing-compression",
+      "pdf": "figures/06-executing-compression.pdf",
+      "caption": "Executing residual compression, with populations shown separately. (a) Descriptive macro token and whole-sequence accuracy across all 12 programs at target uncentered-SVD width fractions (saved kind=pca); the random half-width subspace is an equal-width control. Actual rank is ceil(original width times target fraction). (b) Only the six held-out programs P07\u2013P12, at target half width: task token accuracy and blind PR/CKA detector F1 against the original intended write schedule, plus the all-positive F1 baseline. High intended-schedule F1 can coexist with poor task accuracy, especially for the random control. Bases are fitted on calibration sequences and tested on disjoint sequences. Reduced residual width retains attention and MLP hidden dimensions.",
+      "population": "Panel a: all 12 programs. Panel b: held-out program group P07\u2013P12 only (six programs), half-width PCA and random executing models.",
+      "aggregation": "Accuracy counted once per program/model after removal of repeated stage rows; macro means over 12 or six programs as labeled. Detector F1 is macro-averaged over six programs, not pooled transition counts.",
+      "counts": {
+        "panel_a_programs": 12,
+        "panel_b_programs": 6,
+        "pca_fractions": 4,
+        "random_fractions": 1,
+        "compression_stage_rows": 330,
+        "halfwidth_heldout_detector_rows": 36
+      },
+      "cautions": [
+        "Original compiler schedule is an intended reference when compression changes behavior, not established ground truth for the changed computation.",
+        "Residual-width reduction does not imply the same reduction in total parameters.",
+        "The two panels use different program populations and must not be compared as one pooled sample."
+      ],
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/compression.csv",
+          "sha256": "4a5429c29e33954644f70e6e050e07a23535d8cdeebf46e729fae56f8fb1e3a1"
+        },
+        {
+          "path": "results/validation/reference/p01-absolute/transformed-write-recovery.csv",
+          "sha256": "405cdd8572ab7e8fc46a79c133c4032be4ca604bd86eb2adb1f6f93866c92a39"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/compression.csv",
+          "sha256": "1f726160b78430870af98628ba3ed93cedff53c6c45f2c5cfaf62f1bed58dddc"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/transformed-write-recovery.csv",
+          "sha256": "a066225e37235f148dafb3b9738449bdb5729aebf4943adebd8b0452159d5bb6"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/compression.csv",
+          "sha256": "39be79b1d58e8346384591105cab1b4ffbfe9a83395e00dc86f5b87882927d8c"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/transformed-write-recovery.csv",
+          "sha256": "302b9779168add3db8239412ecf33e86fcc450940aea87613a99de0a1baf5ad7"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/compression.csv",
+          "sha256": "7e8c2c7526a3dfd30caba7b84d13bf1e157a25ba905decaca8b26b0be408832e"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/transformed-write-recovery.csv",
+          "sha256": "85fdbf3474d7f9a6fd68e49ed07d31d8dcfabdfbab5c1513ff6830482f384e36"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/compression.csv",
+          "sha256": "660b18ba7e18635414db263781495b5ced22c9e03672eb7f006c5a7aab442903"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/transformed-write-recovery.csv",
+          "sha256": "05d2e3f0d90d31976e39668bd54848af74d76e94d4e77815265054f87e9d1269"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/compression.csv",
+          "sha256": "dba8599757d3da9ff31976e32f8b46057ca2dd7b4d368b5f2ab929a061357c02"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/transformed-write-recovery.csv",
+          "sha256": "4a5c6693d85853ed675592c09925777c67b936a532c375b9f5d4aa19896a75ae"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/compression.csv",
+          "sha256": "20d6370bcc35c3eaa73dd41e45afc3a3415c66b89ab763e93d2c344f9acc67a9"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/transformed-write-recovery.csv",
+          "sha256": "2f2e42453fa13f4623ebc894921da567c5e38d916a08a0dba4da6e49d883c990"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/compression.csv",
+          "sha256": "557201c73f5d27bc3c0e51a804f5a42fe05373c45ac7282fa0b3ebed3e5d319e"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/transformed-write-recovery.csv",
+          "sha256": "d457de77c3608a279ca177c0857e35497226815adb1542244034394328a4b607"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/compression.csv",
+          "sha256": "c07c7f364a0ec0661e3cd94007936797178c13421995e80a49f8a4bd2a36989e"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/transformed-write-recovery.csv",
+          "sha256": "a2c2f09dd29037ebe678800c1ca2e32f243a93387ed79058b9fe6f89774b963f"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/compression.csv",
+          "sha256": "7e5af63d5fb9dd1a4906d4712290bea774a23a881f4b4767794ad5fa6bdf678b"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/transformed-write-recovery.csv",
+          "sha256": "b72694351a6a7512555d2c1e4b40657e61c54c5ffe0fc36025b1d671c45233f2"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/compression.csv",
+          "sha256": "c785a3c103c153e260e1a5c0b6dc42004f41250cc6a06a36f08c18955ae65787"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/transformed-write-recovery.csv",
+          "sha256": "689b0cc98025b71a66c98f5dd5833dd554db09809849f520fa0babaf27b32abf"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/compression.csv",
+          "sha256": "38fb15260cfffb945731caf491ed3ca5da092399cf3334a141843f43a4fc7fc9"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/transformed-write-recovery.csv",
+          "sha256": "ee62b7144683496a8fe21466b88ecb4895c3e2c35fbde1ec1f800e6436b60bf6"
+        }
+      ]
+    },
+    {
+      "stem": "07-learned-models",
+      "pdf": "figures/07-learned-models.pdf",
+      "caption": "Randomly initialized, fully trained transformers on the same 12 program tasks. (a) Test token accuracy is the mean \u00b1 sample standard deviation across three seeds, with majority-class and compiled-model baselines. All 36 models train for 600 Adam steps using the shared width-32, two-layer, two-head architecture. Whole unique length-six sequences are split into train/validation/test sets. (b) Final full-residual PR for learned and compiled models. (c) Final learned\u2013compiled linear CKA, mean \u00b1 sample SD across seeds. Final states are paired by relative stage progress; this is not a named-variable correspondence. Output supervision provides no known internal causal circuit.",
+      "population": "All 12 task programs; three training seeds (42\u201344), 36 independently initialized models; held-out sequence test split.",
+      "aggregation": "Means and sample standard deviations (ddof=1) over three seeds for accuracy and final learned geometry. Compiled PR and baselines are means over the corresponding saved rows. Final geometry retains the last learned stage per program/seed.",
+      "counts": {
+        "programs": 12,
+        "models": 36,
+        "seeds_per_program": 3,
+        "final_geometry_rows": 36,
+        "test_sequences_per_program": 677,
+        "training_steps": 600
+      },
+      "cautions": [
+        "Results do not establish length generalization or natural-language behavior.",
+        "Majority baselines expose imbalance, especially P09 and P11.",
+        "Learned models lack ground-truth internal circuits.",
+        "Relative-progress pairing does not establish a variable correspondence."
+      ],
+      "sources": [
+        {
+          "path": "results/learning/reference/geometry.csv",
+          "sha256": "cc172e9d967b33a1051cf0d5e08826e96b7381367baf4b2a1177810f885174b9"
+        },
+        {
+          "path": "results/learning/reference/summary.csv",
+          "sha256": "657c1822b58c78c6a2912b0bd31a8add5ecd6f6448d19d9b6dad0f2c802709eb"
+        }
+      ]
+    },
+    {
+      "stem": "08-blind-write-recovery",
+      "pdf": "figures/08-blind-write-recovery.pdf",
+      "caption": "Blind first-write transition detection on the six held-out programs P07\u2013P12. (a) Macro F1 for residual-change energy, PR change, and adjacent-CKA change, compared with 1,000 within-program count-matched prediction shuffles and an all-positive baseline. (b) Per-program F1 and the program-specific all-positive baseline. P11's CKA detector scores 0.727, below its 0.737 all-positive baseline; this failure is retained. Detectors receive ordered activation matrices only, and predictions are frozen and hashed before compiler schedules are loaded for scoring. These events indicate at least one first write, not variable names, simultaneous write counts, or complete circuits.",
+      "population": "Held-out program group P07-P12 (six programs); P01-P06 are designated calibration group. Thresholds are fixed, not fitted on that group.",
+      "aggregation": "Unweighted macro means of saved per-program F1 and shuffled-null mean F1; all per-program F1 values retained. Null uses 1,000 within-program draws preserving predicted event counts.",
+      "counts": {
+        "heldout_programs": 6,
+        "detectors": 3,
+        "program_detector_comparisons": 18,
+        "comparisons_not_above_all_positive": 1,
+        "null_draws_per_program_detector": 1000
+      },
+      "cautions": [
+        "High first-write prevalence makes the all-positive baseline strong.",
+        "Macro means are descriptive across six programs.",
+        "Detection does not recover names, simultaneous variable counts, lifetimes, or complete causal circuits."
+      ],
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/write-recovery-scores.csv",
+          "sha256": "ac0c5073e5b5d6e4b97c57eadf89c9cc0f206fa83c8d284a9483c17f716b9922"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/write-recovery-scores.csv",
+          "sha256": "2c84264153b2ffb1dfedb069d5631bb1ec7ca60ddabb8b2cbd6ea8d99f02fec2"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/write-recovery-scores.csv",
+          "sha256": "fa32592f67b89fa53d9e2b90d31b16873f65b4c06f3e3d6f7241d4e76aa7beff"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/write-recovery-scores.csv",
+          "sha256": "989b0ce0a030a6e404aa98e5812026b7a40725dbc11a4c71260f209f20407ceb"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/write-recovery-scores.csv",
+          "sha256": "14796d78a5a54f7f813c5793460b013600ad92106e510521775ec7e75f83e2f3"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/write-recovery-scores.csv",
+          "sha256": "faa432f69b9f035e81986d156224aa61b185155f0c98c991599b42e9c1c89fe8"
+        }
+      ]
+    },
+    {
+      "stem": "09-diagnostics",
+      "pdf": "figures/09-diagnostics.pdf",
+      "caption": "Magnitude-aware compiler-fidelity diagnostics replot saved canonical results. (a) Pearson correlation and the fraction of observations within the saved magnitude tolerance for first-write lanes across the 12 programs. All eight sorting output lanes have r greater than 0.999999999996 but only 87.5% close observations. Constant lanes have undefined correlation and are counted explicitly. (b) Matched expected-versus-observed PR mean absolute error for full and computed residual views on all 12 programs. The vertical scale is symmetric log with an explicit linear region at and below 10\u207b\u00b9\u2074, so exact zero values remain zero. Computed views retain compiler helper lanes; these are compiler-fidelity measurements with known coordinates and write times.",
+      "population": "Panel a: first-write lanes across 12 original programs in the canonical alignment run. Panel b: matched full/computed comparison for all 12 programs.",
+      "aggregation": "Panel a retains every defined lane-level Pearson correlation and fraction close; undefined constant-lane correlations are counted. Panel b directly plots saved per-program/view mean absolute PR error.",
+      "counts": {
+        "programs": 12,
+        "first_write_lanes": 269,
+        "defined_correlation_lanes": 218,
+        "undefined_correlation_lanes": 51,
+        "sorting_output_lanes": 8,
+        "matched_program_view_rows": 24
+      },
+      "cautions": [
+        "High correlation does not establish magnitude agreement.",
+        "Alignment and matched-comparison runs are distinct saved populations.",
+        "Computed views include compiler helper state.",
+        "PR agreement is secondary to value agreement in this fidelity setting."
+      ],
+      "sources": [
+        {
+          "path": "results/alignment/reference/lanes.csv",
+          "sha256": "58e80bac425a68b15872f77eefb9d9f27fe8ac27eb3580e1eebd0f3ae1a9b7ab"
+        },
+        {
+          "path": "results/comparison/reference/comparison.csv",
+          "sha256": "dd7c0c02568119833fcfb41e10b1ef96a700a301d406da4ef5845d554bca6892"
+        }
+      ]
+    }
+  ],
+  "reused_from": "output/latex/reviewer-response/figures/figure-metadata.json",
+  "report_note": "Vector figures reused unchanged. Report captions state fixed detector thresholds; designated calibration program group does not imply threshold fitting."
+}

@@ -1,0 +1,168 @@
+{
+  "generated_from_saved_results_only": true,
+  "figures": [
+    {
+      "caption": "Blind detection and executing compression on the same six held-out programs P07-P12. (a) Macro F1 for PR change, adjacent-CKA change, and residual-change energy against the original first-write schedule. The count-matched shuffle baseline averages 1,000 within-program prediction shuffles; All+ predicts every transition. (b) At nominal half residual width, uncentered-SVD and equal-width random models are compared by task token accuracy and PR/CKA F1 against the original intended write schedule. The dashed line is the All+ schedule baseline. In particular, random compression gives token accuracy 0.376 despite PR/CKA F1 of 0.852/0.879. F1 is macro-averaged over six programs, rather than pooled over transitions. The schedule becomes an intended reference when compression changes the computation.",
+      "populations": {
+        "a": "Six held-out original programs P07-P12, excluded from detector calibration on P01-P06.",
+        "b": "The same six programs P07-P12, nominal half-width executing uncentered-SVD and random models, each saved at seed 42."
+      },
+      "aggregation": "Unweighted mean of saved per-program F1; token accuracy counted once per program/model after removing repeated detector rows. No inferential uncertainty interval is claimed.",
+      "counts": {
+        "heldout_programs_each_panel": 6,
+        "a_program_detector_rows": 18,
+        "shuffle_draws_per_program_detector": 1000,
+        "b_program_model_detector_rows": 36,
+        "b_executing_models": 12
+      },
+      "values": {
+        "a": [
+          {
+            "detector": "pr",
+            "f1": 0.8529100529100528,
+            "null_mean_f1": 0.5666222222222222,
+            "all_positive_f1": 0.7450292397660818
+          },
+          {
+            "detector": "cka",
+            "f1": 0.8497835497835498,
+            "null_mean_f1": 0.505811111111111,
+            "all_positive_f1": 0.7450292397660818
+          },
+          {
+            "detector": "change",
+            "f1": 0.8759920634920636,
+            "null_mean_f1": 0.6734821428571428,
+            "all_positive_f1": 0.7450292397660818
+          }
+        ],
+        "b": [
+          {
+            "kind": "compression-pca",
+            "token_accuracy": 0.6432291666666666,
+            "pr_f1": 0.8402597402597403,
+            "cka_f1": 0.5984126984126984
+          },
+          {
+            "kind": "compression-random",
+            "token_accuracy": 0.3761574074074074,
+            "pr_f1": 0.8522588522588522,
+            "cka_f1": 0.8788840788840789
+          }
+        ],
+        "all_positive_macro_f1": 0.7450292397660819
+      },
+      "cautions": [
+        "Saved compression kind=pca is fitted by uncentered SVD, not centered PCA.",
+        "Nominal half width means rank=ceil(original_width*0.5), and does not imply half of total model parameters.",
+        "The original compiler schedule is an intended reference for transformed models, not verified ground truth for their altered computation.",
+        "Detectors locate first-write events, not variable identities or complete circuits."
+      ],
+      "stem": "fig1-recovery-compression",
+      "pdf": "figures/fig1-recovery-compression.pdf",
+      "png": "figures/fig1-recovery-compression.png",
+      "width_inches": 7.1,
+      "height_inches": 3.0,
+      "png_dpi": 300,
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/transformed-write-recovery.csv",
+          "sha256": "405cdd8572ab7e8fc46a79c133c4032be4ca604bd86eb2adb1f6f93866c92a39"
+        },
+        {
+          "path": "results/validation/reference/p01-absolute/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/transformed-write-recovery.csv",
+          "sha256": "a066225e37235f148dafb3b9738449bdb5729aebf4943adebd8b0452159d5bb6"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/transformed-write-recovery.csv",
+          "sha256": "302b9779168add3db8239412ecf33e86fcc450940aea87613a99de0a1baf5ad7"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/transformed-write-recovery.csv",
+          "sha256": "85fdbf3474d7f9a6fd68e49ed07d31d8dcfabdfbab5c1513ff6830482f384e36"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/transformed-write-recovery.csv",
+          "sha256": "05d2e3f0d90d31976e39668bd54848af74d76e94d4e77815265054f87e9d1269"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/write-recovery-scores.csv",
+          "sha256": "ac0c5073e5b5d6e4b97c57eadf89c9cc0f206fa83c8d284a9483c17f716b9922"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/transformed-write-recovery.csv",
+          "sha256": "4a5c6693d85853ed675592c09925777c67b936a532c375b9f5d4aa19896a75ae"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/write-recovery-scores.csv",
+          "sha256": "2c84264153b2ffb1dfedb069d5631bb1ec7ca60ddabb8b2cbd6ea8d99f02fec2"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/transformed-write-recovery.csv",
+          "sha256": "2f2e42453fa13f4623ebc894921da567c5e38d916a08a0dba4da6e49d883c990"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/transformed-write-recovery.csv",
+          "sha256": "d457de77c3608a279ca177c0857e35497226815adb1542244034394328a4b607"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/transformed-write-recovery.csv",
+          "sha256": "a2c2f09dd29037ebe678800c1ca2e32f243a93387ed79058b9fe6f89774b963f"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/write-recovery-scores.csv",
+          "sha256": "fa32592f67b89fa53d9e2b90d31b16873f65b4c06f3e3d6f7241d4e76aa7beff"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/transformed-write-recovery.csv",
+          "sha256": "b72694351a6a7512555d2c1e4b40657e61c54c5ffe0fc36025b1d671c45233f2"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/write-recovery-scores.csv",
+          "sha256": "989b0ce0a030a6e404aa98e5812026b7a40725dbc11a4c71260f209f20407ceb"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/transformed-write-recovery.csv",
+          "sha256": "689b0cc98025b71a66c98f5dd5833dd554db09809849f520fa0babaf27b32abf"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/write-recovery-scores.csv",
+          "sha256": "14796d78a5a54f7f813c5793460b013600ad92106e510521775ec7e75f83e2f3"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/transformed-write-recovery.csv",
+          "sha256": "ee62b7144683496a8fe21466b88ecb4895c3e2c35fbde1ec1f800e6436b60bf6"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/write-recovery-scores.csv",
+          "sha256": "faa432f69b9f035e81986d156224aa61b185155f0c98c991599b42e9c1c89fe8"
+        }
+      ],
+      "reused_from": "output/latex/research-paper/figures/fig1-recovery-compression.pdf"
+    }
+  ]
+}
