@@ -19,7 +19,8 @@
     },
     "blocks.0.hook_mlp_out": {
       "in": [
-        "blocks.0.attn.hook_result[0]"
+        "blocks.0.attn.hook_result[0]",
+        "hook_embed"
       ]
     }
   },
@@ -28,23 +29,23 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 0.9913194444444444,
+      "token_agreement": 0.9704861111111112,
       "token_agreement_where_defined": 1.0,
-      "coverage": 0.9913194444444444,
-      "sequence_agreement": 0.9895833333333334
+      "coverage": 0.9704861111111112,
+      "sequence_agreement": 0.9479166666666666
     },
     "counterfactuals": [
       {
         "node": "blocks.0.attn.hook_result[0]",
-        "pairs": 80,
-        "agreement": 0.975,
+        "pairs": 75,
+        "agreement": 0.9866666666666667,
         "model_changed": 1.0,
         "program_changed": 1.0
       },
       {
         "node": "blocks.0.hook_mlp_out",
-        "pairs": 74,
-        "agreement": 0.9864864864864865,
+        "pairs": 70,
+        "agreement": 0.9857142857142858,
         "model_changed": 1.0,
         "program_changed": 1.0
       }

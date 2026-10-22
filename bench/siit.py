@@ -203,16 +203,23 @@ def evaluate_siit(hl_model, ll_model, inputs, circuit_nodes, *, seed=1):
     return result
 
 
-def sample_sequences(config, count, rng):
-    return np.asarray([[int(rng.choice(config.vocab)) for _ in range(config.max_seq_len)] for _ in range(count)])
+def sample_sequences(config, count, rng, length=None):
+    length = config.max_seq_len if length is None else length
+    return np.asarray([[int(rng.choice(config.vocab)) for _ in range(length)] for _ in range(count)])
 
 
-def train_program(name, program, output, *, config=None, steps=1500, seed=0, train_count=4096, test_count=512):
+def train_program(name, program, output, *, config=None, steps=1500, seed=0, train_count=4096, test_count=512,
+                  train_length=None):
+    """``config.max_seq_len`` sizes the compiled reference and the LL position
+    embeddings; ``train_length`` (default the same) is the token count of every
+    training and held-out sequence, so a smaller value leaves longer positions
+    untrained for length-generalization tests."""
     config = config or CompilerConfig()
+    train_length = config.max_seq_len if train_length is None else train_length
     assembled = compile_program(program, config)
     hl_model = models.from_compiled(assembled)
     rng = np.random.default_rng(seed)
-    seqs = sample_sequences(config, train_count + test_count, rng)
+    seqs = sample_sequences(config, train_count + test_count, rng, train_length)
     encoded = np.asarray([assembled.input_encoder.encode([config.bos, *s]) for s in seqs], dtype=np.int32)
     train, test = encoded[:train_count], encoded[train_count:]
     circuit_nodes = active_nodes(hl_model, train[:256])
@@ -230,6 +237,7 @@ def train_program(name, program, output, *, config=None, steps=1500, seed=0, tra
         pickle.dump(edges, handle)
     write_json(folder / "siit.json", dict(program=name, circuit_nodes=circuit_nodes, heads=HEADS, width=WIDTH,
                                           layers=hl_model.config.layers, steps=steps, seed=seed,
+                                          max_seq_len=config.max_seq_len, train_length=train_length,
                                           train_sequences=train_count, test_sequences=test_count,
                                           history=history, metrics=metrics, edges=len(edges)))
     np.savez_compressed(folder / "sequences.npz", train=train, test=test, tokens=seqs)

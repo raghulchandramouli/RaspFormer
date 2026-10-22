@@ -190,12 +190,13 @@ Findings from the saved run:
   counterfactual, and ablation agreement all 1.0, every variable matched).
   Case 13 reaches 0.97 output agreement; case 21 (tuple-valued intermediates)
   reaches 0.51.
-- Trained models: case 13 recovers at 0.99 output and 0.96 counterfactual
-  agreement, case 44 at 0.87 and 0.35, case 7 at 0.74. Cases 2, 21, and 124
-  fail. Case 21's published circuit is incomplete: ablating everything
-  outside it drops agreement to 0.27. Case 124's layer-0 nodes carry only two
-  causal classes and single-key interventions rarely flip them, so no wiring
-  is found.
+- Trained models: case 13 recovers at 0.97 output and 0.93 counterfactual
+  agreement, case 124 at 0.96 and 0.80, case 44 at 0.85 and 0.81, case 7 at
+  0.73, case 21 at 0.59. Case 2 (reverse, four layers) fails. Case 21's
+  published circuit is incomplete: ablating everything outside it drops
+  agreement to 0.27. Embeddings can reach a node only through nodes outside
+  the circuit (inert heads that copy position), so wiring tests swap the
+  embedding itself as well as each direct edge.
 - Length generalization (shorter than training): RaspFormer learned models
   keep 100% on per-token maps but collapse on counting and sorting tasks
   (histogram 0.14, count-greater-than 0.39, sorting 0.46 at three tokens).
@@ -230,15 +231,49 @@ Findings from the saved run (`results/bench/reference-siit/phase4.md`):
   trained models against 0.09 random.
 - EAP recovers the one-layer circuits exactly and averages node precision at
   k of 0.77 over the twelve.
-- Blind recovery of trained models is exact (output and counterfactual
-  agreement 1.0, or 0.97 and 0.99 for the histogram) on seven of twelve:
-  absolute value, increment by index, first element, histogram, check
-  increasing, rotate left, and check palindrome. It fails on index parity,
-  count greater than, the two sum tasks, and sorting, whose numerical sort
-  key has no discrete class structure. Over all 31 program variables, 18 are
-  matched exactly in the trained models and 21 in the compiled ones.
+- Blind recovery of trained models reaches 0.94 or better output agreement
+  on eight of twelve: absolute value, index parity, increment by index, first
+  element, histogram, check increasing, rotate left, and check palindrome,
+  with counterfactual agreement of 0.74 to 1.0 where the test applies. It
+  fails on count greater than (0.63), the two sum tasks (0.25 to 0.27), and
+  sorting, whose numerical sort key has no discrete class structure. Over all
+  31 program variables, 19 are matched exactly in the trained models and 21
+  in the compiled ones.
+
+## Phase 5: lengths beyond training
+
+The twelve programs were retrained with SIIT using ten-token position
+embeddings and a ten-token compiled reference, but six-token training data
+(`bench/train_siit.py --max-seq-len 10 --train-length 6`). `bench/phase5.py`
+runs each model and its recovered program from three to ten tokens; the
+report is `results/bench/reference-siit-long/phase5.md`.
+
+```bash
+.venv/bin/python -m bench.train_siit --output results/bench/siit-long --max-seq-len 10 --train-length 6
+.venv/bin/python -m bench.phase5
+```
+
+Findings from the saved run:
+
+- Training is unaffected by the larger embeddings: all twelve reach 99% to
+  100% at six tokens with interchange accuracy of 0.98 or better.
+- Mean token accuracy over the twelve falls from 1.00 at six tokens to 0.84
+  at seven and 0.61 at ten; mean sequence accuracy at ten is 0.25.
+- Three behaviours separate cleanly. Per-token maps and whole-sequence
+  predicates generalise (absolute value, first element, check increasing at
+  100% through ten tokens). Position-indexed tasks fail exactly at unseen
+  positions (increment by index is right at the first six positions and wrong
+  at every later one). Counting, shifting, and sorting degrade smoothly
+  (histogram 0.61, rotate left 0.57, sorting 0.22 at ten tokens).
+  Palindrome holds at 100% through eight tokens and then collapses to 0% at
+  nine and ten.
+- The recovered program predicts where a model breaks. On longer-than-
+  training inputs, where the program fitted at six tokens is defined the
+  model scores 0.91 on average; where it is undefined, 0.36. For increment
+  by index the match is exact: defined positions are all correct, undefined
+  positions all wrong.
 
 ## Not done yet
 
-Longer-than-training lengths need retrained position embeddings; ACDC as a
-second circuit-discovery method; recovery of tuple-valued intermediates.
+ACDC as a second circuit-discovery method; recovery of tuple-valued and
+numerical intermediates; seed variance of the decompiler.

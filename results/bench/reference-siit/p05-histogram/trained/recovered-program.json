@@ -21,7 +21,9 @@
     },
     "blocks.0.hook_mlp_out": {
       "in": [
-        "blocks.0.attn.hook_result[0]"
+        "blocks.0.attn.hook_result[0]",
+        "hook_embed",
+        "hook_pos_embed"
       ]
     }
   },
@@ -30,22 +32,22 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 0.9704861111111112,
+      "token_agreement": 0.9409722222222222,
       "token_agreement_where_defined": 1.0,
-      "coverage": 0.9704861111111112,
-      "sequence_agreement": 0.9479166666666666
+      "coverage": 0.9409722222222222,
+      "sequence_agreement": 0.8229166666666666
     },
     "counterfactuals": [
       {
         "node": "blocks.0.attn.hook_result[0]",
-        "pairs": 77,
-        "agreement": 0.974025974025974,
+        "pairs": 64,
+        "agreement": 0.96875,
         "model_changed": 1.0,
         "program_changed": 1.0
       },
       {
         "node": "blocks.0.hook_mlp_out",
-        "pairs": 70,
+        "pairs": 57,
         "agreement": 1.0,
         "model_changed": 1.0,
         "program_changed": 1.0

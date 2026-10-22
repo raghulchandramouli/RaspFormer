@@ -37,19 +37,26 @@
     },
     "blocks.0.hook_mlp_out": {
       "in": [
-        "blocks.0.attn.hook_result[0]"
+        "blocks.0.attn.hook_result[0]",
+        "hook_embed"
       ]
     },
     "blocks.1.attn.hook_result[0]": {
-      "q": [],
-      "k": [
-        "blocks.0.hook_mlp_out"
+      "q": [
+        "hook_embed"
       ],
-      "v": []
+      "k": [
+        "blocks.0.hook_mlp_out",
+        "hook_embed"
+      ],
+      "v": [
+        "hook_embed"
+      ]
     },
     "blocks.1.hook_mlp_out": {
       "in": [
-        "blocks.1.attn.hook_result[0]"
+        "blocks.1.attn.hook_result[0]",
+        "hook_embed"
       ]
     },
     "blocks.2.attn.hook_result[0]": {
@@ -59,7 +66,8 @@
     },
     "blocks.2.hook_mlp_out": {
       "in": [
-        "blocks.1.hook_mlp_out"
+        "blocks.1.hook_mlp_out",
+        "hook_embed"
       ]
     }
   },
@@ -78,35 +86,45 @@
     "hook_embed->blocks.0.attn.hook_result[0].q": 0.4375,
     "hook_embed->blocks.0.attn.hook_result[0].k": 0.3958333333333333,
     "hook_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.0.attn.hook_result[0].any": 0.4791666666666667,
     "hook_pos_embed->blocks.0.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].v": 0.0,
-    "hook_embed->blocks.0.hook_mlp_out.in": 0.0625,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].any": 0.0,
+    "hook_embed->blocks.0.hook_mlp_out.in": 0.041666666666666664,
+    "hook_embed->blocks.0.hook_mlp_out.any": 0.4166666666666667,
     "hook_pos_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.0.hook_mlp_out.any": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.0.hook_mlp_out.in": 1.0,
     "hook_embed->blocks.1.attn.hook_result[0].q": 0.0,
     "hook_embed->blocks.1.attn.hook_result[0].k": 0.08333333333333333,
     "hook_embed->blocks.1.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.1.attn.hook_result[0].any": 0.5416666666666666,
     "hook_pos_embed->blocks.1.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.1.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.1.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.1.attn.hook_result[0].any": 0.0625,
     "blocks.0.attn.hook_result[0]->blocks.1.attn.hook_result[0].q": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.1.attn.hook_result[0].k": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.1.attn.hook_result[0].v": 0.0,
     "blocks.0.hook_mlp_out->blocks.1.attn.hook_result[0].q": 0.0,
-    "blocks.0.hook_mlp_out->blocks.1.attn.hook_result[0].k": 0.5833333333333334,
+    "blocks.0.hook_mlp_out->blocks.1.attn.hook_result[0].k": 0.4375,
     "blocks.0.hook_mlp_out->blocks.1.attn.hook_result[0].v": 0.0,
-    "hook_embed->blocks.1.hook_mlp_out.in": 0.0625,
+    "hook_embed->blocks.1.hook_mlp_out.in": 0.041666666666666664,
+    "hook_embed->blocks.1.hook_mlp_out.any": 0.6041666666666666,
     "hook_pos_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.1.hook_mlp_out.any": 0.0625,
     "blocks.0.attn.hook_result[0]->blocks.1.hook_mlp_out.in": 0.0,
     "blocks.0.hook_mlp_out->blocks.1.hook_mlp_out.in": 0.0,
     "blocks.1.attn.hook_result[0]->blocks.1.hook_mlp_out.in": 1.0,
     "hook_embed->blocks.2.attn.hook_result[0].q": 0.0,
     "hook_embed->blocks.2.attn.hook_result[0].k": 0.0,
     "hook_embed->blocks.2.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.2.attn.hook_result[0].any": 0.0,
     "hook_pos_embed->blocks.2.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.2.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.2.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.2.attn.hook_result[0].any": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.2.attn.hook_result[0].q": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.2.attn.hook_result[0].k": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.2.attn.hook_result[0].v": 0.0,
@@ -120,7 +138,9 @@
     "blocks.1.hook_mlp_out->blocks.2.attn.hook_result[0].k": 0.0,
     "blocks.1.hook_mlp_out->blocks.2.attn.hook_result[0].v": 0.0,
     "hook_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.2.hook_mlp_out.any": 0.4583333333333333,
     "hook_pos_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.2.hook_mlp_out.any": 0.0625,
     "blocks.0.attn.hook_result[0]->blocks.2.hook_mlp_out.in": 0.0,
     "blocks.0.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.0,
     "blocks.1.attn.hook_result[0]->blocks.2.hook_mlp_out.in": 0.0,
@@ -135,13 +155,13 @@
   },
   "table_sizes": {
     "mlp": {
-      "blocks.0.hook_mlp_out": 2,
-      "blocks.1.hook_mlp_out": 2,
-      "blocks.2.hook_mlp_out": 2
+      "blocks.0.hook_mlp_out": 19,
+      "blocks.1.hook_mlp_out": 19,
+      "blocks.2.hook_mlp_out": 19
     },
     "selector": {
       "blocks.0.attn.hook_result[0]": 132,
-      "blocks.1.attn.hook_result[0]": 3,
+      "blocks.1.attn.hook_result[0]": 140,
       "blocks.2.attn.hook_result[0]": 1
     },
     "head": {
@@ -154,10 +174,10 @@
   },
   "tests": {
     "outputs": {
-      "token_agreement": 1.0,
+      "token_agreement": 0.96875,
       "token_agreement_where_defined": 1.0,
-      "coverage": 1.0,
-      "sequence_agreement": 1.0
+      "coverage": 0.96875,
+      "sequence_agreement": 0.96875
     },
     "counterfactuals": [
       {
@@ -176,14 +196,14 @@
       },
       {
         "node": "blocks.1.attn.hook_result[0]",
-        "pairs": 7,
+        "pairs": 2,
         "agreement": 1.0,
         "model_changed": 1.0,
         "program_changed": 1.0
       },
       {
         "node": "blocks.1.hook_mlp_out",
-        "pairs": 6,
+        "pairs": 1,
         "agreement": 1.0,
         "model_changed": 1.0,
         "program_changed": 1.0
@@ -197,7 +217,7 @@
       },
       {
         "node": "blocks.2.hook_mlp_out",
-        "pairs": 6,
+        "pairs": 3,
         "agreement": 1.0,
         "model_changed": 1.0,
         "program_changed": 1.0

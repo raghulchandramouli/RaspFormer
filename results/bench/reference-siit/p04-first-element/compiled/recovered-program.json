@@ -9,9 +9,7 @@
   },
   "parents": {
     "blocks.0.attn.hook_result[0]": {
-      "q": [
-        "hook_pos_embed"
-      ],
+      "q": [],
       "k": [
         "hook_pos_embed"
       ],

@@ -15,9 +15,15 @@
   },
   "parents": {
     "blocks.0.attn.hook_result[0]": {
-      "q": [],
-      "k": [],
-      "v": []
+      "q": [
+        "hook_embed"
+      ],
+      "k": [
+        "hook_embed"
+      ],
+      "v": [
+        "hook_embed"
+      ]
     },
     "blocks.0.hook_mlp_out": {
       "in": []

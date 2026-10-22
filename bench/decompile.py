@@ -512,10 +512,34 @@ def causal_parents(model, inputs, circuit, classes, variables, *, contexts=48,
                 else:
                     changed = (new_classes != base_class[rows][:, 1:]).any(axis=1)
                 effects[(parent, node, slot)] = float(changed.mean())
+            if parent in EMBEDS:
+                # Embeddings may reach the node through nodes outside the circuit
+                # (inert heads that copy position, for instance). Swap the
+                # embedding itself and let the change propagate along every path.
+                idx = _balanced_contexts(base_class[:, 1:], contexts, rng)
+                rows, cols = idx // (length - 1), idx % (length - 1) + 1
+                replacement = outputs[parent][rows].copy()
+                mask = np.zeros((len(rows), length), dtype=bool)
+                for i, (b, pos) in enumerate(zip(rows, cols)):
+                    new = rng.choice([c for c in range(len(cents)) if c != pclasses[b, pos]])
+                    replacement[i, pos] = cents[new]
+                    mask[i, pos] = True
+                _, patched, _ = circuit_forward(model, jnp.asarray(inputs[rows]), {parent: (jnp.asarray(replacement), jnp.asarray(mask))})
+                new_classes = var.assign(np.asarray(patched[node])[:, 1:, :].reshape(-1, width)).reshape(len(rows), length - 1)
+                effects[(parent, node, "any")] = float((new_classes != base_class[rows][:, 1:]).any(axis=1).mean())
         for slot in slots:
             scores = {par: effects[(par, node, slot)] for par in earlier if (par, node, slot) in effects}
             top = max(scores.values(), default=0.0)
             result[node][slot] = [par for par, f in scores.items() if f >= max(min_change, relative * top)]
+        for parent in EMBEDS:
+            total = effects.get((parent, node, "any"), 0.0)
+            direct = max(effects.get((parent, node, slot), 0.0) for slot in slots)
+            if total >= min_change and direct < min_change:
+                # Reaches the node only indirectly: attach it to every slot that
+                # has no direct parent of its own, so the dependence is kept.
+                for slot in slots:
+                    if parent not in result[node][slot]:
+                        result[node][slot].append(parent)
     return result, effects
 
 

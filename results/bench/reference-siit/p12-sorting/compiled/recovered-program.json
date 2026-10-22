@@ -29,17 +29,22 @@
     },
     "blocks.1.attn.hook_result[0]": {
       "q": [
-        "blocks.0.hook_mlp_out"
+        "blocks.0.hook_mlp_out",
+        "hook_pos_embed"
       ],
       "k": [
-        "hook_embed",
-        "blocks.0.hook_mlp_out"
+        "blocks.0.hook_mlp_out",
+        "hook_pos_embed"
       ],
-      "v": []
+      "v": [
+        "hook_pos_embed"
+      ]
     },
     "blocks.1.hook_mlp_out": {
       "in": [
-        "blocks.1.attn.hook_result[0]"
+        "blocks.1.attn.hook_result[0]",
+        "hook_embed",
+        "hook_pos_embed"
       ]
     },
     "blocks.2.attn.hook_result[0]": {
@@ -62,9 +67,9 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 0.1076388888888889,
-      "token_agreement_where_defined": 1.0,
-      "coverage": 0.1076388888888889,
+      "token_agreement": 0.05555555555555555,
+      "token_agreement_where_defined": 0.9411764705882353,
+      "coverage": 0.059027777777777776,
       "sequence_agreement": 0.0
     },
     "counterfactuals": [
@@ -120,21 +125,21 @@
   },
   "variable_matches": [
     {
-      "variable": "sequence_map_5",
+      "variable": "sequence_map_47",
       "node": "blocks.0.hook_mlp_out",
       "class_to_value": 0.18229166666666666,
       "value_to_class": 1.0,
       "status": "missing"
     },
     {
-      "variable": "target_pos_3",
+      "variable": "target_pos_45",
       "node": "blocks.1.attn.hook_result[0]",
       "class_to_value": 0.3333333333333333,
       "value_to_class": 1.0,
       "status": "missing"
     },
     {
-      "variable": "sorting_1",
+      "variable": "sorting_43",
       "node": "blocks.2.attn.hook_result[0]",
       "class_to_value": 1.0,
       "value_to_class": 1.0,

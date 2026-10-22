@@ -84,26 +84,26 @@ DAS on output-changing pairs, means over variables: compiled: at first write 0.6
 | P01_absolute | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 1 / 0 |
 | P01_absolute | trained | 1 | `0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (4 outside) | 1 / 0 |
 | P02_index_parity | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 1.000 | 1.000 | n/a | 1.000 (0 outside) | 1 / 0 |
-| P02_index_parity | trained | 1 | `0.mlp_out:mlp` | 0.500 | 1.000 | n/a | 1.000 (4 outside) | 1 / 0 |
+| P02_index_parity | trained | 1 | `0.mlp_out:mlp` | 1.000 | 1.000 | n/a | 1.000 (4 outside) | 1 / 0 |
 | P03_increment_by_index | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 1 / 0 |
 | P03_increment_by_index | trained | 1 | `0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 0.562 (4 outside) | 1 / 0 |
 | P04_first_element | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 1 / 0 |
 | P04_first_element | trained | 1 | `0.result[0]:select` | 1.000 | 1.000 | 1.000 | 1.000 (4 outside) | 1 / 0 |
-| P05_histogram | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.991 | 0.991 | 0.981 | 1.000 (0 outside) | 1 / 0 |
-| P05_histogram | trained | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.970 | 0.970 | 0.987 | 0.991 (3 outside) | 1 / 0 |
-| P06_count_greater_than | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 1 / 0 |
-| P06_count_greater_than | trained | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.655 | 0.899 | 0.182 | 1.000 (3 outside) | 1 / 0 |
-| P07_sum_with_next | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 4 / 0 |
-| P07_sum_with_next | trained | 5 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:bag,2.mlp_out:mlp` | 0.099 | 1.000 | 0.000 | 0.688 (10 outside) | 2 / 1 |
-| P08_pairwise_sum | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 4 / 0 |
-| P08_pairwise_sum | trained | 5 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:bag,2.mlp_out:mlp` | 0.120 | 1.000 | 0.000 | 0.936 (10 outside) | 3 / 1 |
+| P05_histogram | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.970 | 0.970 | 0.986 | 1.000 (0 outside) | 1 / 0 |
+| P05_histogram | trained | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.941 | 0.941 | 0.984 | 0.991 (3 outside) | 1 / 0 |
+| P06_count_greater_than | compiled | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.974 | 0.974 | 1.000 | 1.000 (0 outside) | 1 / 0 |
+| P06_count_greater_than | trained | 2 | `0.result[0]:select,0.mlp_out:mlp` | 0.628 | 0.752 | 0.329 | 1.000 (3 outside) | 1 / 0 |
+| P07_sum_with_next | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.809 | 0.809 | 1.000 | 1.000 (0 outside) | 4 / 0 |
+| P07_sum_with_next | trained | 5 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.267 | 0.318 | 0.775 | 0.688 (10 outside) | 2 / 0 |
+| P08_pairwise_sum | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.786 | 0.786 | 1.000 | 1.000 (0 outside) | 4 / 0 |
+| P08_pairwise_sum | trained | 5 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.253 | 0.332 | 0.333 | 0.936 (10 outside) | 4 / 0 |
 | P09_check_increasing | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.979 | 1.000 | n/a | 1.000 (0 outside) | 1 / 3 |
 | P09_check_increasing | trained | 5 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.mlp_out:mlp` | 1.000 | 1.000 | n/a | 1.000 (10 outside) | 1 / 3 |
 | P10_rotate_left | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 1.000 | 1.000 | 1.000 | 1.000 (0 outside) | 3 / 0 |
-| P10_rotate_left | trained | 4 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:select` | 1.000 | 1.000 | 1.000 | 1.000 (11 outside) | 3 / 0 |
+| P10_rotate_left | trained | 4 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.result[0]:select` | 0.974 | 1.000 | 0.742 | 1.000 (11 outside) | 3 / 0 |
 | P11_check_palindrome | compiled | 12 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp,3.result[0]:select,3.mlp_out:mlp,4.result[0]:select,4.mlp_out:mlp,5.result[0]:select,5.mlp_out:mlp` | 0.990 | 1.000 | n/a | 1.000 (0 outside) | 2 / 5 |
 | P11_check_palindrome | trained | 9 | `0.result[0]:select,0.mlp_out:mlp,1.mlp_out:mlp,2.mlp_out:mlp,3.result[0]:select,3.mlp_out:mlp,4.result[0]:select,4.mlp_out:mlp,5.mlp_out:mlp` | 1.000 | 1.000 | n/a | 1.000 (21 outside) | 2 / 5 |
-| P12_sorting | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.108 | 0.108 | n/a | 1.000 (0 outside) | 1 / 2 |
+| P12_sorting | compiled | 6 | `0.result[0]:select,0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select,2.mlp_out:mlp` | 0.056 | 0.059 | n/a | 1.000 (0 outside) | 1 / 2 |
 | P12_sorting | trained | 4 | `0.mlp_out:mlp,1.result[0]:select,1.mlp_out:mlp,2.result[0]:select` | 0.000 | 0.000 | n/a | 0.503 (11 outside) | 1 / 2 |
 
-Means: compiled: output agreement 0.922, counterfactual 0.998, variables exact 21/31; trained: output agreement 0.695, counterfactual 0.646, variables exact 18/31
+Means: compiled: output agreement 0.880, counterfactual 0.998, variables exact 21/31; trained: output agreement 0.755, counterfactual 0.770, variables exact 19/31

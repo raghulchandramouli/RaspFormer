@@ -7,7 +7,10 @@
   },
   "parents": {
     "blocks.0.hook_mlp_out": {
-      "in": []
+      "in": [
+        "hook_embed",
+        "hook_pos_embed"
+      ]
     }
   },
   "output_parents": [
@@ -15,10 +18,10 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 0.5,
-      "token_agreement_where_defined": 0.5,
+      "token_agreement": 1.0,
+      "token_agreement_where_defined": 1.0,
       "coverage": 1.0,
-      "sequence_agreement": 0.0
+      "sequence_agreement": 1.0
     },
     "counterfactuals": [
       {

@@ -27,7 +27,8 @@
     },
     "blocks.0.hook_mlp_out": {
       "in": [
-        "blocks.0.attn.hook_result[0]"
+        "blocks.0.attn.hook_result[0]",
+        "hook_embed"
       ]
     }
   },
@@ -42,11 +43,15 @@
     "hook_embed->blocks.0.attn.hook_result[0].q": 0.9166666666666666,
     "hook_embed->blocks.0.attn.hook_result[0].k": 0.9583333333333334,
     "hook_embed->blocks.0.attn.hook_result[0].v": 0.16666666666666666,
+    "hook_embed->blocks.0.attn.hook_result[0].any": 0.9375,
     "hook_pos_embed->blocks.0.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].any": 0.0,
     "hook_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.0.hook_mlp_out.any": 1.0,
     "hook_pos_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.0.hook_mlp_out.any": 0.0,
     "blocks.0.attn.hook_result[0]->blocks.0.hook_mlp_out.in": 1.0,
     "hook_embed->hook_resid_post.out": 0.0,
     "hook_pos_embed->hook_resid_post.out": 0.0,
@@ -55,7 +60,7 @@
   },
   "table_sizes": {
     "mlp": {
-      "blocks.0.hook_mlp_out": 7
+      "blocks.0.hook_mlp_out": 20
     },
     "selector": {
       "blocks.0.attn.hook_result[0]": 12

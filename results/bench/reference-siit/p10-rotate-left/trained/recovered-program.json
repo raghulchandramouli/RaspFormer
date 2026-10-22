@@ -32,15 +32,18 @@
     },
     "blocks.2.attn.hook_result[0]": {
       "q": [
-        "blocks.0.hook_mlp_out",
-        "blocks.1.hook_mlp_out"
+        "blocks.1.hook_mlp_out",
+        "hook_pos_embed"
       ],
       "k": [
         "blocks.0.hook_mlp_out",
-        "blocks.1.hook_mlp_out"
+        "blocks.1.hook_mlp_out",
+        "hook_pos_embed"
       ],
       "v": [
-        "hook_embed"
+        "hook_embed",
+        "blocks.1.hook_mlp_out",
+        "hook_pos_embed"
       ]
     }
   },
@@ -49,10 +52,10 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 1.0,
-      "token_agreement_where_defined": 1.0,
+      "token_agreement": 0.9739583333333334,
+      "token_agreement_where_defined": 0.9739583333333334,
       "coverage": 1.0,
-      "sequence_agreement": 1.0
+      "sequence_agreement": 0.84375
     },
     "counterfactuals": [
       {
@@ -71,15 +74,15 @@
       },
       {
         "node": "blocks.1.hook_mlp_out",
-        "pairs": 0,
-        "agreement": null,
-        "model_changed": null,
-        "program_changed": null
+        "pairs": 10,
+        "agreement": 0.6,
+        "model_changed": 0.0,
+        "program_changed": 0.4
       },
       {
         "node": "blocks.2.attn.hook_result[0]",
         "pairs": 112,
-        "agreement": 1.0,
+        "agreement": 0.8839285714285714,
         "model_changed": 1.0,
         "program_changed": 1.0
       }

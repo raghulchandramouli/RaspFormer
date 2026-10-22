@@ -20,19 +20,23 @@ def main(argv=None):
     parser.add_argument("--steps", type=int, default=3000)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--programs", nargs="*")
+    parser.add_argument("--max-seq-len", type=int, default=6, help="compiled reference and position-embedding size")
+    parser.add_argument("--train-length", type=int, default=None, help="token count of training sequences")
     args = parser.parse_args(argv)
-    config = CompilerConfig()
+    config = CompilerConfig(max_seq_len=args.max_seq_len)
     programs = build_programs(config.max_seq_len)
     names = args.programs or list(programs)
     rows = []
     for name in names:
-        metrics = train_program(name, programs[name], args.output, config=config, steps=args.steps, seed=args.seed)
+        metrics = train_program(name, programs[name], args.output, config=config, steps=args.steps, seed=args.seed,
+                                train_length=args.train_length)
         rows.append(dict(program=name, token_accuracy=metrics["token_accuracy"], sequence_accuracy=metrics["sequence_accuracy"],
                          mean_iia=metrics["mean_iia"], min_iia=min(metrics["iia"].values()) if metrics["iia"] else None,
                          mean_siia=metrics["mean_siia"], circuit_nodes=len(metrics["iia"]), outside_nodes=len(metrics["siia"])))
         pd.DataFrame(rows).to_csv(Path(args.output) / "summary.csv", index=False)
     write_json(Path(args.output) / "manifest.json", dict(recorded_utc=datetime.now(UTC).isoformat(), steps=args.steps,
-                                                         seed=args.seed, programs=names))
+                                                         seed=args.seed, programs=names, max_seq_len=args.max_seq_len,
+                                                         train_length=args.train_length or args.max_seq_len))
     print(pd.DataFrame(rows).to_string(index=False))
 
 

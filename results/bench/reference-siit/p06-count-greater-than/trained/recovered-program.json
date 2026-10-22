@@ -21,7 +21,8 @@
     },
     "blocks.0.hook_mlp_out": {
       "in": [
-        "blocks.0.attn.hook_result[0]"
+        "blocks.0.attn.hook_result[0]",
+        "hook_embed"
       ]
     }
   },
@@ -30,23 +31,23 @@
   ],
   "tests": {
     "outputs": {
-      "token_agreement": 0.6545138888888888,
-      "token_agreement_where_defined": 0.7277992277992278,
-      "coverage": 0.8993055555555556,
-      "sequence_agreement": 0.0625
+      "token_agreement": 0.6284722222222222,
+      "token_agreement_where_defined": 0.836027713625866,
+      "coverage": 0.7517361111111112,
+      "sequence_agreement": 0.041666666666666664
     },
     "counterfactuals": [
       {
         "node": "blocks.0.attn.hook_result[0]",
-        "pairs": 58,
-        "agreement": 0.13793103448275862,
+        "pairs": 10,
+        "agreement": 0.2,
         "model_changed": 1.0,
         "program_changed": 1.0
       },
       {
         "node": "blocks.0.hook_mlp_out",
-        "pairs": 62,
-        "agreement": 0.22580645161290322,
+        "pairs": 24,
+        "agreement": 0.4583333333333333,
         "model_changed": 1.0,
         "program_changed": 1.0
       }

@@ -15,7 +15,7 @@
   },
   "aggregate": {
     "blocks.0.attn.hook_result[0]": "values",
-    "blocks.1.attn.hook_result[0]": "values"
+    "blocks.1.attn.hook_result[0]": "count"
   },
   "crispness": {
     "blocks.0.attn.hook_result[0]": 0.7917695045471191,
@@ -31,18 +31,26 @@
       "in": []
     },
     "blocks.1.attn.hook_result[0]": {
-      "q": [],
-      "k": [],
-      "v": []
+      "q": [
+        "hook_embed"
+      ],
+      "k": [
+        "hook_embed"
+      ],
+      "v": [
+        "hook_embed"
+      ]
     },
     "blocks.1.hook_mlp_out": {
       "in": [
-        "blocks.1.attn.hook_result[0]"
+        "blocks.1.attn.hook_result[0]",
+        "hook_embed"
       ]
     },
     "blocks.2.hook_mlp_out": {
       "in": [
-        "blocks.1.hook_mlp_out"
+        "blocks.1.hook_mlp_out",
+        "hook_embed"
       ]
     }
   },
@@ -60,24 +68,34 @@
     "hook_embed->blocks.0.attn.hook_result[0].q": 0.0,
     "hook_embed->blocks.0.attn.hook_result[0].k": 0.0,
     "hook_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.0.attn.hook_result[0].any": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].any": 0.0,
     "hook_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.0.hook_mlp_out.any": 0.0,
     "hook_pos_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.0.hook_mlp_out.any": 0.0,
     "hook_embed->blocks.1.attn.hook_result[0].q": 0.0,
     "hook_embed->blocks.1.attn.hook_result[0].k": 0.0,
     "hook_embed->blocks.1.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.1.attn.hook_result[0].any": 0.20833333333333334,
     "hook_pos_embed->blocks.1.attn.hook_result[0].q": 0.0,
     "hook_pos_embed->blocks.1.attn.hook_result[0].k": 0.0,
     "hook_pos_embed->blocks.1.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.1.attn.hook_result[0].any": 0.0,
     "hook_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.1.hook_mlp_out.any": 0.10416666666666667,
     "hook_pos_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.1.hook_mlp_out.any": 0.0,
     "blocks.1.attn.hook_result[0]->blocks.1.hook_mlp_out.in": 1.0,
     "hook_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.2.hook_mlp_out.any": 0.22916666666666666,
     "hook_pos_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.2.hook_mlp_out.any": 0.0,
     "blocks.1.attn.hook_result[0]->blocks.2.hook_mlp_out.in": 0.0,
-    "blocks.1.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.7916666666666666,
+    "blocks.1.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.7708333333333334,
     "hook_embed->hook_resid_post.out": 0.0,
     "hook_pos_embed->hook_resid_post.out": 0.0,
     "blocks.1.attn.hook_result[0]->hook_resid_post.out": 0.0,
@@ -87,12 +105,12 @@
   "table_sizes": {
     "mlp": {
       "blocks.0.hook_mlp_out": 1,
-      "blocks.1.hook_mlp_out": 2,
-      "blocks.2.hook_mlp_out": 2
+      "blocks.1.hook_mlp_out": 15,
+      "blocks.2.hook_mlp_out": 15
     },
     "selector": {
       "blocks.0.attn.hook_result[0]": 1,
-      "blocks.1.attn.hook_result[0]": 1
+      "blocks.1.attn.hook_result[0]": 132
     },
     "head": {
       "blocks.0.attn.hook_result[0]": 3,
@@ -103,10 +121,10 @@
   },
   "tests": {
     "outputs": {
-      "token_agreement": 0.0,
-      "token_agreement_where_defined": null,
-      "coverage": 0.0,
-      "sequence_agreement": 0.0
+      "token_agreement": 0.9629629629629629,
+      "token_agreement_where_defined": 0.9788235294117648,
+      "coverage": 0.9837962962962963,
+      "sequence_agreement": 0.9583333333333334
     },
     "counterfactuals": [
       {
@@ -139,10 +157,10 @@
       },
       {
         "node": "blocks.2.hook_mlp_out",
-        "pairs": 0,
-        "agreement": null,
-        "model_changed": null,
-        "program_changed": null
+        "pairs": 5,
+        "agreement": 0.8,
+        "model_changed": 1.0,
+        "program_changed": 1.0
       }
     ],
     "ablation": {

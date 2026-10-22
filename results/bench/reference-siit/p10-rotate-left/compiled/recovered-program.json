@@ -31,7 +31,8 @@
     },
     "blocks.1.hook_mlp_out": {
       "in": [
-        "hook_pos_embed"
+        "hook_pos_embed",
+        "hook_embed"
       ]
     },
     "blocks.2.attn.hook_result[0]": {
