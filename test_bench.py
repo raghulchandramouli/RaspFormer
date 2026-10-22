@@ -201,6 +201,51 @@ class BenchTest(unittest.TestCase):
         self.assertEqual(metrics["auroc"], 1.0)
         self.assertEqual(metrics["precision_at_k"], 1.0)
 
+    def test_target_slot_maps_every_eap_target(self):
+        from types import SimpleNamespace
+        from bench.circuits import target_slot
+        from bench.eap import node_names
+        config = SimpleNamespace(layers=2, heads=4)
+        _, targets = node_names(config)
+        slots = [target_slot(t) for t in targets]
+        self.assertEqual(len(set(slots)), len(targets))
+        self.assertEqual(target_slot("blocks.1.hook_k_input[3]"), ("blocks.1.attn.hook_result[3]", "k"))
+        self.assertEqual(target_slot("blocks.0.hook_mlp_in"), ("blocks.0.hook_mlp_out", "in"))
+        self.assertEqual(target_slot("blocks.1.hook_resid_post"), ("hook_resid_post", "out"))
+        with self.assertRaises(ValueError):
+            target_slot("blocks.0.hook_z[0]")
+
+    def _case44_batch(self, count):
+        from bench.phase1 import compiled_ids, encode
+        case = CASES["44"]
+        split = json.loads((Path(__file__).resolve().parent / "results/bench/reference/44/sequence-splits.json").read_text())
+        enc = encode(self.compiled["44"], split["test"][:count])
+        corrupt = enc[np.random.default_rng(0).permutation(len(enc))]
+        return load_interpbench(case.artifact_dir), enc, corrupt, compiled_ids(self.compiled["44"], enc)
+
+    def test_every_method_scores_the_eap_edge_universe(self):
+        from bench.circuits import METHODS
+        from bench.eap import edge_universe
+        model, enc, corrupt, labels = self._case44_batch(16)
+        universe = edge_universe(model.config)
+        for name, method in METHODS.items():
+            with self.subTest(method=name):
+                frame = method(model, enc, corrupt, labels)
+                self.assertEqual(list(zip(frame.source, frame.target)), universe)
+                self.assertTrue(np.isfinite(frame.score).all())
+
+    def test_exact_patching_ranks_case_44_circuit_near_the_top(self):
+        from bench.circuits import patch, score_frame
+        from bench.eap import ground_truth
+        model, enc, corrupt, labels = self._case44_batch(96)
+        truth = ground_truth(CASES["44"].artifact_dir, model.config)["scorable"]
+        frame = patch(model, enc, corrupt, labels)
+        metrics = score_frame(frame, truth)
+        # Patching embed -> k alone barely moves the metric (q carries the effect), so AUROC is 0.99, not 1.
+        self.assertGreaterEqual(metrics["edge"]["auroc"], 0.98)
+        top = frame.assign(a=frame.score.abs()).nlargest(3, "a")
+        self.assertTrue(all((s, t) in set(truth) for s, t in zip(top.source, top.target)))
+
     def test_decompiler_recovers_compiled_histogram(self):
         from bench.decompile import full_circuit, match_variables, recover, test_counterfactuals, test_outputs
         from bench.variables import case_variables, variable_values
