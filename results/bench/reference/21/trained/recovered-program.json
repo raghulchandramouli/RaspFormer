@@ -1,0 +1,145 @@
+{
+  "nodes": [
+    "blocks.1.hook_mlp_out",
+    "blocks.2.hook_mlp_out",
+    "blocks.3.attn.hook_result[0]"
+  ],
+  "kinds": {
+    "blocks.1.hook_mlp_out": "mlp",
+    "blocks.2.hook_mlp_out": "mlp",
+    "blocks.3.attn.hook_result[0]": "bag"
+  },
+  "aggregate": {},
+  "crispness": {
+    "blocks.3.attn.hook_result[0]": 0.9894646406173706
+  },
+  "parents": {
+    "blocks.1.hook_mlp_out": {
+      "in": []
+    },
+    "blocks.2.hook_mlp_out": {
+      "in": [
+        "blocks.1.hook_mlp_out"
+      ]
+    },
+    "blocks.3.attn.hook_result[0]": {
+      "q": [
+        "blocks.2.hook_mlp_out"
+      ],
+      "k": [
+        "blocks.2.hook_mlp_out"
+      ]
+    }
+  },
+  "output_parents": [
+    "blocks.3.attn.hook_result[0]"
+  ],
+  "classes": {
+    "blocks.1.hook_mlp_out": 2,
+    "blocks.2.hook_mlp_out": 2,
+    "blocks.3.attn.hook_result[0]": 3
+  },
+  "effects": {
+    "hook_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "blocks.1.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.7708333333333334,
+    "hook_embed->blocks.3.attn.hook_result[0].q": 0.0,
+    "hook_embed->blocks.3.attn.hook_result[0].k": 0.0,
+    "hook_embed->blocks.3.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].q": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].k": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].v": 0.0,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].q": 0.0,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].k": 0.0,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].v": 0.0,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].q": 0.25,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].k": 0.0625,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].v": 0.14583333333333334,
+    "hook_embed->hook_resid_post.out": 0.0,
+    "hook_pos_embed->hook_resid_post.out": 0.0,
+    "blocks.1.hook_mlp_out->hook_resid_post.out": 0.0,
+    "blocks.2.hook_mlp_out->hook_resid_post.out": 0.0,
+    "blocks.3.attn.hook_result[0]->hook_resid_post.out": 0.9166666666666666
+  },
+  "table_sizes": {
+    "mlp": {
+      "blocks.1.hook_mlp_out": 1,
+      "blocks.2.hook_mlp_out": 2
+    },
+    "selector": {},
+    "head": {},
+    "bag": {
+      "blocks.3.attn.hook_result[0]": 6
+    },
+    "output": 3
+  },
+  "tests": {
+    "outputs": {
+      "token_agreement": 0.0,
+      "token_agreement_where_defined": null,
+      "coverage": 0.0,
+      "sequence_agreement": 0.0
+    },
+    "counterfactuals": [
+      {
+        "node": "blocks.1.hook_mlp_out",
+        "pairs": 18,
+        "agreement": 0.0,
+        "model_changed": 0.16666666666666666,
+        "program_changed": 1.0
+      },
+      {
+        "node": "blocks.2.hook_mlp_out",
+        "pairs": 19,
+        "agreement": 0.0,
+        "model_changed": 0.15789473684210525,
+        "program_changed": 1.0
+      },
+      {
+        "node": "blocks.3.attn.hook_result[0]",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      }
+    ],
+    "ablation": {
+      "outside_nodes": 17,
+      "circuit_nodes": 3,
+      "token_agreement": 0.2662037037037037,
+      "sequence_agreement": 0.0
+    }
+  },
+  "variable_matches": [
+    {
+      "variable": "sequence_map_21",
+      "node": "blocks.3.attn.hook_result[0]",
+      "class_to_value": 0.13657407407407407,
+      "value_to_class": 0.7928240740740741,
+      "status": "missing"
+    },
+    {
+      "variable": "selector_width_19",
+      "node": "blocks.2.hook_mlp_out",
+      "class_to_value": 0.5555555555555556,
+      "value_to_class": 0.9560185185185185,
+      "status": "missing"
+    },
+    {
+      "variable": "sequence_map_18",
+      "node": "blocks.2.hook_mlp_out",
+      "class_to_value": 0.75,
+      "value_to_class": 0.9560185185185185,
+      "status": "missing"
+    },
+    {
+      "variable": "unique_tokens_16",
+      "node": "blocks.3.attn.hook_result[0]",
+      "class_to_value": 0.99644128113879,
+      "value_to_class": 0.99644128113879,
+      "status": "exact"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "nodes": [
+    "blocks.0.attn.hook_result[0]",
+    "blocks.0.hook_mlp_out"
+  ],
+  "kinds": {
+    "blocks.0.attn.hook_result[0]": "select",
+    "blocks.0.hook_mlp_out": "mlp"
+  },
+  "aggregate": {
+    "blocks.0.attn.hook_result[0]": "count"
+  },
+  "crispness": {
+    "blocks.0.attn.hook_result[0]": 0.8240695595741272
+  },
+  "parents": {
+    "blocks.0.attn.hook_result[0]": {
+      "q": [
+        "hook_embed"
+      ],
+      "k": [
+        "hook_embed"
+      ],
+      "v": [
+        "hook_embed"
+      ]
+    },
+    "blocks.0.hook_mlp_out": {
+      "in": [
+        "blocks.0.attn.hook_result[0]"
+      ]
+    }
+  },
+  "output_parents": [
+    "blocks.0.hook_mlp_out"
+  ],
+  "classes": {
+    "blocks.0.attn.hook_result[0]": 9,
+    "blocks.0.hook_mlp_out": 9
+  },
+  "effects": {
+    "hook_embed->blocks.0.attn.hook_result[0].q": 0.9375,
+    "hook_embed->blocks.0.attn.hook_result[0].k": 0.875,
+    "hook_embed->blocks.0.attn.hook_result[0].v": 0.20833333333333334,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].q": 0.08333333333333333,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].k": 0.041666666666666664,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].v": 0.041666666666666664,
+    "hook_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.0.hook_mlp_out.in": 0.0,
+    "blocks.0.attn.hook_result[0]->blocks.0.hook_mlp_out.in": 1.0,
+    "hook_embed->hook_resid_post.out": 0.0,
+    "hook_pos_embed->hook_resid_post.out": 0.0,
+    "blocks.0.attn.hook_result[0]->hook_resid_post.out": 0.0,
+    "blocks.0.hook_mlp_out->hook_resid_post.out": 1.0
+  },
+  "table_sizes": {
+    "mlp": {
+      "blocks.0.hook_mlp_out": 9
+    },
+    "selector": {
+      "blocks.0.attn.hook_result[0]": 132
+    },
+    "head": {
+      "blocks.0.attn.hook_result[0]": 10
+    },
+    "bag": {},
+    "output": 9
+  },
+  "tests": {
+    "outputs": {
+      "token_agreement": 0.8645833333333334,
+      "token_agreement_where_defined": 0.8645833333333334,
+      "coverage": 1.0,
+      "sequence_agreement": 0.40625
+    },
+    "counterfactuals": [
+      {
+        "node": "blocks.0.attn.hook_result[0]",
+        "pairs": 111,
+        "agreement": 0.35135135135135137,
+        "model_changed": 1.0,
+        "program_changed": 1.0
+      },
+      {
+        "node": "blocks.0.hook_mlp_out",
+        "pairs": 112,
+        "agreement": 0.3482142857142857,
+        "model_changed": 1.0,
+        "program_changed": 1.0
+      }
+    ],
+    "ablation": {
+      "outside_nodes": 8,
+      "circuit_nodes": 2,
+      "token_agreement": 0.8923611111111112,
+      "sequence_agreement": 0.28125
+    }
+  },
+  "variable_matches": [
+    {
+      "variable": "count_greater_than_22",
+      "node": "blocks.0.attn.hook_result[0]",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    }
+  ]
+}

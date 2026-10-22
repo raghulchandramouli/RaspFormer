@@ -1,0 +1,21 @@
+{
+  "edge": {
+    "auroc": 0.8454683352294273,
+    "average_precision": 0.4902185598676827,
+    "precision_at_k": 0.4444444444444444,
+    "recall_at_k": 0.4444444444444444,
+    "k": 9
+  },
+  "node": {
+    "auroc": 0.6857142857142857,
+    "average_precision": 0.770841670001334,
+    "precision_at_k": 0.5714285714285714,
+    "recall_at_k": 0.5714285714285714,
+    "k": 7
+  },
+  "truth_scorable": 9,
+  "truth_internal": 15,
+  "truth_out_of_universe": 0,
+  "out_of_universe_edges": [],
+  "universe_size": 302
+}

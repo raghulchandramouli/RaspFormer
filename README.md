@@ -67,11 +67,15 @@ results/
   <study>/runs/<UTC>-<id>/     Disposable local runs, ignored by Git
   report/research-validation.md
   report/figures/
+bench/
+  programs.py       Six InterpBench RASP programs with SIIT-trained models and known circuits
+  interpbench/<id>/ Trained weights, config, circuit edges; see bench/README.md
 scripts/check_notebooks.py
 test_studies.py
 test_numerics.py
 test_models.py
 test_research.py
+test_bench.py
 ```
 
 New folders use lower-case words separated by hyphens. Python names use underscores. Study names stay singular, such as `trace`. Program folders use names such as `p12-sorting`, with `seed-42` below learned models.

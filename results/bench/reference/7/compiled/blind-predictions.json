@@ -1,0 +1,34 @@
+[
+  {
+    "stage": 1,
+    "delta_energy": 0.0024171040189352173,
+    "relative_delta_energy": 0.02094823483077188,
+    "before_total_variance": 1.5568189133513584,
+    "after_total_variance": 1.56294987124553,
+    "before_variance_active": true,
+    "after_variance_active": true,
+    "variance_floor": 1e-12,
+    "delta_pr": 1.0000000000000029,
+    "adjacent_cka": 0.9999418839625988,
+    "geometry_change": 5.811603740124571e-05,
+    "predict_change": true,
+    "predict_pr": true,
+    "predict_cka": false
+  },
+  {
+    "stage": 2,
+    "delta_energy": 0.038461538461549795,
+    "relative_delta_energy": 0.32649386321597734,
+    "before_total_variance": 1.56294987124553,
+    "after_total_variance": 2.3425113924187815,
+    "before_variance_active": true,
+    "after_variance_active": true,
+    "variance_floor": 1e-12,
+    "delta_pr": 3.816645908422167,
+    "adjacent_cka": 0.8216558518045123,
+    "geometry_change": 0.17834414819548772,
+    "predict_change": true,
+    "predict_pr": true,
+    "predict_cka": true
+  }
+]

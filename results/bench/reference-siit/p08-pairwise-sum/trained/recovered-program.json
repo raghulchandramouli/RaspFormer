@@ -1,0 +1,133 @@
+{
+  "nodes": [
+    "blocks.0.attn.hook_result[0]",
+    "blocks.0.hook_mlp_out",
+    "blocks.1.hook_mlp_out",
+    "blocks.2.attn.hook_result[0]",
+    "blocks.2.hook_mlp_out"
+  ],
+  "kinds": {
+    "blocks.0.attn.hook_result[0]": "select",
+    "blocks.0.hook_mlp_out": "mlp",
+    "blocks.1.hook_mlp_out": "mlp",
+    "blocks.2.attn.hook_result[0]": "bag",
+    "blocks.2.hook_mlp_out": "mlp"
+  },
+  "parents": {
+    "blocks.0.attn.hook_result[0]": {
+      "q": [],
+      "k": [],
+      "v": []
+    },
+    "blocks.0.hook_mlp_out": {
+      "in": [
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    },
+    "blocks.1.hook_mlp_out": {
+      "in": [
+        "hook_pos_embed",
+        "blocks.0.hook_mlp_out"
+      ]
+    },
+    "blocks.2.attn.hook_result[0]": {
+      "q": [
+        "blocks.1.hook_mlp_out"
+      ],
+      "k": [
+        "blocks.0.hook_mlp_out",
+        "blocks.1.hook_mlp_out"
+      ]
+    },
+    "blocks.2.hook_mlp_out": {
+      "in": [
+        "blocks.2.attn.hook_result[0]"
+      ]
+    }
+  },
+  "output_parents": [
+    "blocks.2.hook_mlp_out"
+  ],
+  "tests": {
+    "outputs": {
+      "token_agreement": 0.11979166666666667,
+      "token_agreement_where_defined": 0.11979166666666667,
+      "coverage": 1.0,
+      "sequence_agreement": 0.0
+    },
+    "counterfactuals": [
+      {
+        "node": "blocks.0.attn.hook_result[0]",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.0.hook_mlp_out",
+        "pairs": 2,
+        "agreement": 0.0,
+        "model_changed": 0.0,
+        "program_changed": 1.0
+      },
+      {
+        "node": "blocks.1.hook_mlp_out",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.2.attn.hook_result[0]",
+        "pairs": 93,
+        "agreement": 0.0,
+        "model_changed": 1.0,
+        "program_changed": 1.0
+      },
+      {
+        "node": "blocks.2.hook_mlp_out",
+        "pairs": 115,
+        "agreement": 0.0,
+        "model_changed": 1.0,
+        "program_changed": 1.0
+      }
+    ],
+    "ablation": {
+      "outside_nodes": 10,
+      "circuit_nodes": 5,
+      "token_agreement": 0.9357638888888888,
+      "sequence_agreement": 0.6770833333333334
+    }
+  },
+  "variable_matches": [
+    {
+      "variable": "length_20",
+      "node": "blocks.0.attn.hook_result[0]",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    },
+    {
+      "variable": "previous_cyclic_index_19",
+      "node": "blocks.1.hook_mlp_out",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    },
+    {
+      "variable": "previous_value_17",
+      "node": "blocks.2.attn.hook_result[0]",
+      "class_to_value": 0.6180555555555556,
+      "value_to_class": 1.0,
+      "status": "missing"
+    },
+    {
+      "variable": "pairwise_sum_16",
+      "node": "blocks.2.hook_mlp_out",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+case,model,variable,stage,stage_name,first_write_stage,classes,subspace_dim,train_pairs,test_pairs,invalid_test_pairs,iia,iia_changed,iia_train,random_iia,random_iia_changed,changing_pairs,base_rate
+7,compiled,hist_7,0,Embedding,2,10,9,256,256,0,0.00390625,0.00390625,0.00390625,0.0,0.0,256,0.0
+7,compiled,hist_7,1,L1/Attn,2,10,9,256,256,0,1.0,1.0,1.0,0.0859375,0.0859375,256,0.0
+7,compiled,hist_7,2,L1/MLP,2,10,9,256,256,0,1.0,1.0,1.0,0.1484375,0.1484375,256,0.0

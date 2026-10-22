@@ -19,10 +19,16 @@ class ModelConfig:
     mlp_hidden_size: int
     causal: bool = False
     pad_token: int | None = None
+    activation: str = "relu"      # "relu" (Tracr) or "gelu" (exact, TransformerLens "gelu")
+
+
+ACTIVATIONS = {"relu": jax.nn.relu,
+               "gelu": lambda x: jax.nn.gelu(x, approximate=False)}
 
 
 @dataclass(frozen=True)
 class Model:
+    """params may carry an optional "unembed_bias" [classes] for imported models."""
     params: dict
     config: ModelConfig
 
@@ -69,12 +75,14 @@ def from_compiled(assembled) -> Model:
                                     cfg.causal, metadata["pad_token"]))
 
 
-def forward(model, encoded_inputs, attention_scale=1.0, patches=None):
+def forward(model, encoded_inputs, attention_scale=1.0, patches=None, stage_deltas=None):
     """Return [batch, position, class] scores and all residual stages.
 
     Inputs include BOS at position zero. Each patch is a mapping containing
     stage (zero is embedding), batch, position, and an additive width-vector
     delta. Patches take effect before the next stage and remain in the trace.
+    ``stage_deltas`` maps a stage to a [batch, position, width] array added to
+    that stage's residual in one shot; it is differentiable and jit-friendly.
     Attention scaling multiplies QK logits before masking and softmax.
     """
     inputs = jnp.asarray(encoded_inputs)
@@ -93,15 +101,27 @@ def forward(model, encoded_inputs, attention_scale=1.0, patches=None):
         if jnp.shape(patch["delta"]) != (cfg.width,):
             raise ValueError("Patch delta must have the executing residual width.")
 
+    stage_deltas = {} if stage_deltas is None else dict(stage_deltas)
+    for stage, delta in stage_deltas.items():
+        if not 0 <= stage <= 2 * cfg.layers:
+            raise ValueError("Delta stage is outside the model.")
+        if jnp.shape(delta) != (*inputs.shape, cfg.width):
+            raise ValueError("Stage delta must have shape [batch, position, width].")
+
     def patched(x, stage):
         for patch in patches:
             if patch["stage"] == stage:
                 x = x.at[patch["batch"], patch["position"]].add(patch["delta"])
+        if stage in stage_deltas:
+            x = x + stage_deltas[stage]
         return x
 
     def affine(x, weights):
         return x @ weights["w"] + weights["b"]
 
+    if cfg.activation not in ACTIVATIONS:
+        raise ValueError(f"Unknown activation {cfg.activation!r}.")
+    activation = ACTIVATIONS[cfg.activation]
     x = params["token_embed"][inputs] + params["pos_embed"][:inputs.shape[1]]
     x = patched(x, 0)
     residuals = [x]
@@ -118,10 +138,13 @@ def forward(model, encoded_inputs, attention_scale=1.0, patches=None):
         values = jnp.einsum("bhts,bshd->bthd", weights, v).reshape(*x.shape[:2], -1)
         x = patched(x + affine(values, layer["o"]), 2 * i + 1)
         residuals.append(x)
-        x = patched(x + affine(jax.nn.relu(affine(x, layer["mlp_in"])), layer["mlp_out"]),
+        x = patched(x + affine(activation(affine(x, layer["mlp_in"])), layer["mlp_out"]),
                     2 * i + 2)
         residuals.append(x)
-    return x @ params["unembed"], tuple(residuals)
+    logits = x @ params["unembed"]
+    if "unembed_bias" in params:
+        logits = logits + params["unembed_bias"]
+    return logits, tuple(residuals)
 
 
 def change_basis(model, basis):
@@ -143,10 +166,12 @@ def change_basis(model, basis):
             else:
                 transformed[name] = {"w": weights["w"] @ b, "b": weights["b"] @ b}
         layers.append(transformed)
-    return Model({"token_embed": p["token_embed"] @ b,
-                  "pos_embed": p["pos_embed"] @ b,
-                  "layers": tuple(layers), "unembed": b.T @ p["unembed"]},
-                 replace(model.config, width=b.shape[1]))
+    params = {"token_embed": p["token_embed"] @ b,
+              "pos_embed": p["pos_embed"] @ b,
+              "layers": tuple(layers), "unembed": b.T @ p["unembed"]}
+    if "unembed_bias" in p:
+        params["unembed_bias"] = p["unembed_bias"]
+    return Model(params, replace(model.config, width=b.shape[1]))
 
 
 def random_model(vocab_size, max_length, output_classes, seed, width=32, layers=2, heads=2):
@@ -235,6 +260,8 @@ def parameter_count(model):
 def save_model(model, path):
     """Save architecture and arrays in NPZ without executable pickle data."""
     arrays = {key: np.asarray(model.params[key]) for key in ("token_embed", "pos_embed", "unembed")}
+    if "unembed_bias" in model.params:
+        arrays["unembed_bias"] = np.asarray(model.params["unembed_bias"])
     for i, layer in enumerate(model.params["layers"]):
         for name, weights in layer.items():
             for key, value in weights.items():
@@ -248,6 +275,8 @@ def load_model(path):
     with np.load(path, allow_pickle=False) as data:
         cfg = ModelConfig(**json.loads(str(data["config"])))
         params = {key: jnp.asarray(data[key]) for key in ("token_embed", "pos_embed", "unembed")}
+        if "unembed_bias" in data:
+            params["unembed_bias"] = jnp.asarray(data["unembed_bias"])
         params["layers"] = tuple({name: {key: jnp.asarray(data[f"layer/{i}/{name}/{key}"])
                                         for key in ("w", "b")}
                                   for name in ("q", "k", "v", "o", "mlp_in", "mlp_out")}
