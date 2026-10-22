@@ -67,10 +67,10 @@ def run_pool(pool, seed):
             rows.append(dict(model=name, method=method, edges=len(frame), truth_edges=len(truth),
                              **{f"{level}_{k}": v for level, m in metrics.items() for k, v in m.items()},
                              seconds=time.time() - start))
-            if method == "acdc":
+            if method.startswith("acdc"):
                 for tau in ACDC_TAUS:
                     scored = score_circuit(frame, f"kept@{tau:g}", truth)
-                    acdc_rows.append(dict(model=name, tau=tau, **{f"{level}_{k}": v
+                    acdc_rows.append(dict(model=name, method=method, tau=tau, **{f"{level}_{k}": v
                                           for level, m in scored.items() for k, v in m.items()}))
             print(f"{name} {method}: edge AUROC {metrics['edge']['auroc']:.3f} "
                   f"({rows[-1]['seconds']:.1f}s)", flush=True)
@@ -94,14 +94,14 @@ def markdown(pool_name, table, acdc):
         lines.append(f"| **mean** | {method} | " + " | ".join(fmt(g[c].mean()) for c in METRIC_COLUMNS) + " |")
     lines += ["", "## ACDC circuits by threshold", "",
               "Precision, recall and F1 of the kept edges (and of the sources with a kept edge) against the true circuit.", "",
-              "| Model | tau | Edges kept | Edge P | Edge R | Edge F1 | Nodes kept | Node P | Node R | Node F1 |",
-              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+              "| Model | Method | tau | Edges kept | Edge P | Edge R | Edge F1 | Nodes kept | Node P | Node R | Node F1 |",
+              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for r in acdc.itertuples():
-        lines.append(f"| {r.model} | {r.tau:g} | {r.edge_size} | {fmt(r.edge_precision)} | {fmt(r.edge_recall)} | {fmt(r.edge_f1)} | "
+        lines.append(f"| {r.model} | {r.method} | {r.tau:g} | {r.edge_size} | {fmt(r.edge_precision)} | {fmt(r.edge_recall)} | {fmt(r.edge_f1)} | "
                      f"{r.node_size} | {fmt(r.node_precision)} | {fmt(r.node_recall)} | {fmt(r.node_f1)} |")
-    lines += ["", "Means by tau: " + "; ".join(
-        f"tau {tau:g}: edge F1 {g.edge_f1.mean():.3f}, node F1 {g.node_f1.mean():.3f}"
-        for tau, g in acdc.groupby("tau")), ""]
+    lines += ["", "Means by method and tau: " + "; ".join(
+        f"{method} tau {tau:g}: edge F1 {g.edge_f1.mean():.3f}, node F1 {g.node_f1.mean():.3f}"
+        for (method, tau), g in acdc.groupby(["method", "tau"])), ""]
     return "\n".join(lines)
 
 

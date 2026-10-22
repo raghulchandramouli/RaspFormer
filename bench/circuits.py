@@ -95,21 +95,32 @@ def patch(model, clean, corrupt, labels):
     return ctx.frame(scores)
 
 
-def acdc(model, clean, corrupt, labels, taus=ACDC_TAUS):
+def acdc(model, clean, corrupt, labels, taus=ACDC_TAUS, metric="kl"):
     """Greedy ACDC pruning at each tau, latest targets first.
 
     ``score`` is the largest tau at which the edge survives (0 if it is pruned
     at every tau). ``kept@<tau>`` columns hold the binary circuit per tau.
+    ``metric="kl"`` prunes on KL(clean || patched); ``"logit"`` prunes on the
+    change in the logit-difference metric relative to its clean value, which
+    stays informative where softmax saturates (these models' logits reach 1e6,
+    so most single-edge KLs are exactly zero).
     """
     ctx = _Context(model, clean, corrupt, labels)
     rank = {t: i for i, t in enumerate(ctx.targets)}
     order = sorted(ctx.edges, key=lambda e: rank[e[1]], reverse=True)
+    base = float(ctx.metric_jit(ctx.zeros))
+
+    def distance(deltas):
+        if metric == "kl":
+            return float(ctx.kl(deltas))
+        return abs(float(ctx.metric_jit(deltas)) - base) / max(abs(base), 1e-12)
+
     kept = {}
     for tau in taus:
         pruned = dict(ctx.zeros)
         for s, t in order:
             trial = {**pruned, t: pruned[t] + ctx.diff[s]}
-            if float(ctx.kl(trial)) < tau:
+            if distance(trial) < tau:
                 pruned = trial
             else:
                 kept[(s, t, tau)] = True
@@ -145,8 +156,8 @@ def ig(model, clean, corrupt, labels, steps=IG_STEPS, interpolate="input"):
     return ctx.frame([jnp.sum(ctx.diff[s] * mean_grad[t]) / clean.shape[0] for s, t in ctx.edges])
 
 
-METHODS = {"eap": eap, "patch": patch, "acdc": acdc, "ig": ig,
-           "ig-delta": partial(ig, interpolate="delta")}
+METHODS = {"eap": eap, "patch": patch, "acdc": acdc, "acdc-logit": partial(acdc, metric="logit"),
+           "ig": ig, "ig-delta": partial(ig, interpolate="delta")}
 
 
 def score_frame(frame, truth_edges):
