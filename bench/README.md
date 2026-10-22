@@ -273,7 +273,42 @@ Findings from the saved run:
   by index the match is exact: defined positions are all correct, undefined
   positions all wrong.
 
+## Circuit-discovery baselines
+
+`bench/circuits.py` scores five methods on the identical edge frame, ground
+truth, clean batch, and corrupt permutation as EAP: exact edge activation
+patching (the ACDC primitive, one forward per edge), greedy ACDC pruning on
+KL divergence and on the relative logit-difference change (`acdc-logit`),
+and EAP with integrated gradients (`ig`, embeddings interpolated; `ig-delta`,
+the literal summed-delta form). `bench/circuit_baselines.py` writes
+`circuit-discovery.md` next to each pool's reports.
+
+```bash
+.venv/bin/python -m bench.circuit_baselines
+.venv/bin/python -m bench.circuit_baselines --siit results/bench/siit
+```
+
+Mean edge AUROC over models:
+
+| Method | InterpBench (6) | SIIT (12) |
+| --- | --- | --- |
+| eap | 0.769 | 0.758 |
+| patch (exact) | 0.783 | 0.748 |
+| ig | 0.770 | 0.760 |
+| ig-delta | 0.781 | 0.763 |
+| acdc (KL) | 0.749 | 0.719 |
+| acdc-logit | 0.785 | 0.685 |
+
+EAP is within 0.015 of exact patching and of integrated gradients on both
+pools, so its linear approximation is not what limits edge recovery. Every
+method recovers nodes far better than edges (node precision at k 0.74 to
+0.87 against edge precision at k about 0.5), which matches InterpBench's own
+warning that its models are trained at head granularity. ACDC's binary
+circuits reach edge F1 0.46 on InterpBench and 0.30 on SIIT at the loosest
+threshold; on KL divergence the softmax saturates and almost every single-edge
+distance is exactly zero, which the logit-difference variant avoids.
+
 ## Not done yet
 
-ACDC as a second circuit-discovery method; recovery of tuple-valued and
-numerical intermediates; seed variance of the decompiler.
+Recovery of tuple-valued and numerical intermediates; seed variance of the
+decompiler.
