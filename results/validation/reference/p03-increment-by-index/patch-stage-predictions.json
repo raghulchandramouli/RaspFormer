@@ -1,0 +1,38 @@
+{
+  "source_split": "calibration",
+  "predictions": [
+    {
+      "stage": 1,
+      "delta_energy": 0.0,
+      "relative_delta_energy": 0.0,
+      "before_total_variance": 1.7082125603864733,
+      "after_total_variance": 1.7082125603864733,
+      "before_variance_active": true,
+      "after_variance_active": true,
+      "variance_floor": 1e-12,
+      "delta_pr": 0.0,
+      "adjacent_cka": 1.0,
+      "geometry_change": 0.0,
+      "predict_change": false,
+      "predict_pr": false,
+      "predict_cka": false
+    },
+    {
+      "stage": 2,
+      "delta_energy": 0.03333333333333333,
+      "relative_delta_energy": 0.3333333333333333,
+      "before_total_variance": 1.7082125603864733,
+      "after_total_variance": 2.616938405797102,
+      "before_variance_active": true,
+      "after_variance_active": true,
+      "variance_floor": 1e-12,
+      "delta_pr": 10.00500997476381,
+      "adjacent_cka": 0.8839383882222525,
+      "geometry_change": 0.11606161177774754,
+      "predict_change": true,
+      "predict_pr": true,
+      "predict_cka": true
+    }
+  ],
+  "selected_stage": 2
+}

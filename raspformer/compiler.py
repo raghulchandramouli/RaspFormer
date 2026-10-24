@@ -309,8 +309,8 @@ def record_run(output_root, programs, config, **settings):
         "programs": [],
         "failures": [],
     }
-    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
-    run_dir = Path(output_root).resolve() / f"{stamp}_{uuid4().hex[:8]}"
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    run_dir = Path(output_root).resolve() / "runs" / f"{stamp}-{uuid4().hex[:8]}"
     run_dir.mkdir(parents=True, exist_ok=False)
     write_json(run_dir / "manifest.json", evidence)
     try:
@@ -332,9 +332,40 @@ def record_run(output_root, programs, config, **settings):
 
 
 def environment_metadata() -> dict:
+    import subprocess
+
     direct_url = distribution("tracr").read_text("direct_url.json")
     source = json.loads(direct_url) if direct_url else {}
+    source_root = Path(__file__).resolve().parent
+    repository_root = next(
+        (parent for parent in source_root.parents if (parent / ".git").exists()), None,
+    )
+    git_commit, git_dirty = None, None
+    if repository_root is not None:
+        try:
+            git_commit = subprocess.run(
+                ["git", "-C", str(repository_root), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True, timeout=5,
+            ).stdout.strip()
+            git_dirty = bool(subprocess.run(
+                ["git", "-C", str(repository_root), "status", "--porcelain"],
+                check=True, capture_output=True, text=True, timeout=5,
+            ).stdout.strip())
+        except (OSError, subprocess.SubprocessError):
+            git_commit, git_dirty = None, None
+    notebook_root = repository_root if repository_root is not None else source_root.parent
+    notebook_hashes = {}
+    for path in sorted((notebook_root / "notebooks").glob("*.ipynb")):
+        notebook = json.loads(path.read_text(encoding="utf-8"))
+        cells = [
+            {"cell_type": cell["cell_type"], "source": "".join(cell["source"])}
+            for cell in notebook["cells"]
+        ]
+        content = json.dumps(cells, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        notebook_hashes[path.relative_to(notebook_root).as_posix()] = hashlib.sha256(content).hexdigest()
     return {
+        "git_commit": git_commit,
+        "git_dirty": git_dirty,
         "tracr_version": version("tracr"),
         "tracr_commit": source.get("vcs_info", {}).get("commit_id"),
         "python_version": platform.python_version(),
@@ -348,8 +379,9 @@ def environment_metadata() -> dict:
         "devices": [str(device) for device in jax.devices()],
         "source_sha256": {
             path.name: hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in sorted(Path(__file__).parent.glob("*.py"))
+            for path in sorted(source_root.glob("*.py"))
         },
+        "notebook_source_sha256": notebook_hashes,
     }
 
 

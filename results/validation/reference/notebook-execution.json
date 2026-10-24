@@ -1,0 +1,27 @@
+[
+  {
+    "notebook": "01_programs.ipynb",
+    "code_cells": 6,
+    "status": "passed"
+  },
+  {
+    "notebook": "02_trace.ipynb",
+    "code_cells": 5,
+    "status": "passed"
+  },
+  {
+    "notebook": "03_geometry.ipynb",
+    "code_cells": 13,
+    "status": "passed"
+  },
+  {
+    "notebook": "04_alignment.ipynb",
+    "code_cells": 6,
+    "status": "passed"
+  },
+  {
+    "notebook": "05_comparison.ipynb",
+    "code_cells": 7,
+    "status": "passed"
+  }
+]

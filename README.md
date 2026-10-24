@@ -1,165 +1,113 @@
 # RaspFormer
 
-Define small sequence algorithms in RASP, compile them into transformers with
-Tracr, and inspect how their internal representations change as they execute.
-The compiler constructs the weights; these experiments do not train models.
+Define sequence algorithms in RASP, compile them with Tracr, and test what representation measurements reveal about their execution.
 
-**Define → trace → analyze → check alignment → compare programs.**
+The original studies check agreement with known compiler representations. The validation studies add blind transition detection, representation controls, causal patches, executing residual compression, and models trained from random weights.
+
+Read the generated [research validation report](results/report/research-validation.md) for measured results and limitations.
+
+PDFs include the [complete change report](output/pdf/raspformer-research-upgrade-report.pdf) and the [point-by-point response to review](output/pdf/raspformer-response-to-review.pdf).
+
+## Run the studies
+
+Use Python 3.12 and the pinned dependencies. The environment runs on CPU.
+
+```bash
+uv python install 3.12
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/python -m raspformer.study
+.venv/bin/python -m raspformer.report
+```
+
+The default command reruns all five original studies, all validation controls, nine structural program variants, and 36 learned models. Training uses 600 Adam steps for each of twelve programs and three seeds. A completed experiment can have a negative scientific result.
+
+To run one part, use these commands:
+
+```bash
+.venv/bin/python -m raspformer.study --sections baseline
+.venv/bin/python -m raspformer.study --sections validation
+.venv/bin/python -m raspformer.study --sections learning --seeds 42 43 44 --training-steps 600
+```
+
+Each section replaces its canonical reference only after its run completes. Run `raspformer.report` after all sections finish.
+
+## What is measured
+
+| Study | Experiment and evidence |
+| --- | --- |
+| `programs` | Twelve compiled algorithms, sampled output checks, and compiler write schedules. |
+| `trace` | Manual attention and MLP calculations compared with the assembled transformer. |
+| `geometry` | Class-balanced targets, PCA, PR, CKA, and full versus computed residual views. |
+| `alignment` | Independently evaluated RASP values encoded in known compiler lanes, plus A and B interventions. |
+| `comparison` | Shared inputs and balanced sensitivity checks, raw variance, thresholded metrics, and CKA availability. |
+| `validation` | Orthogonal and nonorthogonal controls, executing compression, blind transition recovery, PCA patches, sorting diagnostics, and a depth-by-branch-count family. |
+| `learning` | Randomly initialized transformers trained on the same twelve programs, disjoint sequence splits, three seeds, predictions, checkpoints, and compiled-model comparisons. |
+
+The vocabulary is the integers -2 through 5. The main probe design uses length-six sequences and noncausal attention. Output checks also cover shorter examples.
+
+PR and CKA use an absolute total sample variance floor of `1e-12`. Inactive PCA dimensions are reported as zero with a reason flag. CKA remains undefined for inactive representations. Comparison tables retain raw measurements and sensitivity to several floors.
+
+## Files and naming
 
 ```text
-RaspFormer/
-├── notebooks/
-│   ├── 01_programs.ipynb    # Algorithms, output checks, writer schedules
-│   ├── 02_trace.ipynb       # Manual attention/MLP calculations
-│   ├── 03_geometry.ipynb    # Probes, representation metrics, plots
-│   ├── 04_alignment.ipynb   # Metrics versus known values/writes; A/B interventions
-│   └── 05_comparison.ipynb  # P01–P12 agreement under matched and balanced probes
-├── raspformer/
-│   ├── __init__.py
-│   ├── programs.py          # Fresh RASP expressions
-│   ├── compiler.py          # Compilation, validation, tracing, run evidence
-│   ├── geometry.py          # Sampling, activations, PCA, CKA, exports
-│   └── alignment.py         # Ground-truth comparisons and targeted interventions
-├── results/
-│   ├── programs/reference/ # Saved checks and schedules before the rewrite
-│   ├── trace/reference/    # Saved manual traces before the rewrite
-│   ├── geometry/reference/ # Saved metrics, probes, and figures before the rewrite
-│   ├── alignment/          # Local Step 4 runs
-│   ├── comparison/         # Local Step 5 runs
-│   └── archive/            # Earlier tables and logs
-├── test_studies.py          # Regression checks using the saved evidence
-├── requirements.txt
-└── README.md
+raspformer/
+  programs.py       RASP algorithms
+  compiler.py       Compilation, schedules, traces, and run recording
+  geometry.py       Sampling, activations, and numerical policy
+  alignment.py      Semantic comparisons and original interventions
+  models.py         Executable compiled, rotated, compressed, and trained models
+  research.py       Research controls and blind transition detection
+  study.py          Command-line execution and reference promotion
+  report.py         Report and figure generation from saved measurements
+notebooks/
+  01_programs.ipynb through 05_comparison.ipynb
+results/
+  <study>/reference/           Preserved canonical evidence
+  <study>/runs/<UTC>-<id>/     Disposable local runs, ignored by Git
+  report/research-validation.md
+  report/figures/
+bench/
+  programs.py       Six InterpBench RASP programs with SIIT-trained models and known circuits
+  interpbench/<id>/ Trained weights, config, circuit edges; see bench/README.md
+scripts/check_notebooks.py
+test_studies.py
+test_numerics.py
+test_models.py
+test_research.py
+test_bench.py
 ```
 
-## Setup
+New folders use lower-case words separated by hyphens. Python names use underscores. Study names stay singular, such as `trace`. Program folders use names such as `p12-sorting`, with `seed-42` below learned models.
 
-Use Python 3.12. The dependency pins and Tracr commit reproduce the CPU
-environment used for the checked-in experiments.
+Manifests record completion or failure, dependencies, compiler revision, Git state, Python module hashes, and notebook source hashes. Failures preserve completed evidence. A completed numerical manifest does not assert that later plotting succeeded.
+
+The obsolete report, its duplicate PDF and figure bundle, historical duplicate trace tables, and stale figures have been replaced by current evidence and one generated report. Git history retains their previous versions.
+
+## Verify the work
 
 ```bash
-python3.12 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m ipykernel install --user --name raspformer --display-name "RaspFormer (.venv)"
+mkdir -p .context/verification
+.venv/bin/python -m unittest discover -v > .context/verification/tests.log 2>&1
+.venv/bin/python scripts/check_notebooks.py
+.venv/bin/python scripts/replay_learning.py
+.venv/bin/python scripts/verify_results.py --test-log .context/verification/tests.log --notebook-summary .context/notebook-checks/summary.json
 ```
 
-Open a notebook in your editor or an existing Jupyter installation, select
-**RaspFormer (.venv)**, and run all cells. The notebook locates the repository
-from its working directory; no package installation is needed.
+Notebook verification executes every code cell with IPython and records logs under `.context/notebook-checks`. It does not store notebook outputs. Notebook 05 calls the same comparison runner as the command line.
 
-## Follow the experiments
+Tests cover compiled execution, full residual agreement, basis transformations, actual state-width reduction, checkpoint restoration, training updates, low-variance behavior, CKA coverage, matched sampling, blind prediction isolation, and failure retention.
 
-Every notebook follows **configure → run → inspect → interpret**. Each is
-independent and builds its own models. Imports alone never run an experiment.
+## Interpretation
 
-1. [Define and check](notebooks/01_programs.ipynb): compile twelve algorithms,
-   check five sequences per algorithm, and inspect where each variable is
-   allocated in the residual stream. Change `FOCUS_PROGRAM` to inspect a schedule.
-2. [Trace a circuit](notebooks/02_trace.ipynb): trace the twelve algorithms plus
-   two focused examples. Embeddings, final output scores, and decoded outputs
-   must agree within tolerance. Intermediate residual discrepancies are warnings.
-   Change `FOCUS_PROGRAM` and `FOCUS_SAMPLE` to inspect another trace.
-3. [Analyze geometry](notebooks/03_geometry.ipynb): generate balanced targets,
-   check model labels, collect residuals, and plot PCA, participation ratios,
-   linear CKA, lane variances, and target trajectories. The controls switch
-   between programs, stages, and full/computed residual views.
-4. [Check alignment](notebooks/04_alignment.ipynb): recreate Step 3's exact probes
-   for all 14 programs. Compare observed PR with compiler-encoded RASP values,
-   annotate adjacent-stage CKA with writes, and compare lane values/correlations.
-   Test A/B causal predictions on all 640 targets with a donor intervention and
-   an unchanged-value control per target. Change `VIEW` to plot full/computed lanes.
-5. [Compare programs](notebooks/05_comparison.ipynb): compare P01–P12 on every
-   sequence in the existing random-and-structured candidate pool, using every
-   position equally. Defaults give 3,383 sequences × 6 positions = 20,298 identical
-   observations per program. Rerun the original balanced probes to assess sampling
-   sensitivity. Plot separate agreement measures against computed-variable count,
-   dependency depth, and compiled layer count; program numbers do not order complexity.
+Expected representations use independently evaluated RASP values and compiler-known coordinates and write times. Agreement measures compiler fidelity. It does not independently discover the algorithm.
 
-The default vocabulary is `-2..5`, with at most six tokens and noncausal
-attention. Probes use length six and seed 42; the balanced design uses 64
-observations per reachable output class. Edit these settings in the notebooks.
+Blind recovery predicts transitions containing writes. It does not recover variable names or full circuits. Its predictions are frozen before schedule scoring. Shuffled-stage and always-positive baselines are reported.
 
-## Read the results
+PCA patch stages and directions come from geometry. Mapping them to named variables subsequently uses supervised RASP labels. Calibration decoder folds share an unsupervised PCA fitted on calibration data. The separate test sequences remain held out.
 
-Each run creates `results/<study>/<UTC timestamp>_<unique ID>/`. New runs are
-gitignored and never overwrite another run. To preserve a new reference, copy
-the chosen run to a deliberately named directory and commit it.
+Compressed models execute with smaller residual streams. Their attention and MLP hidden widths remain unchanged. Projected-axis overlap measures induced overlap between original coordinates. There is no claim of general variable-lifetime recovery.
 
-Every new run has a `manifest.json` with settings, dependency versions, devices,
-Tracr revision, Python module hashes, progress, and completion or failure status.
-Failures and interruptions retain completed evidence. The manifest uses schema
-version 2; the original reference artifacts retain their original formats/hashes.
+Learned models receive ordinary output supervision. Their internal circuits are unknown. Their comparison with compiled models is descriptive and does not establish natural-language or length generalization.
 
-- **Programs:** the manifest contains sampled checks and variable allocations;
-  `schedule.md` is the readable schedule.
-- **Trace:** the manifest contains summaries, lane labels, and residual warnings;
-  `traces.json` stores detailed residual snapshots and output scores once.
-- **Geometry:** CSV files contain probes, balance audits, layer metrics, and CKA
-  matrices; `pca_spectra.npz` contains PCA arrays. Notebook plots go in `figures/`.
-  The manifest tracks the numerical study; the notebook reports figure exports.
-- **Alignment:** `stages.csv` contains PR gaps, adjacent CKA, writes, and complexity;
-  `variables.csv`, `values.csv`, and `lanes.csv` join schedules to expected values
-  and observed lane comparisons. `interventions.csv` records A/B predictions,
-  outcomes, donor identities, and controls. Exact probes and figures are retained.
-- **Comparison:** one manifest covers `matched/` and `balanced/`, each containing
-  the alignment tables and exact probes for P01–P12. `comparison.csv` summarizes
-  agreement, complexity, and CKA coverage; plots go in `figures/`. A/B interventions
-  remain in Step 4.
-
-The `reference/` folders preserve the experiments recorded before this rewrite.
-The historical documents under `archive/` provide context; use the numbered
-notebooks for current execution.
-
-## Check or extend
-
-```bash
-.venv/bin/python -m unittest -v test_studies
-```
-
-The checks exercise Steps 1–4, compare with saved outputs and geometry,
-and cover failure recording, zero variance, deliberately incorrect lane values,
-and A/B causal predictions. They use temporary run
-directories and require only the existing dependencies and Python's standard
-library.
-
-To add an algorithm, write a factory in `programs.py`, register it in
-`build_programs()`, and declare its reachable output classes in
-`geometry.output_classes()`. Keep output validation enabled. Keep plotting in
-the notebook and numerical work in the modules.
-
-## Interpretation limits
-
-Sampled correctness checks are not exhaustive proof. Writer schedules describe
-compiler allocations, not measured activation onset. Tracing uses private
-Tracr allocation/assembly helpers, so retain the pinned compiler revision.
-
-Geometry describes one seeded sampling design. Each program has a different
-balanced target distribution, and repeated targets retain their weight rather
-than becoming independent trials. Full/computed views select lanes from the same
-model. PCA centers features without standardizing them; encoding and scale affect
-the measurements. CKA compares aligned targets across stages within a program.
-Zero variance gives zero PCA spectrum/participation ratio and undefined CKA.
-
-Step 4 tests hypotheses, not required metric behavior. Its expected representation
-contains variables written so far in the compiler's encoding, with scratch and
-unwritten lanes set to zero; it is not a live-variable count. Complexity measures
-are computed-variable count, maximum dependency depth, and compiled layer count,
-reported separately. The PR gap is signed (observed minus expected).
-Correlation can be high despite wrong lane
-magnitudes, and new writes need not lower CKA.
-
-Step 5 averages absolute PR gaps across post-embedding stages, lane-value agreement
-at first writes with equal scalar-lane weights, and absolute observed-versus-expected
-CKA differences across transitions where both are defined. Undefined CKA remains
-unavailable; coverage and definition mismatches are reported. These measures stay
-separate. The shared pool is not exhaustive over vocabulary sequences, and matched
-inputs do not make the checks independent or causal. Comparisons describe these
-twelve Tracr-compiled programs under a fixed compiler; they do not establish a
-universal relationship with complexity or reliability on trained models.
-
-Interventions run in the manual circuit after baseline agreement with the assembled
-model, including residuals. A patches the output as a direct readout control; B
-patches the histogram before its downstream classifier. Donors are chosen at the
-same position with a different output class, so change rates are selected effects,
-not unbiased measures of importance. A completed run records measurements even
-when alignment or intervention comparisons disagree; inspect the exported tables.
+[InterpBench](https://papers.nips.cc/paper_files/paper/2024/hash/a8f7d43ae092d9a5295775eb17f3f4f7-Abstract-Datasets_and_Benchmarks_Track.html) uses Strict Interchange Intervention Training to produce models with known causal circuits and evaluate circuit discovery. RaspFormer's learned models use a different training objective. No InterpBench benchmark result is claimed here.

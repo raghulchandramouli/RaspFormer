@@ -1,0 +1,54 @@
+[
+  {
+    "variable": "branch_0_step_0_48",
+    "residual_lane_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "residual_lane_labels": [
+      "branch_0_step_0_48:0",
+      "branch_0_step_0_48:1",
+      "branch_0_step_0_48:2",
+      "branch_0_step_0_48:3",
+      "branch_0_step_0_48:4",
+      "branch_0_step_0_48:5",
+      "branch_0_step_0_48:6",
+      "branch_0_step_0_48:7"
+    ],
+    "first_write_half_layer_index": 1,
+    "first_write_after": "after mlp1",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "tokens",
+    "residual_lane_indices": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "residual_lane_labels": [
+      "tokens:-2",
+      "tokens:-1",
+      "tokens:0",
+      "tokens:1",
+      "tokens:2",
+      "tokens:3",
+      "tokens:4",
+      "tokens:5"
+    ],
+    "first_write_half_layer_index": null,
+    "first_write_after": "input embedding",
+    "compiled_block": "input"
+  }
+]

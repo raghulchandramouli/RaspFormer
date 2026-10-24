@@ -1,0 +1,318 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=20mm,headheight=15pt,headsep=7mm,footskip=10mm]{geometry}
+\usepackage{lmodern,amsmath,amssymb,graphicx,booktabs,tabularx,array,longtable}
+\usepackage[table]{xcolor}
+\usepackage{caption,enumitem,titlesec,fancyhdr,xurl}
+\usepackage[colorlinks=true,linkcolor=teal,citecolor=teal,urlcolor=teal,bookmarksnumbered=true]{hyperref}
+\definecolor{navy}{HTML}{182D45}
+\definecolor{teal}{HTML}{147D83}
+\definecolor{muted}{HTML}{526376}
+\hypersetup{pdftitle={Representation Geometry and Computation: Extended RaspFormer Results},pdfauthor={RaspFormer project},pdfsubject={Methods, experimental results, controls, limitations, and reproducible evidence}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{5pt}
+\setlength{\emergencystretch}{2em}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.13}
+\linespread{1.04}
+\setlist[itemize]{leftmargin=*,itemsep=3pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=*,itemsep=3pt,topsep=3pt}
+\captionsetup{font=small,labelfont={bf,sf},labelsep=period,justification=raggedright,singlelinecheck=false,skip=5pt,hypcap=false}
+\titleformat{\section}{\sffamily\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\sffamily\normalsize\bfseries\color{teal}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{10pt}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small\color{muted}RASPFORMER / EXTENDED RESULTS}
+\fancyhead[R]{\sffamily\small\color{muted}18 October 2026}
+\fancyfoot[L]{\footnotesize\color{muted}Scientific evidence recorded 15 October 2026}
+\fancyfoot[R]{\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{.35pt}
+\newcommand{\newsection}[1]{\clearpage\section{#1}}
+\newcommand{\result}[1]{\par\textbf{Result.} #1\par}
+\newcommand{\interpretation}[1]{\par\textbf{Interpretation.} #1\par}
+\newcommand{\boundary}[1]{\par\textbf{Limit.} #1\par}
+\newcommand{\reportfigure}[3]{\par\begingroup\centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1.pdf}\captionof{figure}{#3}\par\endgroup}
+\newcommand{\repopath}[1]{\href{https://github.com/raghulchandramouli/RaspFormer/blob/e06479ce09f10695aa5280162f80d880c060eaf5/#1}{\nolinkurl{#1}}}
+\newcommand{\repodir}[1]{\href{https://github.com/raghulchandramouli/RaspFormer/tree/e06479ce09f10695aa5280162f80d880c060eaf5/#1}{\nolinkurl{#1}}}
+
+\begin{document}
+{\sffamily\fontsize{21}{25}\selectfont\bfseries\color{navy}Representation Geometry\\and Computation}\par
+{\sffamily\color{teal}Extended experimental results from RaspFormer}
+\vspace{3mm}
+
+\section{Research question and main results}
+Can participation ratio (PR) and centered kernel alignment (CKA) reveal computation beyond agreement with a compiler's known encoding? This report examines twelve compiled RASP tasks, nine structural controls, and 36 trained transformers. It expands the results with numerical checks, executing transformations, blind timing detection, and causal interventions.
+
+\textbf{Main conclusion.} Geometry supplies partial evidence about when representations change. It does not establish complete algorithm recovery or guarantee correct task execution. The strongest counterexample comes from executing compressed models whose group-mean intended-schedule CKA F1 stays high while task accuracy is low.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.25\linewidth}X@{}}
+\toprule
+\textbf{Experiment} & \textbf{Principal observation}\\
+\midrule
+Blind write timing & Held-out PR/CKA macro F1 is 0.853/0.850, above the 0.745 always-write baseline. Residual change scores 0.876.\\
+Compression retest & Random half-width compression on the held-out six scores 0.879 CKA schedule F1 with only 37.62\% token accuracy.\\
+Causal patches & Rank-three PCA counterfactual agreement is 58.85\%, versus 42.19\% for equal-rank random directions and 47.92\% for self patches.\\
+Numerical stability & A total-variance floor reduces CKA availability mismatches from 14 to 2 across 54 matched computed-view transitions.\\
+Sorting diagnosis & Equal lane failure rates arise from disjoint probe sets. Sharper attention reduces amplitude error while decoded accuracy stays 100\%.\\
+Rotation & All 36 executed orthogonal transforms preserve output agreement. Whole-space geometry remains invariant to numerical precision.\\
+Learned models & Task mean test accuracy spans 95.41\% to 100\%, with lower final PR and variable similarity to compiled representations.\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\subsection*{How to read the evidence}
+The original representation comparison is a compiler-fidelity study. Rotation and compression ask whether its measurements survive coordinate changes or altered execution. Blind detection asks whether ordered activation matrices reveal first-write events without schedules. PCA patches test a geometric intervention, followed by a disclosed supervised mapping to variables.
+
+All reported numbers come from preserved reference runs pinned to commit \texttt{e06479c}. No scientific experiment or training run was repeated to create this document. The comparisons are descriptive; sample counts and populations are stated beside the results.
+
+\newsection{Experimental design and measurements}
+\label{sec:methods}
+Inputs use the eight integers $-2$ through $5$, sequence length six, and noncausal attention. BOS is excluded from reported token observations. The twelve tasks cover arithmetic, counting, shifts, predicates, and sorting.
+\input{tables/programs.tex}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.27\linewidth}X@{}}
+\toprule
+\textbf{Study population} & \textbf{Sampling and separation}\\
+\midrule
+Matched fidelity & 3,383 unique sequences at six positions: 20,298 observations per task, aligned between expected and observed representations.\\
+Balanced diagnostics & 64 target-position probes per reachable output class. Repeats preserve balancing; these are distinct from the matched population.\\
+Compiled controls & 96 calibration and 96 disjoint test sequences. Calibration determines fitted bases and patch-stage choices.\\
+Learned models & Whole-sequence split of 2,029 training, 677 validation, and 677 test examples; three seeds per task.\\
+\bottomrule
+\end{tabularx}\end{center}
+
+For centered observation matrices $X,Y$ and covariance eigenvalues $\lambda_i$,
+\[
+\operatorname{PR}(X)=\frac{(\sum_i\lambda_i)^2}{\sum_i\lambda_i^2},
+\qquad
+\operatorname{CKA}(X,Y)=\frac{\|X^\top Y\|_F^2}{\|X^\top X\|_F\,\|Y^\top Y\|_F}.
+\]
+Linear CKA follows Kornblith et al.~\cite{cka}. Both representations must exceed a centered total sample-variance floor of $10^{-12}$ with ddof~1. Inactive PR is zero by convention; CKA is undefined. Raw spectra, variances, and activity reasons remain saved.
+
+\subsection*{Why PR is not an algorithmic complexity measure}
+A balanced, equally scaled one-hot variable with $k>1$ categories has $k-1$ equal nonzero covariance eigenvalues, so PR equals $k-1$. The original one-variable examples illustrate this directly:
+\input{tables/cardinality.tex}
+Unequal frequencies, numerical values, helper state, correlations, and feature scaling change the spectrum. PR error is therefore a secondary fidelity diagnostic. It does not independently measure the algorithm implemented.
+
+\newsection{Numerical stability and inactive representations}
+\label{sec:numerical}
+Negligible variation can produce misleading normalized geometry. The pipeline saves total sample variance and marks inactive representations before reporting PR or CKA.
+
+\reportfigure{01-numerical-floor}{8.9cm}{All twelve programs. Left: twelve early computed-view stages have raw PR near one and negligible variance. Right: exact adjacent-CKA availability mismatch counts across 54 transitions. Matched and balanced designs remain separate.}
+
+\result{Matched CKA availability mismatches fall from 14 to 2. Every positive floor tested, $10^{-14}$ to $10^{-8}$, leaves two; the balanced design already has two at zero floor.}
+
+\subsection*{The twelve negligible-variance stages}
+\input{tables/tiny-variance.tex}
+\interpretation{Variance around $8.07\times10^{-19}$ makes raw PR near one a description of normalized numerical residue. Inactive flags expose that limitation.}
+\boundary{Remaining P05/P06 helper-state versus semantic-state timing mismatches are retained. The absolute floor is scale-dependent; it does not define meaningful signal universally.}
+
+\newsection{Sorting errors and attention sharpness}
+\label{sec:sorting}
+At the first sorting output write, all eight lanes show 87.5\% tolerance agreement. Row-level inspection tests whether the same observations fail everywhere and whether finite attention sharpness explains the amplitude discrepancy.
+
+\reportfigure{02-sorting-attention}{9.0cm}{P12 sorting on 512 balanced probes. Left: exact lane-failure membership at L3/Attn; columns are reordered for display without discarding observations. Each lane has its own 64 failing probes. Right: maximum lane error under QK-logit scaling. The literal zero at scale eight is annotated outside the logarithmic scale.}
+\input{tables/sharpening.tex}
+
+\result{Failure sets are pairwise disjoint and together cover all 512 probes. Every failed scalar is the positive one-hot coordinate of its target. Equal percentages do not imply a shared failing eighth.}
+
+Doubling QK logits reduces maximum lane error from $8.52\times10^{-4}$ to $7.15\times10^{-7}$. Decoded token accuracy remains 100\% at every scale. The recorded maximum error becomes zero at scale eight. MLP exactness is fixed during the sweep.
+
+\interpretation{The observations support finite-attention amplitude approximation. Sharpening removes the tolerance failure without changing the predicted answer.}
+\boundary{This experiment does not isolate ties or duplicate values as the sole cause. It also shows why scalar tolerance agreement and decoded task accuracy must be reported separately.}
+
+\newsection{Separating depth and branch count}
+\label{sec:structure}
+In the original twelve programs, computed-variable count equals maximum dependency depth. Their effects cannot be separated by correlation. A crossed family varies requested branch depth and branch count from one through three.
+
+\reportfigure{03-depth-count-controls}{8.8cm}{Original depth/count collinearity and nine controlled families. Point area in the original design indicates duplicate coordinates. New grid cells show realized variable count and dependency depth. All sampled family outputs agree with RASP. Serial merges contribute to realized depth.}
+\input{tables/families.tex}
+
+\result{The centered realized-depth/variable-count matrix has rank two, compared with rank one in the original set. The variants span one to eleven computed variables, realized depth one to five, and residual width 24 to 105.}
+
+\interpretation{The new programs provide a noncollinear structural design. Every branch contributes to the output, so width is varied through active branches.}
+\boundary{Requested branch depth differs from realized dependency depth because serial merging adds depth. Residual width is an observed consequence rather than an independently fixed architectural factor. These token-local modulo programs do not establish a general geometry-versus-complexity law.}
+
+\newsection{Orthogonal rotation and coordinate dependence}
+\label{sec:rotation}
+Each original program is evaluated under three orthogonal seeds. A posthoc measurement checks mathematical invariance, while a separate transformed model executes with changed embeddings, affine maps, biases, and unembedding.
+
+\reportfigure{05-orthogonal-rotations}{8.8cm}{Twelve programs and three seeds each. Left: maximum PR/CKA errors across saved stages and seeds. Right: minimum fixed-coordinate lane agreement and executed token accuracy. Lane checks intentionally retain the original coordinate map; geometry and finite-precision execution are separate measurements.}
+\input{tables/rotation.tex}
+
+\result{All 36 executed transforms preserve 100\% token and sequence agreement. Maximum posthoc PR error is $1.42\times10^{-13}$; maximum CKA error is $2.22\times10^{-15}$. Original fixed-lane checks change under rotation.}
+
+The original executable import has zero residual discrepancy. Rotated execution reaches a transformed-residual discrepancy of $3.65\times10^{-5}$ while retaining the same decoded outputs. This execution error is distinct from the posthoc geometric-invariance error.
+
+\boundary{Orthogonal invariance is expected from these metrics and does not identify a computation. Nonorthogonal coordinate rescaling changes PR; detailed scale results appear in Section~\ref{sec:detailed}.}
+
+\newsection{Executing residual compression}
+\label{sec:compression}
+Compression fits an \emph{uncentered SVD} basis to pooled calibration activations. The saved label \texttt{kind=pca} refers to this basis, which differs from centered PCA used for interventions. For original width $d$ and target fraction $f$, the residual rank is $\lceil df\rceil$.
+
+\reportfigure{06-executing-compression}{9.1cm}{Executing compression with populations distinguished. Left: macro token and whole-sequence accuracy over all twelve tasks. Right: PR/CKA intended-schedule F1 and accuracy on held-out P07 to P12 only, at nominal half width. The two panels must not be interpreted as one pooled sample.}
+\input{tables/compression.tex}
+
+\result{Across twelve tasks, mean token accuracy is 41.30\%, 61.62\%, 72.09\%, and 100\% at target SVD fractions 0.25, 0.5, 0.75, and 1.0. Equal-width random half compression scores 37.01\%.}
+
+The models genuinely execute with reduced residual states. Attention/key dimensions and MLP hidden widths remain fixed, so half residual width does not mean half of all parameters. The nominal half-width SVD models retain a mean 51.77\% of original parameters.
+
+\interpretation{Projection induces coordinate overlap and provides a controlled stress test of the measurements. Full-rank recovery is a useful implementation control.}
+\boundary{These projections do not establish recovery of semantic superposition. Once compressed behavior changes, the original compiler schedule is an intended reference, not known causal ground truth for the changed computation.}
+
+\newsection{Blind first-write transition detection}
+\label{sec:blind}
+The detector receives ordered observation-by-feature matrices, without graphs, variable names, lane maps, or write schedules. Predictions are frozen and hashed before compiler schedules are loaded for scoring. P01 to P06 form the designated calibration program group; P07 to P12 form the held-out group. Thresholds are fixed rather than learned on that group.
+
+\reportfigure{08-blind-write-recovery}{9.1cm}{Held-out first-write detection on six programs. Left: macro F1 compared with always-write and 1,000 count-matched within-program shuffles. Right: per-program scores, including the P11 CKA failure. An event means at least one first write; simultaneous counts and variable names are not predicted.}
+\input{tables/recovery.tex}
+
+\result{Held-out PR and CKA macro F1 are 0.853 and 0.850, above the 0.745 always-write baseline on average. The simpler residual-change detector scores 0.876. P11 CKA scores 0.727 against its own 0.737 baseline.}
+
+Fixed thresholds are relative residual-change energy $>10^{-6}$, absolute PR change $>0.05$, and adjacent-CKA change $>0.01$. Macro means weight each program equally. Shuffling preserves each detector's predicted event count.
+
+\boundary{This is partial event recovery. It does not recover variable identities, complete circuits, overwriting, erasure, or lifetimes. High write prevalence makes the always-write baseline essential.}
+
+\newsection{Geometry-directed causal interventions}
+\label{sec:patches}
+Calibration geometric change selects patch stages. Centered PCA fits directions, and a supervised ridge decoder maps them to RASP variables using compiler first-write candidates. This semantic mapping is disclosed as supervision. Held-out donor-recipient pairs are sampled without requiring different answers.
+
+\reportfigure{04-counterfactual-patches}{9.0cm}{All twelve tasks, sixteen held-out pairs per task and condition. Bars are descriptive macro means; dots show program means. Left: full-output agreement with independently evaluated single-variable substitution. Right: behavioral change. Oracle rank varies by variable and is not an equal-rank subspace control. Undefined substitutions remain failures.}
+\input{tables/patches.tex}
+
+\result{Rank-three PCA patches match symbolic counterfactuals on $113/192=58.85\%$ of pairs, versus $81/192=42.19\%$ for equal-rank random directions and $92/192=47.92\%$ for self patches. PCA patches change outputs in 26 pairs. The pooled oracle matches 182 pairs.}
+
+Six conditions share the same 192 pairs, producing 1,152 correlated condition rows. Ten P12 symbolic substitutions are undefined, contributing 60 retained failures across conditions. They are not removed from the denominator.
+
+\interpretation{The recorded PCA directions show more counterfactual agreement than these controls. This adds limited causal evidence beyond direct output-lane patching.}
+\boundary{The result does not establish unsupervised named-variable recovery. Decoder folds share the calibration PCA fit; final evaluated sequences remain held out. No independent-sample confidence interval is claimed for the shared conditions.}
+
+\newsection{Models trained on the same programs}
+\label{sec:learning}
+Thirty-six randomly initialized transformers train on the twelve tasks using three seeds each. All parameters are trained for 600 Adam steps, with width 32, two layers, two heads, batch size 128, and learning rate 0.003. Unique sequences are split before token expansion.
+
+\reportfigure{07-learned-models}{13.2cm}{Thirty-six learned models on the held-out sequence split. (a) Test token accuracy, majority-class baseline, and compiled accuracy. (b) Final full-residual PR. (c) Final learned/compiled linear CKA. Error bars show sample standard deviation over three seeds, not confidence intervals. Stage pairing uses relative progress and does not establish variable correspondence.}
+
+\result{Per-task mean token accuracy ranges from 95.41\% to 100\%. Six tasks average 100\%. Learned final PR is lower than compiled final PR for every task; final CKA ranges from 0.152 to 0.802.}
+
+\boundary{Output supervision does not provide known internal circuits. Palindrome's 95.41\% must be interpreted against a 93.94\% majority baseline. Results do not establish generalization to new lengths, distributions, or natural language.}
+
+\newsection{Detailed learned-model outcomes}
+All rows average three training seeds. Seed standard deviation is reported in percentage points. Each compiled comparison model scores 100\% on the same held-out targets.
+
+\subsection*{Task performance and class imbalance}
+\input{tables/learning.tex}
+For increasing-check, 98.94\% mean token accuracy compares with a 92.76\% majority baseline. For palindrome, 95.41\% compares with 93.94\%. High raw accuracy alone can therefore overstate the learned capability on imbalanced predicates.
+
+\subsection*{Final representation comparison}
+\input{tables/learned-geometry.tex}
+\interpretation{Models implementing the same input/output task can use substantially different geometry. These CKA and PR values describe aligned activations; they do not identify matching causal variables.}
+\boundary{The 677-sequence test set is held out by whole sequence. It is not a length-generalization test. Checkpoint replay confirms saved predictions and independently evaluated RASP targets, rather than revealing the trained model's internal algorithm.}
+
+\newsection{Fidelity diagnostics and residual views}
+\label{sec:diagnostics}
+The original comparison independently evaluates intermediate RASP values, then encodes them using compiler-known coordinates and write times. It is informative about compiler fidelity, with no independent discovery of that encoding.
+
+\reportfigure{09-diagnostics}{8.8cm}{Magnitude-aware diagnostics. Left: first-write lane correlation and tolerance agreement in the saved alignment population; constant-lane correlations are undefined and explicitly counted. Right: matched expected/observed PR error in full and computed views. A symmetric-log axis retains exact zeros. The two panels use distinct saved study populations.}
+\input{tables/fidelity.tex}
+
+\result{Sorting-lane Pearson correlation exceeds 0.999999999996 while only 87.5\% of scalar observations meet tolerance. Correlation and magnitude agreement answer different questions.}
+
+Full residual views include input and constant coordinates. Computed views remove named input/constant coordinates but retain compiler helper state. Both comparisons preserve aligned observations, raw variance, and activity reasons.
+
+\boundary{Paired-defined CKA errors exclude undefined comparisons; \texttt{n/a} is not zero error. PR agreement and lane agreement remain fidelity diagnostics. They do not establish complete computational understanding.}
+
+\newsection{Discussion, prior work, and conclusions}
+Tracr provides compiled transformers with known structure and already studies superposition~\cite{tracr}. The present contribution is a focused evaluation of geometric diagnostics and their failure cases, including executing transformations and blind event tests.
+
+InterpBench uses Strict Interchange Intervention Training (SIIT) to align models with known causal structure while constraining non-circuit effects~\cite{interpbench}. This supplies internal ground truth for circuit-discovery evaluation. The ordinarily supervised models studied here do not inherit that ground truth.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.20\linewidth}XX@{}}
+\toprule
+\textbf{Dimension} & \textbf{RaspFormer study} & \textbf{InterpBench}\\
+\midrule
+Main target & Representation geometry and first-write events. & Evaluation of circuit-discovery techniques.\\
+Internal reference & Compiler schedule for compiled models; unknown circuits for ordinary learned models. & Causal circuits constrained through SIIT.\\
+Learning & Ordinary input/output supervision on twelve tasks. & Behavioral and internal causal constraints.\\
+Evidence here & Invariance, numerical diagnosis, limited interventions, and partial timing recovery. & Prior-work positioning only; no benchmark run reproduced here.\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\subsection*{What the follow-up experiments establish}
+\begin{itemize}
+\item Negligible variance explains misleading normalized geometry; an explicit floor removes most CKA availability mismatches.
+\item Sorting's equal lane-failure rates arise from disjoint rows, and sharper attention reduces the amplitude discrepancy.
+\item Orthogonal changes preserve whole-space PR/CKA and task behavior while invalidating a fixed coordinate map.
+\item PR/CKA find some first-write events, while a simpler residual-change detector scores higher in the held-out mean.
+\item PCA interventions add descriptive causal evidence, with supervised semantic mapping and important failures retained.
+\end{itemize}
+
+\subsection*{What remains open}
+Complete algorithm recovery, erasure, overwriting, variable lifetimes, independently identified semantic superposition, and internal learned circuits remain unestablished. The structural family removes exact collinearity without providing a universal complexity law. Broader distributions and sequence lengths were not tested.
+
+\textbf{Conclusion.} The revision addresses the concrete experimental requests, but several scientific limitations persist. A high geometry-based timing score can coexist with poor task execution. Stronger computational claims require independent internal ground truth and causal validation of the inferred mechanism.
+
+\newsection{Detailed transformed and scale controls}
+\label{sec:detailed}
+\subsection*{Executing transformed models: held-out P07 to P12}
+\input{tables/transformed-recovery.tex}
+These are unweighted means over six programs. Random half-width compression yields PR F1 0.852 and CKA F1 0.879 with 37.62\% task accuracy. The original schedule is an intended reference when behavior changes.
+
+\subsection*{Per-program first-write F1 on the held-out group}
+\input{tables/recovery-per-program.tex}
+
+\subsection*{Nonorthogonal rescaling: all twelve programs}
+\input{tables/rescaling.tex}
+Coordinates are rescaled geometrically from 0.1 to 10. This changes relative feature scale, so it has no orthogonal-invariance guarantee. Cross-basis CKA is a descriptive comparison.
+
+\newsection{Reproducibility and evidence}
+\label{sec:evidence}
+All measurements are pinned to scientific commit \texttt{e06479c}. Recorded runs preserve dependencies, source hashes, Git state, numerical settings, completion status, and failures. The original runs retain their recorded dirty state honestly.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.27\linewidth}X@{}}
+\toprule
+\textbf{Saved check} & \textbf{Recorded outcome}\\
+\midrule
+Implementation checks & 28 tests passed; five notebooks with 37 executed code cells.\\
+Checkpoint replay & All 36 saved models replayed on 677 held-out sequences against independently evaluated targets.\\
+Prediction artifacts & 24 original/transformed prediction hashes and 288 transformed detector rows checked.\\
+Patch-stage audit & All twelve stages recomputed from calibration activations.\\
+Report generation & Figures and tables read saved results; this PDF does not represent a fresh scientific rerun.\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\subsection*{Canonical artifact map}
+\begingroup\small
+\begin{tabularx}{\linewidth}{@{}P{.26\linewidth}X@{}}
+\toprule
+\textbf{Evidence} & \textbf{Pinned repository location}\\
+\midrule
+Programs and schedules & \repodir{results/programs/reference}\\
+Alignment and lane values & \repodir{results/alignment/reference}\\
+Matched comparisons & \repodir{results/comparison/reference/matched}\\
+Transformations and blind tests & \repodir{results/validation/reference}\\
+Training and saved models & \repodir{results/learning/reference}\\
+Scientific interpretation & \repopath{results/report/research-validation.md}\\
+\bottomrule
+\end{tabularx}\endgroup
+
+New runs use \nolinkurl{results/<study>/runs/<UTC>-<id>/}.
+\par
+Preserved evidence uses \nolinkurl{results/<study>/reference/}.
+\par
+Program directories use names such as \texttt{p12-sorting}; model directories use names such as \texttt{seed-42}. The source package includes editable LaTeX, vector figures, generated tables, and input hashes.
+
+\begin{thebibliography}{4}
+\small\raggedright
+\bibitem{tracr} D. Lindner et al. \emph{Tracr: Compiled Transformers as a Laboratory for Interpretability.} NeurIPS 2023. \href{https://arxiv.org/abs/2301.05062}{arXiv:2301.05062}.
+\bibitem{cka} S. Kornblith, M. Norouzi, H. Lee, and G. Hinton. \emph{Similarity of Neural Network Representations Revisited.} ICML 2019. \href{https://arxiv.org/abs/1905.00414}{arXiv:1905.00414}.
+\bibitem{interpbench} R. Gupta, I. Arcuschin, T. Kwa, and A. Garriga-Alonso. \emph{InterpBench: Semi-Synthetic Transformers for Evaluating Mechanistic Interpretability Techniques.} NeurIPS 2024, Datasets and Benchmarks Track. \href{https://doi.org/10.52202/079017-2950}{doi:10.52202/079017-2950}.
+\bibitem{artifact} RaspFormer project. \emph{Canonical implementation and research evidence.} Commit \texttt{e06479c}, reference runs recorded 15 October 2026. \href{https://github.com/raghulchandramouli/RaspFormer/tree/e06479ce09f10695aa5280162f80d880c060eaf5}{Code, data, predictions, and checkpoints}.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,226 @@
+{
+  "nodes": [
+    "blocks.0.attn.hook_result[0]",
+    "blocks.0.hook_mlp_out",
+    "blocks.1.hook_mlp_out",
+    "blocks.2.hook_mlp_out",
+    "blocks.3.attn.hook_result[0]"
+  ],
+  "kinds": {
+    "blocks.0.attn.hook_result[0]": "select",
+    "blocks.0.hook_mlp_out": "mlp",
+    "blocks.1.hook_mlp_out": "mlp",
+    "blocks.2.hook_mlp_out": "mlp",
+    "blocks.3.attn.hook_result[0]": "select"
+  },
+  "aggregate": {
+    "blocks.0.attn.hook_result[0]": "values",
+    "blocks.3.attn.hook_result[0]": "count"
+  },
+  "crispness": {
+    "blocks.0.attn.hook_result[0]": 0.4844176769256592,
+    "blocks.3.attn.hook_result[0]": 1.0
+  },
+  "parents": {
+    "blocks.0.attn.hook_result[0]": {
+      "q": [],
+      "k": [],
+      "v": []
+    },
+    "blocks.0.hook_mlp_out": {
+      "in": [
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    },
+    "blocks.1.hook_mlp_out": {
+      "in": [
+        "blocks.0.hook_mlp_out",
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    },
+    "blocks.2.hook_mlp_out": {
+      "in": [
+        "blocks.1.hook_mlp_out",
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    },
+    "blocks.3.attn.hook_result[0]": {
+      "q": [
+        "blocks.1.hook_mlp_out",
+        "blocks.2.hook_mlp_out",
+        "hook_embed",
+        "hook_pos_embed"
+      ],
+      "k": [
+        "blocks.1.hook_mlp_out",
+        "blocks.2.hook_mlp_out",
+        "hook_embed",
+        "hook_pos_embed"
+      ],
+      "v": [
+        "blocks.1.hook_mlp_out",
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    }
+  },
+  "output_parents": [
+    "blocks.3.attn.hook_result[0]"
+  ],
+  "classes": {
+    "blocks.0.attn.hook_result[0]": 1,
+    "blocks.0.hook_mlp_out": 22,
+    "blocks.1.hook_mlp_out": 14,
+    "blocks.2.hook_mlp_out": 28,
+    "blocks.3.attn.hook_result[0]": 26
+  },
+  "effects": {
+    "hook_embed->blocks.0.attn.hook_result[0].q": 0.0,
+    "hook_embed->blocks.0.attn.hook_result[0].k": 0.0,
+    "hook_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.0.attn.hook_result[0].any": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].q": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].k": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.0.attn.hook_result[0].any": 0.0,
+    "hook_embed->blocks.0.hook_mlp_out.in": 0.7083333333333334,
+    "hook_embed->blocks.0.hook_mlp_out.any": 0.7916666666666666,
+    "hook_pos_embed->blocks.0.hook_mlp_out.in": 0.9166666666666666,
+    "hook_pos_embed->blocks.0.hook_mlp_out.any": 0.8541666666666666,
+    "hook_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.1.hook_mlp_out.any": 0.3541666666666667,
+    "hook_pos_embed->blocks.1.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.1.hook_mlp_out.any": 1.0,
+    "blocks.0.hook_mlp_out->blocks.1.hook_mlp_out.in": 0.8333333333333334,
+    "hook_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_embed->blocks.2.hook_mlp_out.any": 0.7291666666666666,
+    "hook_pos_embed->blocks.2.hook_mlp_out.in": 0.0,
+    "hook_pos_embed->blocks.2.hook_mlp_out.any": 0.9791666666666666,
+    "blocks.0.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.125,
+    "blocks.1.hook_mlp_out->blocks.2.hook_mlp_out.in": 0.7708333333333334,
+    "hook_embed->blocks.3.attn.hook_result[0].q": 0.0,
+    "hook_embed->blocks.3.attn.hook_result[0].k": 0.0,
+    "hook_embed->blocks.3.attn.hook_result[0].v": 0.0,
+    "hook_embed->blocks.3.attn.hook_result[0].any": 1.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].q": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].k": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].v": 0.0,
+    "hook_pos_embed->blocks.3.attn.hook_result[0].any": 1.0,
+    "blocks.0.hook_mlp_out->blocks.3.attn.hook_result[0].q": 0.0,
+    "blocks.0.hook_mlp_out->blocks.3.attn.hook_result[0].k": 0.0,
+    "blocks.0.hook_mlp_out->blocks.3.attn.hook_result[0].v": 0.0,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].q": 0.3958333333333333,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].k": 0.4166666666666667,
+    "blocks.1.hook_mlp_out->blocks.3.attn.hook_result[0].v": 0.125,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].q": 0.25,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].k": 0.3125,
+    "blocks.2.hook_mlp_out->blocks.3.attn.hook_result[0].v": 0.08333333333333333,
+    "hook_embed->hook_resid_post.out": 0.0,
+    "hook_pos_embed->hook_resid_post.out": 0.0,
+    "blocks.0.hook_mlp_out->hook_resid_post.out": 0.0,
+    "blocks.1.hook_mlp_out->hook_resid_post.out": 0.0,
+    "blocks.2.hook_mlp_out->hook_resid_post.out": 0.0,
+    "blocks.3.attn.hook_result[0]->hook_resid_post.out": 0.9375
+  },
+  "table_sizes": {
+    "mlp": {
+      "blocks.0.hook_mlp_out": 231,
+      "blocks.1.hook_mlp_out": 231,
+      "blocks.2.hook_mlp_out": 231
+    },
+    "selector": {
+      "blocks.0.attn.hook_result[0]": 1,
+      "blocks.3.attn.hook_result[0]": 6924
+    },
+    "head": {
+      "blocks.0.attn.hook_result[0]": 10,
+      "blocks.3.attn.hook_result[0]": 1
+    },
+    "bag": {},
+    "output": 26
+  },
+  "tests": {
+    "outputs": {
+      "token_agreement": 0.0,
+      "token_agreement_where_defined": null,
+      "coverage": 0.0,
+      "sequence_agreement": 0.0
+    },
+    "counterfactuals": [
+      {
+        "node": "blocks.0.attn.hook_result[0]",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.0.hook_mlp_out",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.1.hook_mlp_out",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.2.hook_mlp_out",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      },
+      {
+        "node": "blocks.3.attn.hook_result[0]",
+        "pairs": 0,
+        "agreement": null,
+        "model_changed": null,
+        "program_changed": null
+      }
+    ],
+    "ablation": {
+      "outside_nodes": 15,
+      "circuit_nodes": 5,
+      "token_agreement": 0.9780092592592593,
+      "sequence_agreement": 0.8020833333333334
+    }
+  },
+  "variable_matches": [
+    {
+      "variable": "length_5",
+      "node": "blocks.0.attn.hook_result[0]",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    },
+    {
+      "variable": "opp_idx_4",
+      "node": "blocks.1.hook_mlp_out",
+      "class_to_value": 0.9942129629629629,
+      "value_to_class": 0.8472222222222222,
+      "status": "refined"
+    },
+    {
+      "variable": "opp_idx-1_3",
+      "node": "blocks.1.hook_mlp_out",
+      "class_to_value": 0.9942129629629629,
+      "value_to_class": 0.8472222222222222,
+      "status": "refined"
+    },
+    {
+      "variable": "reverse_1",
+      "node": "blocks.3.attn.hook_result[0]",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    }
+  ]
+}

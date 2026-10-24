@@ -2,6 +2,7 @@
 
 import json
 from dataclasses import asdict, dataclass
+from numbers import Real
 from pathlib import Path
 from time import perf_counter
 
@@ -17,6 +18,8 @@ from .compiler import (
     record_run,
     write_json,
 )
+
+DEFAULT_VARIANCE_FLOOR = 1e-12
 
 
 @dataclass(frozen=True)
@@ -320,13 +323,32 @@ def feature_matrix(values) -> np.ndarray:
     return matrix
 
 
-def pca_profile(values) -> dict:
+def numerical_policy(variance_floor: float = DEFAULT_VARIANCE_FLOOR) -> dict:
+    if isinstance(variance_floor, bool) or not isinstance(variance_floor, Real):
+        raise ValueError("variance_floor must be finite and nonnegative.")
+    if not np.isfinite(variance_floor) or variance_floor < 0:
+        raise ValueError("variance_floor must be finite and nonnegative.")
+    return {
+        "variance_floor": float(variance_floor),
+        "variance_definition": "sum of feature sample variances, ddof=1",
+        "active_if": "total_variance > variance_floor",
+    }
+
+
+def centered_variance(centered) -> float:
+    return float(np.sum(centered * centered) / (len(centered) - 1))
+
+
+def pca_profile(values, *, variance_floor: float = DEFAULT_VARIANCE_FLOOR) -> dict:
+    """Keep the raw spectrum; suppress dimension counts below the variance floor."""
+    policy = numerical_policy(variance_floor)
     matrix = feature_matrix(values)
     mean = matrix.mean(axis=0)
     centered = matrix - mean
     eigenvalues, vectors = np.linalg.eigh(centered.T @ centered / (len(matrix) - 1))
     eigenvalues = np.maximum(eigenvalues[::-1], 0.0)
-    total = float(eigenvalues.sum())
+    total = centered_variance(centered)
+    active = total > policy["variance_floor"]
     ratio = eigenvalues / total if total > 0 else np.zeros_like(eigenvalues)
     cumulative = np.cumsum(ratio)
     return {
@@ -335,20 +357,25 @@ def pca_profile(values) -> dict:
         "eigenvalues": eigenvalues,
         "explained_variance_ratio": ratio,
         "total_variance": total,
+        "numerical_policy": policy,
+        "variance_active": active,
+        "variance_reason": "above_variance_floor" if active else "at_or_below_variance_floor",
         "participation_ratio": float(total**2 / (eigenvalues @ eigenvalues))
-        if total > 0
+        if active
         else 0.0,
         "pc95": min(len(eigenvalues), int(np.searchsorted(cumulative, 0.95) + 1))
-        if total > 0
+        if active
         else 0,
         "pc99": min(len(eigenvalues), int(np.searchsorted(cumulative, 0.99) + 1))
-        if total > 0
+        if active
         else 0,
     }
 
 
-def all_pair_cka(matrices) -> np.ndarray:
-    centered, norms = [], []
+def all_pair_cka(matrices, *, variance_floor: float = DEFAULT_VARIANCE_FLOOR) -> np.ndarray:
+    """Return NaN for pairs whose total sample variance does not clear the floor."""
+    policy = numerical_policy(variance_floor)
+    centered, norms, active = [], [], []
     for values in matrices:
         matrix = feature_matrix(values)
         if centered and len(matrix) != len(centered[0]):
@@ -356,11 +383,12 @@ def all_pair_cka(matrices) -> np.ndarray:
         matrix = matrix - matrix.mean(axis=0)
         centered.append(matrix)
         norms.append(np.linalg.norm(matrix.T @ matrix, "fro"))
+        active.append(centered_variance(matrix) > policy["variance_floor"])
     scores = np.full((len(centered), len(centered)), np.nan)
     for i in range(len(centered)):
         for j in range(i, len(centered)):
             denominator = norms[i] * norms[j]
-            if denominator > 0:
+            if active[i] and active[j] and denominator > 0:
                 numerator = np.linalg.norm(centered[i].T @ centered[j], "fro") ** 2
                 scores[i, j] = scores[j, i] = np.clip(numerator / denominator, 0.0, 1.0)
     return scores
@@ -383,6 +411,9 @@ def analyze_geometry(data: ActivationData) -> GeometryAnalysis:
                     "observations": len(data.observations[name]),
                     "features": len(columns),
                     "total_variance": profile["total_variance"],
+                    "variance_floor": profile["numerical_policy"]["variance_floor"],
+                    "variance_active": profile["variance_active"],
+                    "variance_reason": profile["variance_reason"],
                     "participation_ratio": profile["participation_ratio"],
                     "pr_over_width": profile["participation_ratio"] / len(columns),
                     "pc95": profile["pc95"],
@@ -476,7 +507,8 @@ def run_geometry_study(
         "sampling": "separate program probes; equal observations per reachable output class; positions stratified; repeats retain weight",
         "observation": "one target token per probe; BOS excluded; no PAD; same row order within each program",
         "centering": "global feature centering; no whitening or standardization",
-        "zero_variance": "PCA spectrum and PR recorded as zero; CKA undefined",
+        "numerical_policy": numerical_policy(),
+        "zero_variance": "raw spectrum retained; PR and PC counts zero and CKA undefined when total sample variance is at or below the floor",
     }
     with record_run(output_root, programs, compiler_config, **settings) as (run_dir, evidence):
         evidence["stage"] = "probes"

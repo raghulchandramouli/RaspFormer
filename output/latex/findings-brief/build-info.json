@@ -1,0 +1,13 @@
+{
+  "document": "RaspFormer concise findings",
+  "format": "LaTeX",
+  "compiler": "Tectonic 0.17.0",
+  "built_on": "2026-10-18",
+  "source_scientific_commit": "e06479ce09f10695aa5280162f80d880c060eaf5",
+  "reference_evidence_recorded": "2026-10-15",
+  "pages": 1,
+  "vector_figures": 1,
+  "tables": 1,
+  "scientific_experiments_rerun": false,
+  "pdf_sha256": "5236a3bac166602ebf6ef99ed1d5ccae32503a1ab5545122c949d92bf9c62546"
+}

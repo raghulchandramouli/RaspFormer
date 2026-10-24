@@ -1,0 +1,114 @@
+{
+  "families": [
+    {
+      "requested_depth": 1,
+      "requested_branches": 1,
+      "transformer_layers": 1,
+      "residual_width": 24,
+      "sequence_variable_count": 2,
+      "computed_variable_count": 1,
+      "selector_count": 0,
+      "max_dependency_depth": 1,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 1,
+      "requested_branches": 2,
+      "transformer_layers": 2,
+      "residual_width": 41,
+      "sequence_variable_count": 4,
+      "computed_variable_count": 3,
+      "selector_count": 0,
+      "max_dependency_depth": 2,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 1,
+      "requested_branches": 3,
+      "transformer_layers": 3,
+      "residual_width": 57,
+      "sequence_variable_count": 6,
+      "computed_variable_count": 5,
+      "selector_count": 0,
+      "max_dependency_depth": 3,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 2,
+      "requested_branches": 1,
+      "transformer_layers": 2,
+      "residual_width": 32,
+      "sequence_variable_count": 3,
+      "computed_variable_count": 2,
+      "selector_count": 0,
+      "max_dependency_depth": 2,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 2,
+      "requested_branches": 2,
+      "transformer_layers": 3,
+      "residual_width": 57,
+      "sequence_variable_count": 6,
+      "computed_variable_count": 5,
+      "selector_count": 0,
+      "max_dependency_depth": 3,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 2,
+      "requested_branches": 3,
+      "transformer_layers": 4,
+      "residual_width": 81,
+      "sequence_variable_count": 9,
+      "computed_variable_count": 8,
+      "selector_count": 0,
+      "max_dependency_depth": 4,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 3,
+      "requested_branches": 1,
+      "transformer_layers": 3,
+      "residual_width": 40,
+      "sequence_variable_count": 4,
+      "computed_variable_count": 3,
+      "selector_count": 0,
+      "max_dependency_depth": 3,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 3,
+      "requested_branches": 2,
+      "transformer_layers": 4,
+      "residual_width": 73,
+      "sequence_variable_count": 8,
+      "computed_variable_count": 7,
+      "selector_count": 0,
+      "max_dependency_depth": 4,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    },
+    {
+      "requested_depth": 3,
+      "requested_branches": 3,
+      "transformer_layers": 5,
+      "residual_width": 105,
+      "sequence_variable_count": 12,
+      "computed_variable_count": 11,
+      "selector_count": 0,
+      "max_dependency_depth": 5,
+      "token_accuracy": 1.0,
+      "sequence_accuracy": 1.0
+    }
+  ],
+  "realized_axes_rank": 2,
+  "realized_axes_noncollinear": true
+}

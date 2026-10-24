@@ -1,0 +1,6 @@
+case,model,variable,stage,stage_name,first_write_stage,classes,observations,train_accuracy,test_accuracy,majority_accuracy,readable,position_determined
+7,trained,hist_7,0,Embedding,2,10,864,0.3055555555555556,0.2604166666666667,0.2777777777777778,False,False
+7,trained,hist_7,1,L1/Attn,2,10,864,0.6331018518518519,0.5393518518518519,0.2777777777777778,False,False
+7,trained,hist_7,2,L1/MLP,2,10,864,1.0,1.0,0.2777777777777778,True,False
+7,trained,hist_7,3,L2/Attn,2,10,864,1.0,0.9953703703703703,0.2777777777777778,True,False
+7,trained,hist_7,4,L2/MLP,2,10,864,1.0,1.0,0.2777777777777778,True,False

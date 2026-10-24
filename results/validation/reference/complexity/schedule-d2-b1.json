@@ -1,0 +1,80 @@
+[
+  {
+    "variable": "branch_0_step_1_57",
+    "residual_lane_indices": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "residual_lane_labels": [
+      "branch_0_step_1_57:0",
+      "branch_0_step_1_57:1",
+      "branch_0_step_1_57:2",
+      "branch_0_step_1_57:3",
+      "branch_0_step_1_57:4",
+      "branch_0_step_1_57:5",
+      "branch_0_step_1_57:6",
+      "branch_0_step_1_57:7"
+    ],
+    "first_write_half_layer_index": 3,
+    "first_write_after": "after mlp2",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "branch_0_step_0_58",
+    "residual_lane_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "residual_lane_labels": [
+      "branch_0_step_0_58:0",
+      "branch_0_step_0_58:1",
+      "branch_0_step_0_58:2",
+      "branch_0_step_0_58:3",
+      "branch_0_step_0_58:4",
+      "branch_0_step_0_58:5",
+      "branch_0_step_0_58:6",
+      "branch_0_step_0_58:7"
+    ],
+    "first_write_half_layer_index": 1,
+    "first_write_after": "after mlp1",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "tokens",
+    "residual_lane_indices": [
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "residual_lane_labels": [
+      "tokens:-2",
+      "tokens:-1",
+      "tokens:0",
+      "tokens:1",
+      "tokens:2",
+      "tokens:3",
+      "tokens:4",
+      "tokens:5"
+    ],
+    "first_write_half_layer_index": null,
+    "first_write_after": "input embedding",
+    "compiled_block": "input"
+  }
+]

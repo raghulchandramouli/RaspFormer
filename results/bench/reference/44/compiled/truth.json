@@ -1,0 +1,77 @@
+{
+  "stage_names": [
+    "L1/Attn",
+    "L1/MLP"
+  ],
+  "truths": {
+    "schedule": [
+      false,
+      true
+    ]
+  },
+  "schedule_variables": [
+    {
+      "variable": "count_greater_than_22",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "residual_lane_labels": [
+        "count_greater_than_22:0",
+        "count_greater_than_22:1",
+        "count_greater_than_22:2",
+        "count_greater_than_22:3",
+        "count_greater_than_22:4",
+        "count_greater_than_22:5",
+        "count_greater_than_22:6",
+        "count_greater_than_22:7",
+        "count_greater_than_22:8",
+        "count_greater_than_22:9"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "variable": "tokens",
+      "residual_lane_indices": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "residual_lane_labels": [
+        "tokens:0",
+        "tokens:1",
+        "tokens:2",
+        "tokens:3",
+        "tokens:4",
+        "tokens:5",
+        "tokens:6",
+        "tokens:7",
+        "tokens:8",
+        "tokens:9",
+        "tokens:10"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    }
+  ],
+  "circuit_event_stages": null
+}

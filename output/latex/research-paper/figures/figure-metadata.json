@@ -1,0 +1,320 @@
+{
+  "generated_from_saved_results_only": true,
+  "figures": [
+    {
+      "caption": "Blind detection and executing compression on the same six held-out programs P07-P12. (a) Macro F1 for PR change, adjacent-CKA change, and residual-change energy against the original first-write schedule. The count-matched shuffle baseline averages 1,000 within-program prediction shuffles; All+ predicts every transition. (b) At nominal half residual width, uncentered-SVD and equal-width random models are compared by task token accuracy and PR/CKA F1 against the original intended write schedule. The dashed line is the All+ schedule baseline. In particular, random compression gives token accuracy 0.376 despite PR/CKA F1 of 0.852/0.879. F1 is macro-averaged over six programs, rather than pooled over transitions. The schedule becomes an intended reference when compression changes the computation.",
+      "populations": {
+        "a": "Six held-out original programs P07-P12, excluded from detector calibration on P01-P06.",
+        "b": "The same six programs P07-P12, nominal half-width executing uncentered-SVD and random models, each saved at seed 42."
+      },
+      "aggregation": "Unweighted mean of saved per-program F1; token accuracy counted once per program/model after removing repeated detector rows. No inferential uncertainty interval is claimed.",
+      "counts": {
+        "heldout_programs_each_panel": 6,
+        "a_program_detector_rows": 18,
+        "shuffle_draws_per_program_detector": 1000,
+        "b_program_model_detector_rows": 36,
+        "b_executing_models": 12
+      },
+      "values": {
+        "a": [
+          {
+            "detector": "pr",
+            "f1": 0.8529100529100528,
+            "null_mean_f1": 0.5666222222222222,
+            "all_positive_f1": 0.7450292397660818
+          },
+          {
+            "detector": "cka",
+            "f1": 0.8497835497835498,
+            "null_mean_f1": 0.505811111111111,
+            "all_positive_f1": 0.7450292397660818
+          },
+          {
+            "detector": "change",
+            "f1": 0.8759920634920636,
+            "null_mean_f1": 0.6734821428571428,
+            "all_positive_f1": 0.7450292397660818
+          }
+        ],
+        "b": [
+          {
+            "kind": "compression-pca",
+            "token_accuracy": 0.6432291666666666,
+            "pr_f1": 0.8402597402597403,
+            "cka_f1": 0.5984126984126984
+          },
+          {
+            "kind": "compression-random",
+            "token_accuracy": 0.3761574074074074,
+            "pr_f1": 0.8522588522588522,
+            "cka_f1": 0.8788840788840789
+          }
+        ],
+        "all_positive_macro_f1": 0.7450292397660819
+      },
+      "cautions": [
+        "Saved compression kind=pca is fitted by uncentered SVD, not centered PCA.",
+        "Nominal half width means rank=ceil(original_width*0.5), and does not imply half of total model parameters.",
+        "The original compiler schedule is an intended reference for transformed models, not verified ground truth for their altered computation.",
+        "Detectors locate first-write events, not variable identities or complete circuits."
+      ],
+      "stem": "fig1-recovery-compression",
+      "pdf": "output/latex/research-paper/figures/fig1-recovery-compression.pdf",
+      "png": "output/latex/research-paper/figures/fig1-recovery-compression.png",
+      "width_inches": 7.1,
+      "height_inches": 3.0,
+      "png_dpi": 300,
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/transformed-write-recovery.csv",
+          "sha256": "405cdd8572ab7e8fc46a79c133c4032be4ca604bd86eb2adb1f6f93866c92a39"
+        },
+        {
+          "path": "results/validation/reference/p01-absolute/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/transformed-write-recovery.csv",
+          "sha256": "a066225e37235f148dafb3b9738449bdb5729aebf4943adebd8b0452159d5bb6"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/transformed-write-recovery.csv",
+          "sha256": "302b9779168add3db8239412ecf33e86fcc450940aea87613a99de0a1baf5ad7"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/transformed-write-recovery.csv",
+          "sha256": "85fdbf3474d7f9a6fd68e49ed07d31d8dcfabdfbab5c1513ff6830482f384e36"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/write-recovery-scores.csv",
+          "sha256": "e8364c400f52dd0d9364878278f9b8666dd8ed2c6710929c84ad3260e647f261"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/transformed-write-recovery.csv",
+          "sha256": "05d2e3f0d90d31976e39668bd54848af74d76e94d4e77815265054f87e9d1269"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/write-recovery-scores.csv",
+          "sha256": "ac0c5073e5b5d6e4b97c57eadf89c9cc0f206fa83c8d284a9483c17f716b9922"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/transformed-write-recovery.csv",
+          "sha256": "4a5c6693d85853ed675592c09925777c67b936a532c375b9f5d4aa19896a75ae"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/write-recovery-scores.csv",
+          "sha256": "2c84264153b2ffb1dfedb069d5631bb1ec7ca60ddabb8b2cbd6ea8d99f02fec2"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/transformed-write-recovery.csv",
+          "sha256": "2f2e42453fa13f4623ebc894921da567c5e38d916a08a0dba4da6e49d883c990"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/transformed-write-recovery.csv",
+          "sha256": "d457de77c3608a279ca177c0857e35497226815adb1542244034394328a4b607"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/write-recovery-scores.csv",
+          "sha256": "cc1c2dc18548183b0933db0191b7c27aee092e24a48a5b0a3ed6bd1f362cc548"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/transformed-write-recovery.csv",
+          "sha256": "a2c2f09dd29037ebe678800c1ca2e32f243a93387ed79058b9fe6f89774b963f"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/write-recovery-scores.csv",
+          "sha256": "fa32592f67b89fa53d9e2b90d31b16873f65b4c06f3e3d6f7241d4e76aa7beff"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/transformed-write-recovery.csv",
+          "sha256": "b72694351a6a7512555d2c1e4b40657e61c54c5ffe0fc36025b1d671c45233f2"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/write-recovery-scores.csv",
+          "sha256": "989b0ce0a030a6e404aa98e5812026b7a40725dbc11a4c71260f209f20407ceb"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/transformed-write-recovery.csv",
+          "sha256": "689b0cc98025b71a66c98f5dd5833dd554db09809849f520fa0babaf27b32abf"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/write-recovery-scores.csv",
+          "sha256": "14796d78a5a54f7f813c5793460b013600ad92106e510521775ec7e75f83e2f3"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/transformed-write-recovery.csv",
+          "sha256": "ee62b7144683496a8fe21466b88ecb4895c3e2c35fbde1ec1f800e6436b60bf6"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/write-recovery-scores.csv",
+          "sha256": "faa432f69b9f035e81986d156224aa61b185155f0c98c991599b42e9c1c89fe8"
+        }
+      ]
+    },
+    {
+      "caption": "Attention sharpness and geometry-directed patching. (a) On P12 sorting, multiplying QK logits by 1, 2, 4, and 8 reduces the saved maximum absolute output-lane error from 8.52e-4 through 7.15e-7 and 1.35e-24 to a literal zero. Zero is annotated separately and is not replaced by a positive value on the log axis. Token accuracy is one at every scale, with MLP exactness fixed. (b) Descriptive macro means across all 12 programs compare centered-PCA ranks one and three with equal-rank random patches, self patches, and a compiler-variable oracle whose rank varies by program. The six conditions share the same 192 held-out donor-recipient pairs (16 per program), yielding 1,152 saved patch rows. All 60 undefined symbolic-counterfactual rows remain failures of the full-output agreement comparison. Behavioral change is reported separately from full agreement with independently evaluated single-variable substitution.",
+      "populations": {
+        "a": "P12 sorting only; 512 balanced probes at each QK scale 1, 2, 4, 8.",
+        "b": "All 12 original programs; the same 16 held-out donor-recipient pairs per program in each of six patch conditions."
+      },
+      "aggregation": "Panel a uses the saved maximum absolute lane error at each scale. Panel b first averages saved Boolean outcomes over 16 pairs within each program and condition, then averages equally over 12 programs; no inferential interval is claimed.",
+      "counts": {
+        "a_programs": 1,
+        "a_attention_scales": 4,
+        "a_probes_per_scale": 512,
+        "b_programs": 12,
+        "b_shared_donor_recipient_pairs": 192,
+        "b_conditions": 6,
+        "b_pairs_per_program_condition": 16,
+        "b_saved_patch_rows": 1152,
+        "b_undefined_symbolic_rows_scored_failure": 60
+      },
+      "values": {
+        "attention_sweep": [
+          {
+            "attention_scale": 1,
+            "token_accuracy": 1.0,
+            "max_abs_lane_error": 0.0008522272109985,
+            "mean_abs_lane_error": 0.0001066521182283
+          },
+          {
+            "attention_scale": 2,
+            "token_accuracy": 1.0,
+            "max_abs_lane_error": 7.152557373046875e-07,
+            "mean_abs_lane_error": 8.940717398216148e-08
+          },
+          {
+            "attention_scale": 4,
+            "token_accuracy": 1.0,
+            "max_abs_lane_error": 1.353853833770134e-24,
+            "mean_abs_lane_error": 1.0761861216707856e-25
+          },
+          {
+            "attention_scale": 8,
+            "token_accuracy": 1.0,
+            "max_abs_lane_error": 0.0,
+            "mean_abs_lane_error": 0.0
+          }
+        ],
+        "patch_macro_means": [
+          {
+            "kind": "pca",
+            "rank": 1,
+            "full_counterfactual_match": 0.5208333333333334,
+            "behavior_changed": 0.0625
+          },
+          {
+            "kind": "random",
+            "rank": 1,
+            "full_counterfactual_match": 0.4635416666666667,
+            "behavior_changed": 0.015625
+          },
+          {
+            "kind": "pca",
+            "rank": 3,
+            "full_counterfactual_match": 0.5885416666666666,
+            "behavior_changed": 0.13541666666666666
+          },
+          {
+            "kind": "random",
+            "rank": 3,
+            "full_counterfactual_match": 0.421875,
+            "behavior_changed": 0.057291666666666664
+          },
+          {
+            "kind": "self",
+            "rank": 0,
+            "full_counterfactual_match": 0.4791666666666667,
+            "behavior_changed": 0.0
+          },
+          {
+            "kind": "oracle",
+            "rank": null,
+            "full_counterfactual_match": 0.9479166666666666,
+            "behavior_changed": 0.5104166666666666
+          }
+        ]
+      },
+      "cautions": [
+        "A literal zero cannot be placed on a logarithmic axis and is displayed as text only.",
+        "Patch PCA is centered; it differs from the uncentered-SVD compression basis in Figure 1.",
+        "Patch donor selection does not require different answers; self patches can therefore agree with the symbolic counterfactual.",
+        "The oracle is not an equal-rank subspace control; its rank depends on the mapped compiler variable.",
+        "The patch-to-variable mapping uses supervised decoding after geometric stage selection; these results do not establish named-variable recovery from geometry alone.",
+        "All 60 undefined symbolic substitutions remain agreement failures."
+      ],
+      "stem": "fig2-attention-patching",
+      "pdf": "output/latex/research-paper/figures/fig2-attention-patching.pdf",
+      "png": "output/latex/research-paper/figures/fig2-attention-patching.png",
+      "width_inches": 7.1,
+      "height_inches": 3.0,
+      "png_dpi": 300,
+      "sources": [
+        {
+          "path": "results/validation/reference/p01-absolute/patches.csv",
+          "sha256": "ca5681409a3e4975e09350a3ded7edb09a0b688ae141f45d9a6a7dc561301414"
+        },
+        {
+          "path": "results/validation/reference/p02-index-parity/patches.csv",
+          "sha256": "ae8e75c195da4871ac7c7975b9bc56c4e5cb867a77389180dd26477a354b8c00"
+        },
+        {
+          "path": "results/validation/reference/p03-increment-by-index/patches.csv",
+          "sha256": "6d11267fe0d43958d1ca352321d5de5ee864b595ee2e176112adfc29a70c2539"
+        },
+        {
+          "path": "results/validation/reference/p04-first-element/patches.csv",
+          "sha256": "e1d3c58eab0ea469e7a08bb10f0b5ecc3bda87446e97890b813c0f896210f8b0"
+        },
+        {
+          "path": "results/validation/reference/p05-histogram/patches.csv",
+          "sha256": "28dec2a6de4aa60c368ea9da597f1d7f4fb6f8b25a4a3fe78ea794047325265d"
+        },
+        {
+          "path": "results/validation/reference/p06-count-greater-than/patches.csv",
+          "sha256": "a82278f200e65daf6902968f5be2041fbc54d17474df6ea626f6dfa356e4b4ec"
+        },
+        {
+          "path": "results/validation/reference/p07-sum-with-next/patches.csv",
+          "sha256": "51f352a32f2294c084087c2352815c0419e04cf3cd3a5280fbdc3ae9fa70d97f"
+        },
+        {
+          "path": "results/validation/reference/p08-pairwise-sum/patches.csv",
+          "sha256": "3816db0d6c43ab3f75b4c236dce699d0cffecd45db87e5c4344827d4b0d609a3"
+        },
+        {
+          "path": "results/validation/reference/p09-check-increasing/patches.csv",
+          "sha256": "3a79b2d9f089b1dc9cb4ce5de643a4383046aa4355a49e9ff352301b1a2c5106"
+        },
+        {
+          "path": "results/validation/reference/p10-rotate-left/patches.csv",
+          "sha256": "25588a75d430f617cdcf5501d525b3ea3b8a33b496aa304cc23065b7b8fd4840"
+        },
+        {
+          "path": "results/validation/reference/p11-check-palindrome/patches.csv",
+          "sha256": "e4cb8e0280e7b04f670d9284c3f719b26e187441d7d0728fe98e25e52ff87952"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/attention-sharpening.csv",
+          "sha256": "32a0ba588d7566067310551cd7923ea26dd5d1c63574240101ad0cc585626d66"
+        },
+        {
+          "path": "results/validation/reference/p12-sorting/patches.csv",
+          "sha256": "89e2de100f980041e9b55dc9a5380ec423fffd04f71d9fde53d501b8c4ebc93b"
+        }
+      ]
+    }
+  ]
+}

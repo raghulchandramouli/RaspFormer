@@ -1,0 +1,51 @@
+{
+  "nodes": [
+    "blocks.0.hook_mlp_out"
+  ],
+  "kinds": {
+    "blocks.0.hook_mlp_out": "mlp"
+  },
+  "parents": {
+    "blocks.0.hook_mlp_out": {
+      "in": [
+        "hook_embed",
+        "hook_pos_embed"
+      ]
+    }
+  },
+  "output_parents": [
+    "blocks.0.hook_mlp_out"
+  ],
+  "tests": {
+    "outputs": {
+      "token_agreement": 1.0,
+      "token_agreement_where_defined": 1.0,
+      "coverage": 1.0,
+      "sequence_agreement": 1.0
+    },
+    "counterfactuals": [
+      {
+        "node": "blocks.0.hook_mlp_out",
+        "pairs": 111,
+        "agreement": 1.0,
+        "model_changed": 1.0,
+        "program_changed": 1.0
+      }
+    ],
+    "ablation": {
+      "outside_nodes": 4,
+      "circuit_nodes": 1,
+      "token_agreement": 0.5625,
+      "sequence_agreement": 0.020833333333333332
+    }
+  },
+  "variable_matches": [
+    {
+      "variable": "increment_by_index_3",
+      "node": "blocks.0.hook_mlp_out",
+      "class_to_value": 1.0,
+      "value_to_class": 1.0,
+      "status": "exact"
+    }
+  ]
+}

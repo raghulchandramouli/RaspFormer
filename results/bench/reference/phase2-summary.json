@@ -1,0 +1,315 @@
+{
+  "recorded_utc": "2026-10-21T08:40:14.966966+00:00",
+  "seed": 0,
+  "probe_threshold": 0.95,
+  "iia_threshold": 0.9,
+  "cases": [
+    "2",
+    "7",
+    "13",
+    "21",
+    "44",
+    "124"
+  ],
+  "variables": {
+    "2": [
+      {
+        "label": "length_5",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 2
+      },
+      {
+        "label": "opp_idx_4",
+        "classes": [
+          "-8",
+          "-7",
+          "-6",
+          "-5",
+          "-4",
+          "-3",
+          "-2",
+          "-1",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 4
+      },
+      {
+        "label": "opp_idx-1_3",
+        "classes": [
+          "-9",
+          "-8",
+          "-7",
+          "-6",
+          "-5",
+          "-4",
+          "-3",
+          "-2",
+          "-1",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "first_write_stage": 6
+      },
+      {
+        "label": "reverse_1",
+        "classes": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f",
+          "g",
+          "h",
+          "i",
+          "j",
+          "k",
+          "l",
+          "m",
+          "n",
+          "o",
+          "p",
+          "q",
+          "r",
+          "s",
+          "t",
+          "u",
+          "v",
+          "w",
+          "x",
+          "y",
+          "z"
+        ],
+        "first_write_stage": 7
+      }
+    ],
+    "7": [
+      {
+        "label": "hist_7",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 2
+      }
+    ],
+    "13": [
+      {
+        "label": "shift_by(-1)_13",
+        "classes": [
+          "0",
+          "1",
+          "2"
+        ],
+        "first_write_stage": 1
+      },
+      {
+        "label": "shift_by(1)_12",
+        "classes": [
+          "0",
+          "1",
+          "2"
+        ],
+        "first_write_stage": 1
+      },
+      {
+        "label": "sequence_map_10",
+        "classes": [
+          "constant",
+          "decreasing",
+          "increasing"
+        ],
+        "first_write_stage": 2
+      },
+      {
+        "label": "sequence_map_11",
+        "classes": [
+          "constant",
+          "decreasing",
+          "increasing"
+        ],
+        "first_write_stage": 2
+      },
+      {
+        "label": "sequence_map_9",
+        "classes": [
+          "constant",
+          "decreasing",
+          "increasing"
+        ],
+        "first_write_stage": 4
+      }
+    ],
+    "21": [
+      {
+        "label": "sequence_map_21",
+        "classes": [
+          "('a', 0)",
+          "('a', 1)",
+          "('a', 2)",
+          "('a', 3)",
+          "('a', 4)",
+          "('a', 5)",
+          "('a', 6)",
+          "('a', 7)",
+          "('a', 8)",
+          "('b', 0)",
+          "('b', 1)",
+          "('b', 2)",
+          "('b', 3)",
+          "('b', 4)",
+          "('b', 5)",
+          "('b', 6)",
+          "('b', 7)",
+          "('b', 8)",
+          "('c', 0)",
+          "('c', 1)",
+          "('c', 2)",
+          "('c', 3)",
+          "('c', 4)",
+          "('c', 5)",
+          "('c', 6)",
+          "('c', 7)",
+          "('c', 8)"
+        ],
+        "first_write_stage": 2
+      },
+      {
+        "label": "selector_width_19",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 4
+      },
+      {
+        "label": "sequence_map_18",
+        "classes": [
+          "-1",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "first_write_stage": 6
+      },
+      {
+        "label": "unique_tokens_16",
+        "classes": [
+          "a",
+          "b",
+          "c"
+        ],
+        "first_write_stage": 7
+      }
+    ],
+    "44": [
+      {
+        "label": "count_greater_than_22",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 2
+      }
+    ],
+    "124": [
+      {
+        "label": "selector_width_27",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 2
+      },
+      {
+        "label": "selector_width_25",
+        "classes": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "first_write_stage": 4
+      },
+      {
+        "label": "map_24",
+        "classes": [
+          "0",
+          "1"
+        ],
+        "first_write_stage": 6
+      }
+    ]
+  }
+}

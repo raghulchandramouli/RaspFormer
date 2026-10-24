@@ -1,0 +1,322 @@
+[
+  {
+    "kind": "rotation",
+    "seed": 42,
+    "fraction": 1.0,
+    "token_accuracy": 1.0,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.708888893023504,
+        "after_total_variance": 1.708888893023504,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.04545454757112026,
+        "relative_delta_energy": 0.5000000212898402,
+        "before_total_variance": 1.708888893023504,
+        "after_total_variance": 2.526582151687848,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 4.637295122659461,
+        "adjacent_cka": 0.9147528809179313,
+        "geometry_change": 0.08524711908206872,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "rotation",
+    "seed": 43,
+    "fraction": 1.0,
+    "token_accuracy": 1.0,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.7088888870444048,
+        "after_total_variance": 1.7088888870444048,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.04545454481507802,
+        "relative_delta_energy": 0.4999999922822056,
+        "before_total_variance": 1.7088888870444048,
+        "after_total_variance": 2.5265820967336228,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 4.637295274124681,
+        "adjacent_cka": 0.9147528909117407,
+        "geometry_change": 0.08524710908825928,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "rotation",
+    "seed": 44,
+    "fraction": 1.0,
+    "token_accuracy": 1.0,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.7088888938946436,
+        "after_total_variance": 1.7088888938946436,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.045454545921676255,
+        "relative_delta_energy": 0.5000000040105397,
+        "before_total_variance": 1.7088888938946436,
+        "after_total_variance": 2.5265821103868227,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 4.637295175487896,
+        "adjacent_cka": 0.9147528863450926,
+        "geometry_change": 0.08524711365490745,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "compression-pca",
+    "seed": 42,
+    "fraction": 0.25,
+    "token_accuracy": 0.6076388888888888,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 0.6605583015540882,
+        "after_total_variance": 0.6605583015540882,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.008777875048218527,
+        "relative_delta_energy": 0.05777371011411096,
+        "before_total_variance": 0.6605583015540882,
+        "after_total_variance": 0.8568153858174927,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 1.5102783983100663,
+        "adjacent_cka": 0.9554240780982589,
+        "geometry_change": 0.04457592190174109,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "compression-pca",
+    "seed": 42,
+    "fraction": 0.5,
+    "token_accuracy": 0.8628472222222222,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.3287585615192818,
+        "after_total_variance": 1.3287585615192818,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.008943902500883253,
+        "relative_delta_energy": 0.06185832636343653,
+        "before_total_variance": 1.3287585615192818,
+        "after_total_variance": 1.754172886156746,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 3.374635478120043,
+        "adjacent_cka": 0.939412670572018,
+        "geometry_change": 0.06058732942798195,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "compression-pca",
+    "seed": 42,
+    "fraction": 0.75,
+    "token_accuracy": 1.0,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.6732470609979735,
+        "after_total_variance": 1.6732470609979735,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.04440806211129616,
+        "relative_delta_energy": 0.3850830712110939,
+        "before_total_variance": 1.6732470609979735,
+        "after_total_variance": 2.4147789555379067,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 3.372373902853874,
+        "adjacent_cka": 0.9149910914476079,
+        "geometry_change": 0.08500890855239207,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "compression-pca",
+    "seed": 42,
+    "fraction": 1.0,
+    "token_accuracy": 1.0,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 1.7088888864143559,
+        "after_total_variance": 1.7088888864143559,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.045454545301796566,
+        "relative_delta_energy": 0.4999999980783764,
+        "before_total_variance": 1.7088888864143559,
+        "after_total_variance": 2.526582091865431,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 4.637295135543003,
+        "adjacent_cka": 0.9147528853844744,
+        "geometry_change": 0.08524711461552559,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  },
+  {
+    "kind": "compression-random",
+    "seed": 42,
+    "fraction": 0.5,
+    "token_accuracy": 0.4565972222222222,
+    "predictions": [
+      {
+        "stage": 1,
+        "delta_energy": 0.0,
+        "relative_delta_energy": 0.0,
+        "before_total_variance": 0.8918914359102534,
+        "after_total_variance": 0.8918914359102534,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 0.0,
+        "adjacent_cka": 1.0,
+        "geometry_change": 0.0,
+        "predict_change": false,
+        "predict_pr": false,
+        "predict_cka": false
+      },
+      {
+        "stage": 2,
+        "delta_energy": 0.016527929113435046,
+        "relative_delta_energy": 0.1627928997778662,
+        "before_total_variance": 0.8918914359102534,
+        "after_total_variance": 0.98026080362243,
+        "before_variance_active": true,
+        "after_variance_active": true,
+        "variance_floor": 1e-12,
+        "delta_pr": 2.510258832572667,
+        "adjacent_cka": 0.944216333365002,
+        "geometry_change": 0.05578366663499801,
+        "predict_change": true,
+        "predict_pr": true,
+        "predict_cka": true
+      }
+    ]
+  }
+]

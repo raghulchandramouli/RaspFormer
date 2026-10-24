@@ -1,0 +1,19 @@
+{
+  "title": "RaspFormer: What the Experiments Show",
+  "format": "Five-page single-column LaTeX research report without a separate cover",
+  "prepared": "2026-10-20",
+  "engine": "Tectonic 0.17.0",
+  "body_font_points": 11,
+  "pages": 5,
+  "vector_figures": 2,
+  "inline_tables": 3,
+  "words_extracted": 1841,
+  "source_scientific_commit": "e06479ce09f10695aa5280162f80d880c060eaf5",
+  "scientific_evidence_recorded": "2026-10-15",
+  "scientific_experiments_rerun": false,
+  "condensed_from_pages": 15,
+  "source_report_tex_sha256": "443fb4ab4f392a01e195e898fad9941876437e670a41dd6978763dfc3011507e",
+  "pdf_sha256": "fd032254012ebdcc91b2ab23509ea73560b1647e7d3c357261167805ace65891",
+  "scientific_review": "Independent review passed; branch-count wording clarified",
+  "layout_review": "All five final rendered pages visually inspected; no clipping or layout defects"
+}

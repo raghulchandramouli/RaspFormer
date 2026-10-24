@@ -1,0 +1,326 @@
+{
+  "source": "https://huggingface.co/cybershiptrooper/InterpBench",
+  "revision": "main",
+  "programs_source": "https://github.com/FlyingPumba/circuits-benchmark/tree/main/circuits_benchmark/benchmark/cases",
+  "downloaded_utc": "2026-10-21T07:01:43Z",
+  "license": "CC-BY-4.0",
+  "excluded": {
+    "18": "edges.pkl on Hugging Face lists only two MLP edges and no attention or embedding nodes, but the program needs attention for both hist and length; label judged incomplete."
+  },
+  "cases": {
+    "2": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "dd8ee919e31a1590d5e02e7d6aa4625e2d9e3002e3bbb74402f5a49e7d0be36b",
+          "bytes": 1251,
+          "hf_lfs_oid": "dd8ee919e31a1590d5e02e7d6aa4625e2d9e3002e3bbb74402f5a49e7d0be36b",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/2/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "2b2ef568269ef820d7d6975fed90fabf517f044f26f9b10a8a3724a7da3c4f83",
+          "bytes": 647458,
+          "hf_lfs_oid": "2b2ef568269ef820d7d6975fed90fabf517f044f26f9b10a8a3724a7da3c4f83",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/2/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "274196ba87c5a5cc25f5e3ed93a4c7dace5a7924905804c2ee6d2112c460f534",
+          "bytes": 1102,
+          "hf_lfs_oid": "274196ba87c5a5cc25f5e3ed93a4c7dace5a7924905804c2ee6d2112c460f534",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/2/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "c129be1d12e8293f56c5254d575399865ef1c89dfe67e717e1909d9e948d525c",
+          "bytes": 691,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/2/meta.json"
+        }
+      },
+      "meta": {
+        "output_dir": "/circuits-benchmark/results",
+        "atol": 0.05,
+        "lr": 0.001,
+        "use_single_loss": true,
+        "iit_weight": 1.0,
+        "behavior_weight": 0.4,
+        "strict_weight": 0.4,
+        "epochs": 1000,
+        "early_stop_accuracy_threshold": 99.9,
+        "act_fn": "gelu",
+        "use_wandb": true,
+        "wandb_project": "iit-train",
+        "wandb_name": "case-2-seed-67-s-0.4-b-0.4-iit-1",
+        "save_model_to_wandb": true,
+        "device": "cuda",
+        "clip_grad_norm": 0.1,
+        "lr_scheduler": "linear",
+        "model_pair": "strict",
+        "same_size": false,
+        "seed": 67,
+        "batch_size": 256,
+        "include_mlp": false,
+        "detach_while_caching": true,
+        "scheduler_val_metric": [
+          "val/accuracy",
+          "val/IIA",
+          "val/strict_accuracy"
+        ],
+        "siit_sampling": "sample_all",
+        "val_iia_sampling": "all"
+      }
+    },
+    "7": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "3156b2e517b8c45e76ea28f8c2ccbcda226f636cd44a809c908e167871d2cdab",
+          "bytes": 546,
+          "hf_lfs_oid": "3156b2e517b8c45e76ea28f8c2ccbcda226f636cd44a809c908e167871d2cdab",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/7/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "9ee0cfc16d28ec4133f303fa1bdac3be6c19be72c10a23205956151582cc075a",
+          "bytes": 42474,
+          "hf_lfs_oid": "9ee0cfc16d28ec4133f303fa1bdac3be6c19be72c10a23205956151582cc075a",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/7/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "630fa961d2d30927dfe575b0625d4bfaefa14bc0b751a0ee7224206705b939dc",
+          "bytes": 1048,
+          "hf_lfs_oid": "630fa961d2d30927dfe575b0625d4bfaefa14bc0b751a0ee7224206705b939dc",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/7/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "c53dd6cdb1337a601bd8b876c3eec06c3d32036d16d9461b01c12adf89d58873",
+          "bytes": 382,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/7/meta.json"
+        }
+      },
+      "meta": {
+        "atol": 0.05,
+        "lr": 0.01,
+        "use_single_loss": false,
+        "iit_weight": 1.0,
+        "behavior_weight": 1.0,
+        "strict_weight": 0.5,
+        "epochs": 2000,
+        "act_fn": "gelu",
+        "wandb_suffix": "",
+        "device": "cuda",
+        "clip_grad_norm": 0.1,
+        "lr_scheduler": "",
+        "model_pair": "strict",
+        "same_size": false,
+        "seed": 1234,
+        "batch_size": 256,
+        "include_mlp": false,
+        "next_token": false,
+        "detach_while_caching": true
+      }
+    },
+    "13": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "8726b598e2b2fb81bf1b18ad601cb37b54ec61d528b3f70b19ea4812d4fb8cc6",
+          "bytes": 937,
+          "hf_lfs_oid": "8726b598e2b2fb81bf1b18ad601cb37b54ec61d528b3f70b19ea4812d4fb8cc6",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/13/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "ef7e1c8effd58e4fdb7c05e6a0117048ef32ef0eb82ec2ee2b727e32ac164f79",
+          "bytes": 53162,
+          "hf_lfs_oid": "ef7e1c8effd58e4fdb7c05e6a0117048ef32ef0eb82ec2ee2b727e32ac164f79",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/13/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "12e9924e5c037c5866059ec5b4f59311e6a8d9c15481600cf7b8d119d7830856",
+          "bytes": 1047,
+          "hf_lfs_oid": "12e9924e5c037c5866059ec5b4f59311e6a8d9c15481600cf7b8d119d7830856",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/13/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "c83f943248aefea454dec73917973f38f554d5a307e664445beea7657dc46798",
+          "bytes": 239,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/13/meta.json"
+        }
+      },
+      "meta": {
+        "atol": 0.05,
+        "lr": 0.01,
+        "use_single_loss": false,
+        "iit_weight": 1.0,
+        "behavior_weight": 1.0,
+        "strict_weight": 0.4,
+        "epochs": 500,
+        "act_fn": "gelu",
+        "wandb_suffix": "strict_13",
+        "device": "cpu",
+        "clip_grad_norm": 1.0,
+        "lr_scheduler": ""
+      }
+    },
+    "21": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "a284ff6ddccac91bf12f0f28a6786e739428c948c111ef6ad524e481f5d1461d",
+          "bytes": 656,
+          "hf_lfs_oid": "a284ff6ddccac91bf12f0f28a6786e739428c948c111ef6ad524e481f5d1461d",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/21/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "42e739d16ee075d148c5b8a65b71422da53b90a32d706821708240c75124e4af",
+          "bytes": 507554,
+          "hf_lfs_oid": "42e739d16ee075d148c5b8a65b71422da53b90a32d706821708240c75124e4af",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/21/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "0199972dece30ed03433dd2e1cb712e7e718d94ff3cd4e2ca9c662253dc9f495",
+          "bytes": 1043,
+          "hf_lfs_oid": "0199972dece30ed03433dd2e1cb712e7e718d94ff3cd4e2ca9c662253dc9f495",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/21/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "0562bcfe88845e70dc8a41c98953f60577ab635ffcb07104ddde8ff3dc23316f",
+          "bytes": 258,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/21/meta.json"
+        }
+      },
+      "meta": {
+        "atol": 0.05,
+        "lr": 0.0005,
+        "use_single_loss": false,
+        "iit_weight": 1.0,
+        "behavior_weight": 1.0,
+        "strict_weight": 0.5,
+        "epochs": 2000,
+        "act_fn": "gelu",
+        "wandb_suffix": "",
+        "device": "cuda",
+        "clip_grad_norm": 0.1,
+        "lr_scheduler": "",
+        "model_pair": "strict"
+      }
+    },
+    "44": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "3156b2e517b8c45e76ea28f8c2ccbcda226f636cd44a809c908e167871d2cdab",
+          "bytes": 546,
+          "hf_lfs_oid": "3156b2e517b8c45e76ea28f8c2ccbcda226f636cd44a809c908e167871d2cdab",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/44/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "fd6dfc6ecc892d2a5335f19eea48e09588427b91dc276616c1c201854a990a4e",
+          "bytes": 72426,
+          "hf_lfs_oid": "fd6dfc6ecc892d2a5335f19eea48e09588427b91dc276616c1c201854a990a4e",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/44/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "04187613894b7f89b32d1355605a0a21fde32558454a58fbaa3ac1a3386cae65",
+          "bytes": 1100,
+          "hf_lfs_oid": "04187613894b7f89b32d1355605a0a21fde32558454a58fbaa3ac1a3386cae65",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/44/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "229430e252ed884dc95d6cabd6839d1777f868b525e062576fb30cd5adc8f560",
+          "bytes": 692,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/44/meta.json"
+        }
+      },
+      "meta": {
+        "output_dir": "/circuits-benchmark/results",
+        "atol": 0.05,
+        "lr": 0.001,
+        "use_single_loss": true,
+        "iit_weight": 1.0,
+        "behavior_weight": 0.4,
+        "strict_weight": 0.4,
+        "epochs": 1000,
+        "early_stop_accuracy_threshold": 99.9,
+        "act_fn": "gelu",
+        "use_wandb": true,
+        "wandb_project": "iit-train",
+        "wandb_name": "case-44-seed-67-s-0.4-b-0.4-iit-1",
+        "save_model_to_wandb": true,
+        "device": "cuda",
+        "clip_grad_norm": 0.1,
+        "lr_scheduler": "linear",
+        "model_pair": "strict",
+        "same_size": false,
+        "seed": 67,
+        "batch_size": 256,
+        "include_mlp": false,
+        "detach_while_caching": true,
+        "scheduler_val_metric": [
+          "val/accuracy",
+          "val/IIA",
+          "val/strict_accuracy"
+        ],
+        "siit_sampling": "sample_all",
+        "val_iia_sampling": "all"
+      }
+    },
+    "124": {
+      "files": {
+        "edges.pkl": {
+          "sha256": "94f304942c0a1b31c525866b45e6cb08898c68c8babe262aee1720e0d7ae703f",
+          "bytes": 1110,
+          "hf_lfs_oid": "94f304942c0a1b31c525866b45e6cb08898c68c8babe262aee1720e0d7ae703f",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/124/edges.pkl"
+        },
+        "ll_model.pth": {
+          "sha256": "d3204efb7c2c92f7a8807743e44c1e6c9c65d6828a9aaa22606b0874ccbe3293",
+          "bytes": 105478,
+          "hf_lfs_oid": "d3204efb7c2c92f7a8807743e44c1e6c9c65d6828a9aaa22606b0874ccbe3293",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/124/ll_model.pth"
+        },
+        "ll_model_cfg.pkl": {
+          "sha256": "5d9b99b585bf898a743c98e402a9c1ef1600b3d43d8e79eeadd11b86b7d2c626",
+          "bytes": 1100,
+          "hf_lfs_oid": "5d9b99b585bf898a743c98e402a9c1ef1600b3d43d8e79eeadd11b86b7d2c626",
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/124/ll_model_cfg.pkl"
+        },
+        "meta.json": {
+          "sha256": "0454565b2b20460727981304031bb4f8099ca59895914541a4637890584ca1bf",
+          "bytes": 693,
+          "hf_lfs_oid": null,
+          "url": "https://huggingface.co/cybershiptrooper/InterpBench/resolve/main/124/meta.json"
+        }
+      },
+      "meta": {
+        "output_dir": "/circuits-benchmark/results",
+        "atol": 0.05,
+        "lr": 0.001,
+        "use_single_loss": true,
+        "iit_weight": 1.0,
+        "behavior_weight": 0.4,
+        "strict_weight": 0.4,
+        "epochs": 1000,
+        "early_stop_accuracy_threshold": 99.9,
+        "act_fn": "gelu",
+        "use_wandb": true,
+        "wandb_project": "iit-train",
+        "wandb_name": "case-124-seed-67-s-0.4-b-0.4-iit-1",
+        "save_model_to_wandb": true,
+        "device": "cuda",
+        "clip_grad_norm": 0.1,
+        "lr_scheduler": "linear",
+        "model_pair": "strict",
+        "same_size": false,
+        "seed": 67,
+        "batch_size": 256,
+        "include_mlp": false,
+        "detach_while_caching": true,
+        "scheduler_val_metric": [
+          "val/accuracy",
+          "val/IIA",
+          "val/strict_accuracy"
+        ],
+        "siit_sampling": "sample_all",
+        "val_iia_sampling": "all"
+      }
+    }
+  }
+}

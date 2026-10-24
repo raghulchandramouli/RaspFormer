@@ -51,7 +51,7 @@ class StudyChecks(unittest.TestCase):
                 CompilerConfig().validate_samples([sample])
 
     def test_program_study_matches_reference(self):
-        reference = json.loads((RESULTS / "programs/reference/step1_ground_truth_schedule.json").read_text())
+        reference = json.loads((RESULTS / "programs/reference/manifest.json").read_text())
         result = run_study(build_programs(), CompilerConfig(), SAMPLES, self.output)
         evidence = json.loads((result["run_dir"] / "manifest.json").read_text())
         self.assertEqual(evidence["status"], "completed")
@@ -67,7 +67,7 @@ class StudyChecks(unittest.TestCase):
             self.assertEqual(len(new["residual_lane_indices"]), len(old["residual_lane_indices"]))
 
     def test_trace_study_matches_reference(self):
-        reference = json.loads((RESULTS / "trace/reference/step2_manual_trace.json").read_text())
+        reference = json.loads((RESULTS / "trace/reference/traces.json").read_text())
         config = CompilerConfig(rel_tol=1e-4, abs_tol=1e-4)
         result = run_trace_study(build_programs(include_examples=True), config, SAMPLES, self.output)
         evidence = result["evidence"]
@@ -94,9 +94,10 @@ class StudyChecks(unittest.TestCase):
         self.assertEqual(len(result["probes"].candidates), 3383)
         for old_path in reference.glob("*.csv"):
             with self.subTest(artifact=old_path.name):
+                expected = pd.read_csv(old_path)
                 pd.testing.assert_frame_equal(
-                    pd.read_csv(result["run_dir"] / old_path.name),
-                    pd.read_csv(old_path), check_exact=False, atol=1e-6, rtol=1e-6,
+                    pd.read_csv(result["run_dir"] / old_path.name)[expected.columns],
+                    expected, check_exact=False, atol=1e-6, rtol=1e-6,
                 )
         # Eigenvectors in degenerate eigenspaces are not unique; compare spectra.
         with np.load(reference / "pca_spectra.npz") as old, np.load(result["run_dir"] / "pca_spectra.npz") as new:
@@ -180,7 +181,7 @@ class StudyChecks(unittest.TestCase):
         with patch("raspformer.compiler.check_trace_sample", side_effect=fail_second):
             with self.assertRaisesRegex(RuntimeError, "deliberate"):
                 run_trace_study(programs, CompilerConfig(), SAMPLES, self.output)
-        [manifest] = self.output.glob("*/manifest.json")
+        [manifest] = self.output.rglob("manifest.json")
         evidence = json.loads(manifest.read_text())
         self.assertEqual(evidence["status"], "failed")
         self.assertEqual(evidence["failures"][0]["program"], "P01_absolute")

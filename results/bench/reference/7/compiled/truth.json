@@ -1,0 +1,61 @@
+{
+  "stage_names": [
+    "L1/Attn",
+    "L1/MLP"
+  ],
+  "truths": {
+    "schedule": [
+      false,
+      true
+    ]
+  },
+  "schedule_variables": [
+    {
+      "variable": "hist_7",
+      "residual_lane_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "residual_lane_labels": [
+        "hist_7:0",
+        "hist_7:1",
+        "hist_7:2",
+        "hist_7:3",
+        "hist_7:4",
+        "hist_7:5",
+        "hist_7:6",
+        "hist_7:7",
+        "hist_7:8",
+        "hist_7:9"
+      ],
+      "first_write_half_layer_index": 1,
+      "first_write_after": "after mlp1",
+      "compiled_block": "attention+mlp"
+    },
+    {
+      "variable": "tokens",
+      "residual_lane_indices": [
+        23,
+        24,
+        25
+      ],
+      "residual_lane_labels": [
+        "tokens:a",
+        "tokens:b",
+        "tokens:c"
+      ],
+      "first_write_half_layer_index": null,
+      "first_write_after": "input embedding",
+      "compiled_block": "input"
+    }
+  ],
+  "circuit_event_stages": null
+}

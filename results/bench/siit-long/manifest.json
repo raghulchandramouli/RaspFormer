@@ -1,0 +1,21 @@
+{
+  "recorded_utc": "2026-10-22T06:35:36.650273+00:00",
+  "steps": 3000,
+  "seed": 0,
+  "programs": [
+    "P01_absolute",
+    "P02_index_parity",
+    "P03_increment_by_index",
+    "P04_first_element",
+    "P05_histogram",
+    "P06_count_greater_than",
+    "P07_sum_with_next",
+    "P08_pairwise_sum",
+    "P09_check_increasing",
+    "P10_rotate_left",
+    "P11_check_palindrome",
+    "P12_sorting"
+  ],
+  "max_seq_len": 10,
+  "train_length": 6
+}

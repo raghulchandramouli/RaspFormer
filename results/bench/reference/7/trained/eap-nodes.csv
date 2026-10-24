@@ -1,0 +1,13 @@
+source,abs_score,true
+blocks.0.attn.hook_result[0],0.1639336496591568,True
+blocks.0.attn.hook_result[1],1.2912976671941578e-05,False
+blocks.0.attn.hook_result[2],0.0019490026170387864,False
+blocks.0.attn.hook_result[3],0.001116208964958787,False
+blocks.0.hook_mlp_out,0.6325533986091614,True
+blocks.1.attn.hook_result[0],0.0017867456190288067,False
+blocks.1.attn.hook_result[1],0.011621234007179737,False
+blocks.1.attn.hook_result[2],0.002485796809196472,False
+blocks.1.attn.hook_result[3],0.007246238645166159,False
+blocks.1.hook_mlp_out,0.0019827394280582666,False
+hook_embed,0.19356100261211395,True
+hook_pos_embed,0.0,False

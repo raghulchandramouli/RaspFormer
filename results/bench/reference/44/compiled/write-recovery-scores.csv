@@ -1,0 +1,4 @@
+case,model,truth,detector,precision,recall,f1,predicted_count,true_count,null_mean_f1,null_p_ge,oracle_prevalence,all_positive_f1
+44,compiled,schedule,change,0.5,1.0,0.6666666666666666,2,1,0.6666666666666665,1.0,0.5,0.6666666666666666
+44,compiled,schedule,pr,0.5,1.0,0.6666666666666666,2,1,0.6666666666666665,1.0,0.5,0.6666666666666666
+44,compiled,schedule,cka,0.5,1.0,0.6666666666666666,2,1,0.6666666666666665,1.0,0.5,0.6666666666666666

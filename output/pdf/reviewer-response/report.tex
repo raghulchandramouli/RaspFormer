@@ -1,0 +1,449 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=22mm,headheight=15pt,headsep=9mm,footskip=11mm]{geometry}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{caption,enumitem,titlesec,fancyhdr,xurl}
+\usepackage[colorlinks=true,linkcolor=teal,citecolor=teal,urlcolor=teal,bookmarksnumbered=true]{hyperref}
+\definecolor{navy}{HTML}{182D45}
+\definecolor{teal}{HTML}{147D83}
+\definecolor{muted}{HTML}{526376}
+\definecolor{pale}{HTML}{EEF4F7}
+\definecolor{orange}{HTML}{D57837}
+\hypersetup{pdftitle={RaspFormer: response to the review and follow-up experiments},pdfauthor={RaspFormer project},pdfsubject={LaTeX report with point-by-point responses, measured results, and scientific limits}}
+\urlstyle{tt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.5pt}
+\setlength{\tabcolsep}{5pt}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.16}
+\linespread{1.08}
+\setlist[itemize]{leftmargin=*,itemsep=3pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=*,itemsep=4pt,topsep=4pt}
+\captionsetup{font=small,labelfont={bf,sf},labelsep=period,justification=raggedright,singlelinecheck=false,skip=5pt}
+\titleformat{\section}{\sffamily\Large\bfseries\color{navy}}{\thesection}{.65em}{}
+\titleformat{\subsection}{\sffamily\normalsize\bfseries\color{teal}}{\thesubsection}{.65em}{}
+\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small\color{muted}RASPFORMER / RESPONSE TO REVIEW}
+\fancyhead[R]{\sffamily\small\color{muted}17 October 2026}
+\fancyfoot[L]{\sffamily\footnotesize\color{muted}Evidence recorded 15 October 2026}
+\fancyfoot[R]{\sffamily\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\emergencystretch}{2em}
+\newcommand{\newsection}[1]{\clearpage\section{#1}}
+\newcommand{\request}[1]{\begingroup\color{muted}\textbf{Reviewer request.} #1\par\endgroup}
+\newcommand{\finding}[1]{\par\begingroup\color{teal}\textbf{Finding.} #1\par\endgroup}
+\newcommand{\limit}[1]{\par\textbf{Limit.} #1\par}
+\newcommand{\ev}[1]{\hyperref[src:#1]{[\ref*{src:#1}]}}
+\newcommand{\repopath}[1]{\href{https://github.com/raghulchandramouli/RaspFormer/blob/e06479ce09f10695aa5280162f80d880c060eaf5/#1}{\nolinkurl{#1}}}
+\newcommand{\repodir}[1]{\href{https://github.com/raghulchandramouli/RaspFormer/tree/e06479ce09f10695aa5280162f80d880c060eaf5/#1}{\nolinkurl{#1}}}
+\newcommand{\reportfigure}[3]{\begin{center}\begin{minipage}{\linewidth}\centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1.pdf}\captionof{figure}{#3}\end{minipage}\end{center}}
+\newcommand{\status}[1]{\textcolor{teal}{\textsf{#1}}}
+\begin{document}
+\thispagestyle{empty}
+\vspace*{14mm}
+{\sffamily\small\bfseries\color{teal}RESEARCH REPORT / POINT-BY-POINT RESPONSE}\par
+\vspace{10mm}
+{\sffamily\fontsize{36}{40}\selectfont\bfseries\color{navy}RaspFormer}\par
+\vspace{4mm}
+{\sffamily\fontsize{23}{28}\selectfont\color{navy}Response to the review\par and follow-up experiments}\par
+\vspace{8mm}
+{\color{teal}\rule{\linewidth}{1.5pt}}
+\vspace{6mm}
+
+This report answers each requested correction and experiment in the external review. It records what was changed, what the measurements show, and where interpretation remains limited. All scientific figures and tables come from preserved reference data. No new training or scientific experiment was run to typeset this document.
+
+\textbf{Main conclusion.} The original studies establish agreement with compiler-known representations. The follow-ups add evidence that PR and CKA can detect some first-write transitions. They do not establish recovery of complete algorithms, variable lifetimes, or the internal circuits of trained models.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}rX@{}}
+\toprule
+\textbf{Scope} & \textbf{Recorded work}\\
+\midrule
+12 & Original RASP programs, with rotation, compression, blind recovery, and patch controls.\\
+9 & Crossed depth/branch-count variants with noncollinear realized depth and variable count.\\
+36 & Transformers trained from random initialization across twelve tasks and three seeds.\\
+1,152 & Patch conditions across 192 donor-recipient-position pairs.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Completion is an action status.} Requested checks can be complete while their hypotheses fail or remain only partly supported. This distinction is used throughout the report.
+
+\vfill
+{\small\color{muted}Prepared 17 October 2026 using LaTeX. Scientific evidence was recorded on 15 October 2026. Code and canonical results are pinned to commit \texttt{e06479c}. The present document and its plotting sources accompany that evidence.}
+\clearpage
+\tableofcontents
+
+\newsection{What the reviewer asked and what was completed}
+The review contains concrete action requests and broader limitations. The action requests were implemented or documented. Several limitations remain scientifically important; completing an experiment does not make them disappear.
+\par
+\begingroup\small
+\begin{tabularx}{\linewidth}{@{}P{.07\linewidth}P{.28\linewidth}X@{}}
+\toprule
+ID & Requested action & Recorded response and outcome\\
+\midrule
+R1 & Reframe the fidelity benchmark and PR headline. & Compiler-dependent agreement is labeled as fidelity. PR error is secondary. Independent transition and intervention controls were added.\\
+R2 & Save variance, impose a floor, and rerun. & Raw variance and numerical flags are exported. The selected floor reduces matched CKA availability mismatches from 14 to 2.\\
+R3 & Inspect P12 failing rows and sharpen attention. & Equal failure rates come from different probe sets. Sharpening removes the tolerance failures.\\
+R4 & Vary depth and width. & A $3\times3$ branch-depth/branch-count family breaks exact depth/count collinearity.\\
+R5 & Connect interventions to geometry. & Calibration-selected PCA directions are patched with random, self, and oracle controls. Variable mapping remains supervised.\\
+R6 & Apply random orthogonal rotations. & PR/CKA and decoded outputs are preserved; fixed coordinate checks change.\\
+R7 & Compress residual streams and retest. & Reduced streams execute. Accuracy degrades, and write-timing scores can remain high.\\
+R8 & Train models on the same programs. & 36 models were trained and compared with compiled representations on disjoint test sequences.\\
+R9 & Recover write schedules blindly. & Matrix-only detectors recover some write-containing transitions above baselines.\\
+R10 & Position against InterpBench. & The comparison is documented. No direct InterpBench benchmark result is claimed.\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\textbf{Not a separate explicit implementation request.} The review identifies erasure and lifetime effects as limits of the original setup. It does not explicitly require a complete erasure-recovery system or an InterpBench benchmark run. Those should not be invented as missing deliverables. They remain boundaries on the claims.
+
+\textbf{Preserved strengths.} Provenance, raw evidence, correlation-versus-magnitude checks, and full/computed residual views remain available. Sections~\ref{sec:diagnostics} and~\ref{sec:reproducibility} document them.
+
+\newsection{Study design and interpretation}
+\label{sec:methods}
+The vocabulary is the eight integers $-2$ through $5$. The main studies use length-six sequences and noncausal attention. BOS is present internally and excluded from reported token observations. Original output checks additionally include shorter sequences. The twelve tasks are unchanged.\ev{programs}
+Rates are fractions unless marked as percentages. F1 is the harmonic mean of precision and recall. Program-group macro means give each program equal weight.
+\input{tables/programs.tex}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.29\linewidth}X@{}}
+\toprule
+Design & Sampling and separation\\
+\midrule
+Balanced geometry & 64 target-position observations per reachable output class. Repeats retain their weight.\\
+Matched comparison & 3,383 unique candidate sequences at all six positions: 20,298 observations per program.\\
+Compiled validation controls & 96 calibration sequences and 96 disjoint test sequences, split seed 42. Each split contributes 576 non-BOS positions.\\
+P12 sharpening & 512 balanced target-position probes, 64 per output class, drawn from 459 unique sequences.\\
+Learned models & 2,029 training, 677 validation, and 677 test sequences; split seed 2026. Training seeds are 42, 43, and 44.\\
+Blind program groups & P01 to P06 are the calibration group; P07 to P12 are the held-out program group. This is separate from the sequence split.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Dependence and uncertainty.} Positions within a sequence are dependent. Patch conditions share pairs and programs. Three-seed standard deviations describe only those three runs. Macro means over six or twelve programs are descriptive; no universal population-level confidence claim is made.\ev{splits}\ev{learning}
+
+\textbf{Measured representation.} A full residual view includes input and constant lanes. The computed view excludes tokens, indices, and the constant-one lanes, but retains compiler helper state. It is not a pure collection of semantic variables.
+
+For globally centered matrices with aligned observations, linear CKA is
+\[
+\operatorname{CKA}(X,Y)=\frac{\|X^\top Y\|_F^2}{\|X^\top X\|_F\,\|Y^\top Y\|_F}.
+\]
+The numerical policy additionally requires both representations to be active.
+
+\newsection{R1. Compiler fidelity and the PR headline}
+\request{Determine whether the benchmark reveals computation, rather than mainly confirming a compiled representation. Avoid presenting PR error as algorithm complexity.}
+\textbf{What the original benchmark actually does.} RASP independently evaluates intermediate variable values. The evaluator's values are then encoded into compiler-known coordinates at compiler-known first-write times. Expected unwritten and helper coordinates are zeroed. This is not literally a copy of the observed residual with scratch lanes removed, but it shares the compiler's representation and schedule assumptions.\ev{alignment}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}XX@{}}
+\toprule
+Observed branch & Expected branch\\
+\midrule
+RASP program $\rightarrow$ compiled transformer $\rightarrow$ measured residuals. & RASP intermediate evaluation $\rightarrow$ compiler-provided lanes and timing $\rightarrow$ expected vectors.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Agreement supports compiler fidelity. Discovery requires an additional test that withholds the representation or schedule being recovered. The new matrix-only transition detector withholds them at prediction time; the PCA patch experiment provides a separate causal check with explicit supervision later in the pipeline.
+
+For a centered representation with covariance eigenvalues $\lambda_i$,
+\[
+\operatorname{PR}(X)=\frac{(\sum_i\lambda_i)^2}{\sum_i\lambda_i^2}.
+\]
+If a variable has $k>1$ equally frequent, equally scaled one-hot categories, its covariance has $k-1$ equal nonzero eigenvalues. Hence PR is $k-1$. This explains the original balanced examples:
+\input{tables/cardinality.tex}
+\finding{The critique is valid as a warning about interpretation. A one-variable program can have different PR simply because its representation contains a different number of categories.}
+\limit{The $k-1$ identity is specific to balanced one-hot encodings. Unequal frequencies, numerical features, correlated variables, helper lanes, and coordinate scaling alter PR. Neither PR nor a small PR error identifies an algorithm.}
+PR error remains in the fidelity appendix for reproducibility. The principal research outcomes are transition recovery, robustness under transformations, intervention agreement, and task accuracy.
+
+\newsection{R2. Numerical artifacts and the variance floor}
+\request{Save total variance, set a variance floor, and rerun the measurements.}
+Total variance is the sum of centered feature sample variances with ddof~1. A representation is active only when that variance is strictly greater than $10^{-12}$. Inactive PR and component counts are conventionally reported as zero with reason flags. CKA remains undefined. Raw variance, spectra, and normalized measurements remain in the exported evidence.\ev{stages}\ev{floor}
+
+\reportfigure{01-numerical-floor}{9.1cm}{Numerical artifacts and threshold sensitivity from the saved matched and balanced comparisons. The twelve negligible-variance stage rows include P07, P08, P10, and P11.}
+
+\finding{Matched computed-view CKA availability mismatches fall from 14 to 2 among 54 adjacent transitions. All tested positive floors, $10^{-14}$ through $10^{-8}$, leave two mismatches. The balanced comparison already has two at zero floor.}
+The highlighted early stages have variance approximately $8.07\times10^{-19}$ while their raw PR is about one. The floor suppresses this normalized-noise artifact. P11 has the same early-stage issue even though the reviewer specifically named P07, P08, and P10.
+
+\limit{The remaining P05/P06 cases involve observed helper-state timing versus expected semantic-state timing. They are retained. The floor is absolute and scale-dependent; it is a numerical policy, not a universal definition of useful signal.}
+
+\newsection{R3. Sorting failures and attention sharpening}
+\request{Find the failing rows and test whether sharper attention reduces the error.}
+The eight lanes each fail 64 of 512 probes at the first output write, giving 87.5\% agreement per lane. Their failure sets are pairwise disjoint and together cover all 512 probes. Each failed scalar is the positive one-hot coordinate for its target class. Equal percentages therefore do not imply the same failing rows.\ev{sorting}
+
+\reportfigure{02-sorting-attention}{9.1cm}{Sorting probe identities and the attention sweep. Zero is reported literally at scale eight, rather than replaced with an invented value on the logarithmic axis.}
+\input{tables/sharpening.tex}
+
+\finding{Multiplying actual QK logits by two reduces maximum lane error below the $10^{-4}$ absolute tolerance. The decoded target accuracy remains 100\% at every scale. At scale eight the recorded maximum lane discrepancy is zero.}
+\limit{The sweep supports finite-attention amplitude approximation as an explanation. It does not establish that ties or duplicates alone are the cause. The reviewer's shared-failing-eighth inference is contradicted by the row-level data.}
+
+\newsection{R4. Separate depth and branch-count controls}
+\request{Use programs that vary depth and width instead of treating collinear measures as independent evidence.}
+The original twelve programs have equal computed-variable count and maximum dependency depth. A correlation analysis cannot isolate their separate effects. The new family crosses requested branch depths 1 to 3 with branch counts 1 to 3, and every branch contributes to the output.\ev{complexity}
+
+\reportfigure{03-depth-count-controls}{9.1cm}{Original depth/count collinearity and the crossed structural controls. Realized depth includes serial merges; branch count is the controlled width factor.}
+\input{tables/families.tex}
+\finding{The centered realized-depth/variable-count matrix has rank two. Computed variables span 1 to 11, realized depth 1 to 5, and residual widths 24 to 105. All sampled outputs agree with RASP.}
+\limit{Serial merges also add depth. These token-local modulo programs establish a usable noncollinear design, not a general complexity law. Residual width is an observed consequence, rather than an independently fixed architectural axis.}
+
+\newsection{R5. Geometry-directed causal interventions}
+\request{Patch along PCA directions or high-CKA transitions and test their relationship to variables.}
+Stages are chosen using calibration geometric change, then frozen. Centered PCA fits calibration activations. A ridge decoder maps the first three PCs to independently evaluated RASP variables; this mapping uses labels and compiler first-write candidates. Donor-recipient-position pairs are sampled without requiring different answers. Independent test sequences remain held out.\ev{patches}
+
+\reportfigure{04-counterfactual-patches}{9.1cm}{Counterfactual agreement for PCA directions, equal-rank random directions, self patches, and compiler-variable oracle patches. Conditions share 192 pairs; they are not independent samples.}
+
+Across 12 programs, 16 pairs per program and six conditions give 1,152 rows. Rank-three PCA patches match the symbolic substitution in $113/192=58.85\%$ of pairs, compared with $81/192=42.19\%$ for random rank-three patches and $92/192=47.92\%$ for self patches. PCA rank-three patches change the output on $26/192$ pairs. The pooled oracle matches $182/192$ pairs.
+
+\finding{Geometry-selected subspaces produce more counterfactual agreement than these controls in the recorded sample. This is limited causal evidence beyond an output-lane patch.}
+\limit{Variable identification is not unsupervised. Calibration decoder folds share a PCA fit on all calibration activations. Ten P12 symbolic substitutions are undefined, producing 60 explicit failed condition rows across controls. Oracle patches are not universally successful.}
+
+\newsection{R6. Orthogonal rotation and coordinate checks}
+\request{Rotate representations randomly: PR/CKA should hold while fixed lane checks fail.}
+For each of the twelve programs, three seeded square orthogonal bases are applied. The study measures posthoc rotation geometry and separately executes models with transformed embeddings, affine maps, biases, and unembedding.\ev{rotation}
+
+\reportfigure{05-orthogonal-rotations}{9.1cm}{Rotation controls across all twelve programs. Coordinate comparisons deliberately keep the old lane map; decoded behavior and whole-space geometric measurements are checked separately.}
+
+\finding{All 36 executed transformations preserve 100\% token and sequence agreement. Maximum posthoc PR error is $1.42\times10^{-13}$ and maximum CKA error is $2.22\times10^{-15}$. Fixed coordinate checks do not survive the basis change.}
+The original executable import has zero residual discrepancy. Rotated execution is not numerically exact: its maximum transformed-residual discrepancy reaches $3.65\times10^{-5}$, while decoded outputs remain unchanged. These are different checks and should not be conflated.
+
+\limit{Orthogonal invariance is a mathematical property of the measurements, not evidence that they identify a computation. A separate nonorthogonal scale control changes PR on every program; final original-versus-scaled CKA ranges from 0.319 to 0.742.}
+
+\newsection{R7. Executing residual compression}
+\request{Compress the residual stream, induce overlapping representations, and repeat the tests.}
+The variant stored as \texttt{pca} fits an \emph{uncentered SVD} basis pooled across calibration stages. It differs from the centered PCA used for patch directions. A target fraction $f$ gives rank $\lceil d f\rceil$, so the realized width fraction can differ slightly. Reduced models genuinely carry smaller residual states; attention/key dimensions and MLP hidden widths remain fixed.\ev{compression}
+
+\reportfigure{06-executing-compression}{9.1cm}{Executing compression. Task-accuracy averages over all twelve programs and transformed recovery on the six held-out programs are explicitly distinguished. An original write schedule is only an intended reference when compressed behavior changes.}
+\input{tables/compression.tex}
+
+\finding{Across all twelve programs, mean token accuracy falls to 41.30\%, 61.62\%, and 72.09\% at target fractions 0.25, 0.5, and 0.75. The full-rank control restores 100\%.}
+\limit{Projected coordinate directions overlap, but that is not proof of recovered semantic superposition. Tracr's original paper already studies superposition using compiled models~\cite{tracr}; this control evaluates PR/CKA on a particular executing compression design.}
+
+\newsection{R8. Models trained on the same programs}
+\request{Train or fine-tune models on the same programs and compare their representations with compiled kernels.}
+All parameters of 36 randomly initialized transformers are trained for 600 Adam steps, using width 32, two layers, two heads, batch size 128, and learning rate 0.003. Three seeds train each task. Unique whole sequences are split before token expansion into 2,029 training, 677 validation, and 677 test sequences.\ev{learning}\ev{splits}
+
+\reportfigure{07-learned-models}{12.5cm}{Learned-model performance and representation comparison. Three-seed variation is descriptive. Majority baselines expose task imbalance; descriptive geometry pairing does not identify shared internal variables.}
+
+\finding{Six tasks average 100\% held-out token accuracy. Other task means range from 95.41\% to 99.99\%. Palindrome reaches 95.41\%, compared with a 93.94\% majority baseline; increasing-check reaches 98.94\%, compared with 92.76\%.}
+Learned final PR is lower than compiled final PR on all twelve tasks. Final-stage CKA ranges from 0.152 to 0.802. Models performing the same task therefore need not share the compiled representation geometry.
+
+\limit{Internal learned circuits are unknown. Stages are paired by relative progress across different depths. The results establish neither variable correspondence nor generalization to new lengths, natural language, or new data distributions. Saved checkpoints and predictions were independently replayed on all 677 test sequences.}
+
+\newsection{R9. Blind first-write transition recovery}
+\request{Test whether activations alone reveal the write schedule.}
+The detector accepts ordered observation-by-feature matrices. It receives no graph, lane map, variable names, or write schedule. Predictions are written and hashed before schedule extraction for scoring. Fixed thresholds detect relative change energy $>10^{-6}$, PR change $>0.05$, or adjacent CKA change $>0.01$. The linear CKA formulation follows the representation-similarity literature~\cite{cka}.\ev{recovery}
+
+\reportfigure{08-blind-write-recovery}{9.1cm}{Blind recovery on P07 to P12. Scores are program-level macro means. Shuffling preserves each detector's predicted event count; the always-write baseline exposes high event prevalence.}
+\input{tables/recovery.tex}
+
+\finding{Held-out PR and CKA macro F1 are 0.853 and 0.850, exceeding the 0.745 always-write baseline on average. The simpler change detector scores 0.876. The shuffled null uses 1,000 within-program permutations.}
+\limit{Only transitions with at least one first write are predicted. Variable names, simultaneous write counts, circuits, erasure, and lifetimes are not recovered. For P11, CKA F1 is 0.727, below its always-write baseline of 0.737.}
+
+\newsection{What compression reveals about the recovery score}
+The transformed-model retest is an essential negative control. The detector is rerun on actual executing rotated or compressed activations, and predictions are frozen before evaluation. Scores below are macro means over the six held-out programs only. They should not be mixed with the twelve-program compression averages.\ev{recovery}\ev{compression}
+\input{tables/transformed-recovery.tex}
+
+\finding{Random half-width compression obtains CKA schedule F1 0.879 while token accuracy is only 37.62\%. PR schedule F1 is 0.852 under the same transformation. High agreement with an intended write schedule can coexist with poor task execution.}
+
+\textbf{Interpretation.} This does not show that the detector recovered the causal computation of the compressed model. Once behavior changes, the original compiler schedule describes an intended reference, not established internal ground truth for the changed model. Geometry-based event detection is therefore a partial timing diagnostic.
+
+\textbf{What would strengthen the claim.} A future study would need independent internal ground truth for changed or learned models, causal tests of inferred variables, and evaluations under new distributions. These are future research requirements for stronger claims, not extra experiments that the review explicitly demanded for this revision.
+
+\newsection{R10. Position against InterpBench}
+\request{Position the work against Gupta and colleagues' closest prior benchmark.}
+InterpBench trains semi-synthetic transformers with known circuits using Strict Interchange Intervention Training, or SIIT. Its internal training constraints provide causal ground truth for evaluating circuit discovery~\cite{interpbench}. Its public implementation supports ACDC, subnetwork probing, and edge attribution patching~\cite{interpbenchcode}.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.21\linewidth}XX@{}}
+\toprule
+Dimension & RaspFormer revision & InterpBench\\
+\midrule
+Primary question & What PR/CKA and related diagnostics reveal about representations and first-write timing. & Whether circuit-discovery techniques recover known causal circuits.\\
+Ground truth & Compiler schedule for compiled models; unknown internal circuits for ordinarily trained models. & Known causal circuits established through SIIT training.\\
+Learned objective & Ordinary output supervision on the same twelve tasks. & Behavioral and internal interchange/strictness constraints.\\
+Interventions & Geometry-selected patches plus supervised mapping and oracle/random/self controls. & Training and evaluation built around known internal circuit structure.\\
+Claim supported here & Controlled geometric robustness, partial event detection, and descriptive learned comparisons. & A separate circuit-discovery benchmark; its results are not reproduced here.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\finding{The positioning request is addressed by naming the overlap and the decisive difference in internal ground truth. No direct InterpBench model or benchmark run is claimed.}
+\limit{Training on matching input/output tasks is not enough to inherit a known circuit. This revision cannot use InterpBench's internal validation as evidence about its own ordinarily trained models.}
+
+\textbf{Related foundation.} Tracr compiles programs into transformers with known structure and already uses that setting to study superposition~\cite{tracr}. The present contribution should be framed as a focused evaluation of representation measurements and their failure cases, not the introduction of compiled-model interpretability or residual compression.
+
+\newsection{Preserved strengths and diagnostic checks}
+\label{sec:diagnostics}
+The reviewer highlighted reproducibility, honest interpretation, correlation-versus-magnitude checks, and the full/computed view comparison. Those checks remain useful after the added experiments.
+
+\reportfigure{09-diagnostics}{9.0cm}{Current diagnostic evidence. Correlation can remain almost perfect despite scalar tolerance failures. Full and computed residual views use the same matched observations, but answer different representational questions.}
+
+\textbf{Correlation is not numerical agreement.} In the original sorting output lanes, Pearson correlation exceeds 0.999999999996 while only 87.5\% of values meet tolerance. Maximum lane error is approximately $8.52\times10^{-4}$. The alignment code retains Pearson correlation, maximum absolute error, and fraction close. Figure~9 above redraws current evidence; it is not a claim that the removed historical report's Figure~9 remains in place.\ev{alignment}
+
+\textbf{Full versus computed views.} Input lanes can dominate variance and apparent dimensionality. Removing named input/constant coordinates changes the question, but computed views still contain helper lanes. Both views retain raw measurements, activity flags, and matched observation alignment.\ev{comparison}
+
+\finding{The retained diagnostics prevent high correlation, low dimensionality, or clean compiler agreement from being mistaken for complete computational understanding.}
+
+\newsection{Reproducibility, cleanup, and verification}
+\label{sec:reproducibility}
+The seven canonical studies are programs, trace, geometry, alignment, comparison, validation, and learning. Each has a completed manifest. New disposable runs use \texttt{results/<study>/runs/<UTC>-<id>/}; preserved evidence uses \texttt{results/<study>/reference/}. Program folders use lower-case hyphenated names such as \texttt{p12-sorting}; trained runs use \texttt{seed-42}.\ev{verification}\ev{readme}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}P{.28\linewidth}X@{}}
+\toprule
+Recorded check & Outcome\\
+\midrule
+Implementation tests & 28 tests passed in 33.884 seconds; a later focused seven-test research pass also completed.\\
+Notebooks & Five notebooks, 37 code cells executed successfully.\\
+Checkpoint replay & All 36 saved models reproduce predictions and independently evaluated RASP targets on 677 test sequences.\\
+Frozen prediction artifacts & 24 original/transformed prediction hashes and 288 transformed detector rows checked.\\
+Patch stage selection & All twelve chosen stages independently recomputed from calibration activations.\\
+Review & Independent execution, scientific, and final audits completed after accepted corrections.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Manifests preserve dependencies, compiler revision, source and notebook hashes, Git state, numerical policy, completion status, and failures. Original runs record their dirty state honestly. The recorded scientific verification date is 15 October 2026; creating this PDF does not constitute a fresh experiment rerun.
+
+\textbf{Cleanup.} Obsolete report bundles, duplicate archived trace tables, and stale figures were replaced by current evidence. Program references are now \texttt{manifest.json} and \texttt{schedule.md}; manual traces are \texttt{traces.json}. Earlier versions remain in Git history. The original twelve RASP programs remain unchanged.
+
+\subsection*{Commands from the repository root}
+\begingroup\small
+\begin{verbatim}
+uv python install 3.12
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/python -m raspformer.study
+.venv/bin/python -m raspformer.report
+\end{verbatim}
+\endgroup
+Use \texttt{--sections baseline}, \texttt{--sections validation}, or \texttt{--sections learning} for a subset. Verification scripts are \texttt{check\_notebooks.py}, \texttt{replay\_learning.py}, and \texttt{verify\_results.py}. Source-bundle build instructions accompany this PDF.
+
+\newsection{Conclusions and remaining boundaries}
+\textbf{What was addressed.} The numerical policy, row-level sorting diagnosis, noncollinear structural controls, geometry-directed patches, rotation, executing compression, trained-model comparison, blind transition detection, and prior-work positioning all have recorded implementations or documentation.
+
+\textbf{What was confirmed.} Negligible variance caused misleading normalized scores. PR depends on encoding and distribution. Orthogonal rotation preserves whole-space PR/CKA while invalidating a fixed axis map. Original fidelity agreement depends on compiler-known coordinates and timing.
+
+\textbf{What was corrected.} Equal 87.5\% sorting-lane agreement does not imply a shared failing eighth of probes. The observed sets are different, and the failure is an amplitude discrepancy in each target's positive one-hot lane. Sharpening attention reduces it.
+
+\textbf{What is partly supported.} Activation-only geometry finds some first-write transitions above shuffled and always-write baselines on average. PCA-selected subspace patches have more symbolic counterfactual agreement than the recorded equal-rank random and self controls. Neither result establishes complete variable or algorithm recovery.
+
+\textbf{What failed as a guarantee.} Random compression can preserve a high intended-schedule recovery score while strongly degrading answers. Similar timing geometry does not guarantee preserved task computation. Learned models can execute the same tasks with markedly different PR/CKA from the compiled representations.
+
+\textbf{What remains open.}
+\begin{itemize}
+\item Independent recovery of complete algorithms or causal circuits from PR/CKA.
+\item Erasure, overwriting, and general variable-lifetime recovery.
+\item Known internal ground truth for the ordinarily trained models.
+\item Reliable recovery when a transformation changes the actual computation.
+\item Generalization beyond the recorded sequence lengths and distributions.
+\item A general relationship between representation geometry and algorithmic complexity.
+\end{itemize}
+
+\finding{The concrete revision requests have been addressed. The scientific result is partial execution-timing evidence with explicit counterexamples, rather than a claim that every concern or research limitation has been resolved.}
+
+\appendix
+\newsection{Implementation map}
+\begingroup\small
+\begin{tabularx}{\linewidth}{@{}P{.33\linewidth}X@{}}
+\toprule
+File & Main responsibility\\
+\midrule
+\nolinkurl{raspformer/geometry.py} & Variance floor, activity flags, PCA/PR/CKA, observations, and residual views.\\
+\nolinkurl{raspformer/alignment.py} & Independent RASP values in known compiler lanes; variance and coverage export; original A/B interventions.\\
+\nolinkurl{raspformer/compiler.py} & Compilation, schedules, traces, run recording, Git and source provenance.\\
+\nolinkurl{raspformer/models.py} & Imported executable models, basis changes, reduced residual states, patches, random initialization, Adam, checkpoint save/load.\\
+\nolinkurl{raspformer/research.py} & Rotation/scaling controls, compression, blind events, geometry-selected patches, sorting diagnosis, structural families.\\
+\nolinkurl{raspformer/study.py} & Shared command-line runner and completed-reference promotion for baseline, validation, and learning.\\
+\nolinkurl{raspformer/report.py} & Existing Markdown report and current result figures from canonical data.\\
+\nolinkurl{notebooks/05_comparison.ipynb} & Uses the shared comparison runner instead of duplicate numerical orchestration.\\
+\nolinkurl{test_numerics.py} & Numerical floor, invariance, exports, sampling, coverage, and provenance checks.\\
+\nolinkurl{test_models.py} & Imported execution, transformed models, patches, training, and checkpoint checks.\\
+\nolinkurl{test_research.py} & Blind prediction isolation, nulls, stage selection, separation, and family behavior.\\
+\nolinkurl{scripts/} & Notebook execution, checkpoint replay, and canonical-evidence verification.\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+The current LaTeX source, tables, vector figures, input-path metadata, and plotting scripts are under \nolinkurl{output/latex/reviewer-response/}. They do not alter the scientific implementation or overwrite the earlier PDF reports.
+
+\subsection*{Control pipeline}
+Calibration sequences determine PCA/SVD bases and patch-stage choices. Independent test activations supply task outcomes and final measurements. Blind transition predictions are saved before compiler-schedule scoring. Supervised variable mapping in the patch experiment is a separate, disclosed stage.
+
+\newsection{Detailed original fidelity and rotation results}
+\subsection*{Matched computed-view fidelity, all twelve programs}
+\input{tables/fidelity.tex}
+PR error is retained as a secondary numerical diagnostic. CKA error averages only paired-defined transitions. \texttt{n/a} means no defined comparison; it is not a zero error. Lane agreement concerns first-write scalar coordinates.\ev{comparison}
+
+\subsection*{Orthogonal rotation, all twelve programs and three seeds}
+\input{tables/rotation.tex}
+Geometry errors are maxima over stages and seeds. Fixed-lane close rates are means over stage/seed rows, using the intentionally unchanged original lane map. Token agreement is a minimum over those rows.\ev{rotation}
+
+\newsection{Detailed learned-model performance}
+All rows average three seeds. Seed SD is in percentage points, not a confidence interval. All compiled comparison models score 100\% on these held-out targets.\ev{learning}
+\input{tables/learning.tex}
+
+\subsection*{Final-stage representation comparison}
+\input{tables/learned-geometry.tex}
+Geometry averages the three final-stage comparisons per task. Cross-model CKA uses aligned test observations and relative-stage progress; its value does not establish matching causal variables.\ev{learnedgeometry}
+
+\newsection{Detailed numerical, patch, and recovery evidence}
+\subsection*{Negligible-variance computed stages}
+\input{tables/tiny-variance.tex}
+All twelve rows have variance far below the selected $10^{-12}$ floor. Zero filtered PR is an inactivity convention; raw measurements are preserved.\ev{stages}
+
+\subsection*{Patch conditions by kind and rank}
+\input{tables/patches.tex}
+Oracle ranks differ because variable lane counts differ. Conditions share 192 pairs across all twelve programs. Sixty undefined symbolic-counterfactual rows remain explicit failures.\ev{patches}
+
+\newsection{Per-program recovery and nonorthogonal scale control}
+\subsection*{Held-out first-write transition F1}
+\input{tables/recovery-per-program.tex}
+P11 is the one held-out program/detector comparison whose F1 fails to exceed the always-write baseline. Each program's null preserves that detector's predicted event count.\ev{recovery}
+
+\subsection*{Final full-space rescaling, all twelve programs}
+\input{tables/rescaling.tex}
+Coordinates are rescaled geometrically from 0.1 to 10. This posthoc nonorthogonal control changes relative feature scales and does not have the invariance guarantee of an orthogonal rotation. The original/scaled comparison is descriptive.\ev{rotation}
+
+\newsection{Evidence index}
+Paths are relative to the repository root and link to the pinned commit. Per-program control directories contain complete tables, saved activations, frozen prediction artifacts, and model checkpoints. Figure metadata lists exact input paths and aggregations.
+\begingroup\small\raggedright
+\begin{enumerate}[label=E\arabic*.,ref=E\arabic*,itemsep=7pt]
+\item\label{src:programs} Program definitions and schedules. \repopath{raspformer/programs.py}; \repodir{results/programs/reference}.
+\item\label{src:alignment} Compiler-known semantic alignment and scalar diagnostics. \repopath{raspformer/alignment.py}; \repopath{results/alignment/reference/lanes.csv}.
+\item\label{src:stages} Matched stage metrics, raw variance, and numerical flags. \repopath{results/comparison/reference/matched/stages.csv}.
+\item\label{src:floor} Floor sensitivity for matched and balanced designs. \repopath{results/comparison/reference/matched/variance-sensitivity.csv}; \repopath{results/comparison/reference/balanced/variance-sensitivity.csv}.
+\item\label{src:comparison} Full/computed, matched/balanced comparison. \repopath{results/comparison/reference/comparison.csv}; \repopath{results/geometry/reference/layer_metrics.csv}.
+\item\label{src:sorting} Sorting row errors, probe identities, and attention sweep. \repodir{results/validation/reference/p12-sorting}. Relevant files are \texttt{per-observation-errors.csv}, \texttt{failing-probe-sets.json}, \texttt{balanced-probes.csv}, and \texttt{attention-sharpening.csv}.
+\item\label{src:complexity} Structural family grid, schedules, and geometry. \repodir{results/validation/reference/complexity}.
+\item\label{src:patches} Per-program \texttt{patches.csv}, \texttt{variable-decoders.csv}, and \texttt{patch-stage-predictions.json}. \repodir{results/validation/reference}; implementation \repopath{raspformer/research.py}.
+\item\label{src:rotation} Per-program \texttt{rotations.csv} and \texttt{nonorthogonal.csv}. \repodir{results/validation/reference}; executable basis transformation in \repopath{raspformer/models.py}.
+\item\label{src:compression} Per-program \texttt{compression.csv}, \texttt{calibration-basis.npz}, and reduced-model checkpoints. \repodir{results/validation/reference}.
+\item\label{src:recovery} Per-program frozen predictions, hashes, original/transformed recovery scores, and summary. \repopath{results/validation/reference/summary.json}; \repopath{raspformer/research.py}.
+\item\label{src:learning} Trained-model summary, predictions, loss histories, and 36 checkpoints. \repopath{results/learning/reference/summary.csv}; \repodir{results/learning/reference}.
+\item\label{src:learnedgeometry} Learned/compiled representation comparisons. \repopath{results/learning/reference/geometry.csv}.
+\item\label{src:splits} Independent sequence designs. \repopath{results/learning/reference/sequence-splits.csv}; \repopath{results/validation/reference/sequence-splits.csv}.
+\item\label{src:verification} Recorded verification and replay. \repopath{results/validation/reference/verification.json}; \repopath{results/learning/reference/replay.json}; \repopath{results/report/review.md}.
+\item\label{src:readme} Commands, naming, scope, and source-report generator. \repopath{README.md}; \repopath{raspformer/report.py}; \repopath{results/report/decisions.tsv}.
+\end{enumerate}
+\endgroup
+
+\clearpage
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{9}
+\raggedright
+\bibitem{interpbench} Rohan Gupta, Iv\'an Arcuschin, Thomas Kwa, and Adri\`a Garriga-Alonso. \emph{InterpBench: Semi-Synthetic Transformers for Evaluating Mechanistic Interpretability Techniques.} NeurIPS 2024, Datasets and Benchmarks Track. \href{https://proceedings.neurips.cc/paper_files/paper/2024/hash/a8f7d43ae092d9a5295775eb17f3f4f7-Abstract-Datasets_and_Benchmarks_Track.html}{Official proceedings}. DOI: \href{https://doi.org/10.52202/079017-2950}{10.52202/079017-2950}.
+\bibitem{interpbenchcode} InterpBench authors. \emph{InterpBench implementation.} \url{https://github.com/FlyingPumba/InterpBench}. Primary README checked 17 October 2026.
+\bibitem{tracr} David Lindner, J\'anos Kram\'ar, Sebastian Farquhar, Matthew Rahtz, Thomas McGrath, and Vladimir Mikulik. \emph{Tracr: Compiled Transformers as a Laboratory for Interpretability.} NeurIPS 2023. \url{https://arxiv.org/abs/2301.05062}.
+\bibitem{cka} Simon Kornblith, Mohammad Norouzi, Honglak Lee, and Geoffrey Hinton. \emph{Similarity of Neural Network Representations Revisited.} ICML 2019. \url{https://arxiv.org/abs/1905.00414}.
+\bibitem{raspformer} RaspFormer project. \emph{Canonical research evidence and implementation}, commit \texttt{e06479ce09f10695aa5280162f80d880c060eaf5}. \url{https://github.com/raghulchandramouli/RaspFormer/tree/e06479ce09f10695aa5280162f80d880c060eaf5}. Scientific runs recorded 15 October 2026.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,14 @@
+{
+  "engine": "Tectonic 0.17.0",
+  "source_commit": "e06479ce09f10695aa5280162f80d880c060eaf5",
+  "prepared": "2026-10-17",
+  "scientific_evidence_date": "2026-10-15",
+  "scientific_experiments_rerun_for_report": false,
+  "pages": 25,
+  "vector_figures": 9,
+  "data_tables": 15,
+  "pdf_sha256": "fef9fc928501ad151d7ec0d7ce75cb07d09403db2b5070dddbf72de70a736732",
+  "scientific_content_review": "Independent audit found no necessary corrections. SVD terminology update applied.",
+  "layout_review": "All 25 pages visually inspected; final compilation has no LaTeX warnings.",
+  "figure_metadata_sha256": "58e679700850100a6bbe49f185f509dce5e07063257948389a386742123c5638"
+}

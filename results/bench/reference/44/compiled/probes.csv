@@ -1,0 +1,4 @@
+case,model,variable,stage,stage_name,first_write_stage,classes,observations,train_accuracy,test_accuracy,majority_accuracy,readable,position_determined
+44,compiled,count_greater_than_22,0,Embedding,2,10,864,0.4398148148148148,0.34837962962962965,0.1574074074074074,False,False
+44,compiled,count_greater_than_22,1,L1/Attn,2,10,864,0.5995370370370371,0.5231481481481481,0.1574074074074074,False,False
+44,compiled,count_greater_than_22,2,L1/MLP,2,10,864,1.0,1.0,0.1574074074074074,True,False

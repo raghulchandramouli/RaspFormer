@@ -1,0 +1,19 @@
+{
+  "title": "Representation Geometry and Computation: Extended RaspFormer Results",
+  "format": "Single-column LaTeX research report without a separate cover",
+  "prepared": "2026-10-18",
+  "engine": "Tectonic 0.17.0",
+  "body_font_points": 11,
+  "pages": 15,
+  "vector_figures": 9,
+  "derived_tables": 15,
+  "words_extracted": 4773,
+  "scientific_source_commit": "e06479ce09f10695aa5280162f80d880c060eaf5",
+  "scientific_evidence_date": "2026-10-15",
+  "scientific_experiments_rerun": false,
+  "pdf_sha256": "7e97aa6d22e4a491c13024c535a6157895152177cbe5abf5d2fd7bf13837db7c",
+  "unique_evidence_files_verified": 89,
+  "scientific_review": "Independent review passed; six-program group-mean wording corrected",
+  "layout_review": "All 15 pages independently inspected; final page15 path-wrap polish applied",
+  "figure_metadata_sha256": "8a064ebeb11f0c4d0909a6e59b6cc422bd41b9172e811b62b060a70d3a3dc69d"
+}
