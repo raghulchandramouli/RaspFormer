@@ -237,7 +237,7 @@ def run_learning(programs, config, probe_config, output, seeds, steps):
     return {"models": len(summary), "steps": steps, "seeds": list(seeds), "split_seed": 2026, "origin": "random-init-trained"}
 
 
-def run_validation(output, seeds):
+def run_validation(output, seeds, promote=True):
     from .research import run_diagnostics, run_families
 
     programs = build_programs()
@@ -255,6 +255,9 @@ def run_validation(output, seeds):
         write_json(run_dir / "manifest.json", evidence)
         evidence["families"] = run_families(config, probes, run_dir / "complexity")
         evidence["programs"] = [{"program": name} for name in programs]
+    if not promote:
+        print(f"Completed {run_dir} (reference left unchanged)", flush=True)
+        return run_dir
     reference = promote_reference(run_dir, output / "validation")
     print(f"Saved {reference}", flush=True)
     return reference
@@ -284,6 +287,8 @@ def main():
     parser.add_argument("--seeds", type=int, nargs="+", default=[42, 43, 44])
     parser.add_argument("--training-steps", type=int, default=600)
     parser.add_argument("--sections", nargs="+", choices=("baseline", "validation", "learning"), default=["baseline", "validation", "learning"])
+    parser.add_argument("--no-promote", action="store_true",
+                        help="Keep a completed validation run under results/validation/runs/ without replacing the canonical reference.")
     args = parser.parse_args()
     if args.training_steps < 1 or not args.seeds or len(set(args.seeds)) != len(args.seeds):
         parser.error("Use positive training steps and distinct seeds.")
@@ -291,7 +296,7 @@ def main():
     if "baseline" in args.sections:
         run_baseline(output)
     if "validation" in args.sections:
-        run_validation(output, tuple(args.seeds))
+        run_validation(output, tuple(args.seeds), promote=not args.no_promote)
     if "learning" in args.sections:
         run_learning_study(output, tuple(args.seeds), args.training_steps)
 

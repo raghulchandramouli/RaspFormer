@@ -1,5 +1,13 @@
 {
   "source_split": "calibration",
+  "selector": "cka",
+  "selector_key": "geometry_change",
+  "selected_stage": 1,
+  "stage_by_selector": {
+    "cka": 1,
+    "change": 1,
+    "pr": 1
+  },
   "predictions": [
     {
       "stage": 1,
@@ -33,6 +41,5 @@
       "predict_pr": false,
       "predict_cka": false
     }
-  ],
-  "selected_stage": 1
+  ]
 }
