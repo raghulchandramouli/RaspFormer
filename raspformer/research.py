@@ -120,6 +120,38 @@ def infer_writes(matrices, variance_floor=1e-12):
     return rows
 
 
+PATCH_STAGE_SELECTORS = {
+    "cka": "geometry_change",          # 1 - adjacent linear CKA: the high-CKA-change transition
+    "change": "relative_delta_energy",  # residual change energy relative to the incoming state
+    "pr": "delta_pr",                   # participation ratio of the stage delta
+}
+
+
+def select_patch_stage(predictions, selector="cka"):
+    """Pick the patch transition from blind detector rows alone.
+
+    The default selector is the adjacent-CKA change, so the chosen stage is the
+    transition where linear CKA between consecutive residual states drops most.
+    The function sees only detector rows; it never reads the compiler schedule.
+    """
+    if selector not in PATCH_STAGE_SELECTORS:
+        raise ValueError(f"selector must be one of {sorted(PATCH_STAGE_SELECTORS)}")
+    key = PATCH_STAGE_SELECTORS[selector]
+    return int(max(predictions, key=lambda row: row[key])["stage"])
+
+
+def patch_stage_record(predictions, selector="cka"):
+    """Frozen record of the selected stage and what each detector would have chosen."""
+    return {
+        "source_split": "calibration",
+        "selector": selector,
+        "selector_key": PATCH_STAGE_SELECTORS[selector],
+        "selected_stage": select_patch_stage(predictions, selector),
+        "stage_by_selector": {name: select_patch_stage(predictions, name) for name in PATCH_STAGE_SELECTORS},
+        "predictions": predictions,
+    }
+
+
 def recovery_scores(predictions, truth, seed=42):
     truth = np.asarray(truth, dtype=bool)
     rng = np.random.default_rng(seed)
@@ -241,12 +273,19 @@ def decode_score(predicted, target, categorical):
     return dict(r2=r2, accuracy=float(agree))
 
 
-def geometry_patches(program, assembled, model, config, split, calibration, states, encoded, predictions, output):
-    chosen = max(predictions, key=lambda row: row["geometry_change"])["stage"]
+def geometry_patches(program, assembled, model, config, split, calibration, states, encoded, predictions, output, selector="cka"):
+    chosen = select_patch_stage(predictions, selector)
     matrix = flat(calibration[chosen])
     profile = pca_profile(matrix)
     basis = profile["components"]
-    np.savez(output / "patch-calibration-basis.npz", basis=basis, mean=profile["mean"], stage=chosen)
+    # Directions written by the selected transition itself: PCA of the calibration
+    # delta (state after the transition minus state before it). Patching along
+    # these is patching along the high-CKA transition rather than along the
+    # principal axes of the whole residual state.
+    transition_profile = pca_profile(flat(calibration[chosen]) - flat(calibration[chosen - 1]))
+    transition_basis = transition_profile["components"]
+    np.savez(output / "patch-calibration-basis.npz", basis=basis, mean=profile["mean"], stage=chosen,
+             selector=selector, transition_basis=transition_basis, transition_mean=transition_profile["mean"])
     traced = trace_craft_graph(program, config)
     _, variables, _ = extract_schedule(program, assembled, config, traced=traced)
     evaluator = rasp.DefaultRASPEvaluator()
@@ -274,7 +313,7 @@ def geometry_patches(program, assembled, model, config, split, calibration, stat
             candidates.append((validation["r2"] if validation["r2"] is not None else -1e9, variable, expression))
     pd.DataFrame(decoder_rows).to_csv(output / "variable-decoders.csv", index=False)
     if not candidates:
-        return dict(selected_stage=chosen, status="no compiler variable first written at geometrically selected stage")
+        return dict(selected_stage=chosen, selector=selector, status="no compiler variable first written at geometrically selected stage")
     _, variable, expression = max(candidates, key=lambda item: item[0])
     rng = np.random.default_rng(42)
     pairs = [(int(rng.integers(96)), int(rng.integers(96)), int(rng.integers(length))) for _ in range(16)]
@@ -285,10 +324,10 @@ def geometry_patches(program, assembled, model, config, split, calibration, stat
         donor_values = evaluator.evaluate(expression, split.test[donor])
         counterfactual = np.asarray(rasp_with_patch(program, expression, split.test[recipient], position, donor_values[position]))
         delta = np.asarray(states[chosen])[donor, position+1] - np.asarray(states[chosen])[recipient, position+1]
-        for kind, rank in [("pca", 1), ("pca", 3), ("random", 1), ("random", 3), ("self", 0), ("oracle", len(variable["residual_lane_indices"]))]:
+        for kind, rank in [("pca", 1), ("pca", 3), ("transition", 1), ("transition", 3), ("random", 1), ("random", 3), ("self", 0), ("oracle", len(variable["residual_lane_indices"]))]:
             change = np.zeros_like(delta)
-            if kind in ("pca", "random"):
-                projection = (basis if kind == "pca" else random_basis)[:, :rank]
+            if kind in ("pca", "transition", "random"):
+                projection = {"pca": basis, "transition": transition_basis, "random": random_basis}[kind][:, :rank]
                 change = delta @ projection @ projection.T
             elif kind == "oracle":
                 lanes = variable["residual_lane_indices"]
@@ -303,7 +342,7 @@ def geometry_patches(program, assembled, model, config, split, calibration, stat
                 symbolic_counterfactual_defined=bool(all(value is not None for value in counterfactual)),
                 full_counterfactual_match=bool(all(value is not None for value in counterfactual) and np.allclose(actual, counterfactual.astype(float), atol=config.abs_tol, rtol=config.rel_tol))))
     pd.DataFrame(rows).to_csv(output / "patches.csv", index=False)
-    return dict(selected_stage=chosen, variable=variable["variable"],
+    return dict(selected_stage=chosen, selector=selector, variable=variable["variable"],
                 controls=pd.DataFrame(rows).groupby(["kind", "rank"])[["behavior_changed", "full_counterfactual_match"]].mean().reset_index().to_dict("records"))
 
 
@@ -371,10 +410,7 @@ def run_diagnostics(programs, config, probe_config, output: Path, seeds=(42, 43,
         expected = np.asarray([evaluator.evaluate(program, seq) for seq in split.test])
         predictions = infer_writes([flat(state) for state in states])
         patch_predictions = infer_writes([flat(state) for state in calibration])
-        write_json(directory / "patch-stage-predictions.json", {
-            "source_split": "calibration", "predictions": patch_predictions,
-            "selected_stage": max(patch_predictions, key=lambda row: row["geometry_change"])["stage"],
-        })
+        write_json(directory / "patch-stage-predictions.json", patch_stage_record(patch_predictions, selector="cka"))
         frozen = directory / "blind-predictions.json"
         write_json(frozen, predictions)
         digest = hashlib.sha256(frozen.read_bytes()).hexdigest()

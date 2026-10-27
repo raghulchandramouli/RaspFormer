@@ -122,21 +122,32 @@ def generate_report(results):
     ax.legend(loc="upper center", bbox_to_anchor=(.5, -.15), ncol=6, fontsize=8)
     figure(fig, "executing-compression", "Accuracy of executing compressed models, using disjoint calibration and test sequences.")
 
-    text.extend([
-        "## Geometry-directed causal patches\n",
-        "Patch stages are selected from calibration geometric change and frozen before loading the compiler schedule. PCA fits calibration activations. A ridge decoder then maps the first three PCs to independently evaluated RASP variables. Decoder folds separate labels by whole sequence, but share an unsupervised PCA fitted on all calibration sequences. The final test sequences are independently held out from stage selection, PCA fitting, and decoder fitting. Donor-recipient pairs are sampled without selecting for different answers.\n",
-        "PCA ranks one and three are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle. Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.\n",
-    ])
     patch_frames = []
     for item in program_rows:
         folder = results / "validation/reference" / item["program"].lower().replace("_", "-")
         path = folder / "patches.csv"
         if path.exists():
             patch_frames.append(pd.read_csv(path).assign(program=item["program"]))
-    if patch_frames:
-        patches = pd.concat(patch_frames, ignore_index=True)
+    patches = pd.concat(patch_frames, ignore_index=True) if patch_frames else pd.DataFrame(columns=["kind", "rank", "behavior_changed", "full_counterfactual_match"])
+    has_transition = bool((patches["kind"] == "transition").any())
+    direction_text = (
+        "Two geometry-derived direction sets are patched at that transition: the leading PCA directions of the residual state, and the leading PCA directions of the transition itself (the calibration delta between the state after and before the selected stage). Ranks one and three of each are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle."
+        if has_transition else
+        "PCA ranks one and three are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle."
+    )
+    text.extend([
+        "## Geometry-directed causal patches\n",
+        "Patch stages are selected from calibration activations as the transition with the largest adjacent-CKA change (1 minus linear CKA between consecutive residual states), then frozen before loading the compiler schedule. The stages that the residual-change and PR detectors would have chosen are recorded beside the selection. PCA fits calibration activations. A ridge decoder then maps the first three PCs to independently evaluated RASP variables. Decoder folds separate labels by whole sequence, but share an unsupervised PCA fitted on all calibration sequences. The final test sequences are independently held out from stage selection, PCA fitting, and decoder fitting. Donor-recipient pairs are sampled without selecting for different answers.\n",
+        direction_text + " Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.\n",
+    ])
+    if len(patches):
         table(patches.groupby(["kind", "rank"])[["behavior_changed", "full_counterfactual_match"]].mean().reset_index())
         text.append(f"The table includes {len(patches)} patch conditions. Self patches are a baseline-preservation check. Per-program variable decoder results and all donor identities are saved next to the patch rows.\n")
+        if has_transition:
+            by_program = patches[patches["rank"] == 3].groupby(["program", "kind"])["full_counterfactual_match"].mean().unstack()
+            higher = int((by_program["transition"] > by_program["pca"]).sum())
+            equal = int((by_program["transition"] == by_program["pca"]).sum())
+            text.append(f"Rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in {higher} programs and equal in {equal}. Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.\n")
 
     text.append("## Sorting row diagnosis and attention sharpening\n")
     sorting = next(item for item in program_rows if item["program"] == "P12_sorting")

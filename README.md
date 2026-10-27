@@ -30,7 +30,7 @@ To run one part, use these commands:
 .venv/bin/python -m raspformer.study --sections learning --seeds 42 43 44 --training-steps 600
 ```
 
-Each section replaces its canonical reference only after its run completes. Run `raspformer.report` after all sections finish.
+Each section replaces its canonical reference only after its run completes. Add `--no-promote` to keep a completed validation run under `results/validation/runs/` without touching the reference. Run `raspformer.report` after all sections finish.
 
 ## What is measured
 
@@ -41,7 +41,7 @@ Each section replaces its canonical reference only after its run completes. Run 
 | `geometry` | Class-balanced targets, PCA, PR, CKA, and full versus computed residual views. |
 | `alignment` | Independently evaluated RASP values encoded in known compiler lanes, plus A and B interventions. |
 | `comparison` | Shared inputs and balanced sensitivity checks, raw variance, thresholded metrics, and CKA availability. |
-| `validation` | Orthogonal and nonorthogonal controls, executing compression, blind transition recovery, PCA patches, sorting diagnostics, and a depth-by-branch-count family. |
+| `validation` | Orthogonal and nonorthogonal controls, executing compression, blind transition recovery, causal patches at the adjacent-CKA-selected transition along state-PCA and transition-delta directions, sorting diagnostics, and a depth-by-branch-count family. |
 | `learning` | Randomly initialized transformers trained on the same twelve programs, disjoint sequence splits, three seeds, predictions, checkpoints, and compiled-model comparisons. |
 
 The vocabulary is the integers -2 through 5. The main probe design uses length-six sequences and noncausal attention. Output checks also cover shorter examples.
@@ -104,7 +104,7 @@ Expected representations use independently evaluated RASP values and compiler-kn
 
 Blind recovery predicts transitions containing writes. It does not recover variable names or full circuits. Its predictions are frozen before schedule scoring. Shuffled-stage and always-positive baselines are reported.
 
-PCA patch stages and directions come from geometry. Mapping them to named variables subsequently uses supervised RASP labels. Calibration decoder folds share an unsupervised PCA fitted on calibration data. The separate test sequences remain held out.
+Patch stages are the transition with the largest adjacent-CKA change on calibration activations; the stages the residual-change and PR detectors would pick are recorded alongside. Patch directions come from geometry alone, either the PCA of the residual state or the PCA of the transition delta. Mapping them to named variables subsequently uses supervised RASP labels. Calibration decoder folds share an unsupervised PCA fitted on calibration data. The separate test sequences remain held out.
 
 Compressed models execute with smaller residual streams. Their attention and MLP hidden widths remain unchanged. Projected-axis overlap measures induced overlap between original coordinates. There is no claim of general variable-lifetime recovery.
 

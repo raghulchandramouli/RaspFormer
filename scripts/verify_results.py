@@ -14,7 +14,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from raspformer.research import flat, infer_writes
+from raspformer.research import flat, infer_writes, select_patch_stage
 
 
 def read_json(path):
@@ -54,9 +54,12 @@ def main():
                 raise AssertionError("Calibration and test sequences overlap.")
         if stage["source_split"] != "calibration" or predictions != stage["predictions"]:
             raise AssertionError("Patch stage did not use calibration activations.")
-        selected_stage = max(predictions, key=lambda row: row["geometry_change"])["stage"]
+        selector = stage.get("selector", "cka")
+        if selector != "cka":
+            raise AssertionError(f"Patch stage selector is {selector!r}; the canonical selector is adjacent-CKA change.")
+        selected_stage = select_patch_stage(predictions, selector)
         if stage["selected_stage"] != selected_stage:
-            raise AssertionError("Patch stage is not the calibration prediction argmax.")
+            raise AssertionError("Patch stage is not the calibration adjacent-CKA-change argmax.")
         if stage["selected_stage"] != item["patches"]["selected_stage"]:
             raise AssertionError("Patch stage changed after calibration selection.")
     learning = args.results / "learning/reference"

@@ -10,7 +10,8 @@ import numpy as np
 
 from raspformer.compiler import CompilerConfig
 from raspformer.geometry import ProbeConfig
-from raspformer.research import (family_program, infer_writes, recovery_scores,
+from raspformer.research import (PATCH_STAGE_SELECTORS, family_program, infer_writes,
+                                patch_stage_record, recovery_scores, select_patch_stage,
                                 split_sequences)
 from tracr.rasp import rasp
 
@@ -62,6 +63,32 @@ class ResearchTests(unittest.TestCase):
             self.assertEqual(result["f1"], 1)
             self.assertLess(result["null_mean_f1"], 0.25)
             self.assertAlmostEqual(result["all_positive_f1"], 2 / 9)
+
+    def test_patch_stage_selector_is_adjacent_cka_change_by_default(self):
+        rng = np.random.default_rng(3)
+        base = rng.normal(size=(80, 4))
+        # Stage 1: a large-energy change that preserves linear CKA (uniform scaling).
+        scaled = base * 3.0
+        # Stage 2: a small-energy change that rewrites one coordinate (CKA drops).
+        rewritten = scaled.copy()
+        rewritten[:, 3] = rng.normal(size=80) * 0.3
+        rows = infer_writes([base, scaled, rewritten])
+        self.assertEqual(select_patch_stage(rows), 2)
+        self.assertEqual(select_patch_stage(rows, "cka"), 2)
+        self.assertEqual(select_patch_stage(rows, "change"), 1)
+        record = patch_stage_record(rows)
+        self.assertEqual(record["selector"], "cka")
+        self.assertEqual(record["selector_key"], "geometry_change")
+        self.assertEqual(record["selected_stage"], 2)
+        self.assertEqual(set(record["stage_by_selector"]), set(PATCH_STAGE_SELECTORS))
+        self.assertEqual(record["stage_by_selector"]["change"], 1)
+        with self.assertRaises(ValueError):
+            select_patch_stage(rows, "schedule")
+
+    def test_patch_stage_selection_sees_detector_rows_only(self):
+        rows = infer_writes([np.ones((6, 2)), np.ones((6, 2)) + np.arange(12).reshape(6, 2) * 1e-3])
+        with patch("raspformer.research.extract_schedule", side_effect=AssertionError("truth accessed")):
+            self.assertEqual(select_patch_stage(rows), 1)
 
     def test_family_output_uses_bounded_support(self):
         evaluator = rasp.DefaultRASPEvaluator()
