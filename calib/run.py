@@ -158,6 +158,8 @@ def promote(root, destination):
     if not (root / "manifest.json").exists():
         raise SystemExit("Analyze the run before promoting it.")
     if destination.exists():
+        if not (destination / "manifest.json").exists():
+            raise SystemExit(f"{destination} exists and is not an earlier promotion; refusing to replace it.")
         shutil.rmtree(destination)
     destination.mkdir(parents=True)
     for path in sorted(root.iterdir()):
@@ -182,6 +184,8 @@ def main(argv=None):
     elif args.command == "analyze":
         analyze(args.root, args.pilot)
     else:
+        if args.to is None:
+            parser.error("promote needs --to")
         promote(args.root, args.to)
 
 

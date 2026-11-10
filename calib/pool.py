@@ -144,7 +144,8 @@ def compression_basis(model, encoded, fraction):
 
 def compress_task(root, name, model_class, seed, fraction):
     """Compress one model's residual stream, then fine-tune every parameter on the output loss."""
-    folder = task_folder(root, name, f"{model_class}-compressed-{fraction}", seed)
+    compressed_class = f"{model_class}-compressed-{fraction}"
+    folder = task_folder(root, name, compressed_class, seed)
     if (folder / "metrics.json").exists():
         return json.loads((folder / "metrics.json").read_text())
     _, _, hl_model = compiled(name)
@@ -160,7 +161,8 @@ def compress_task(root, name, model_class, seed, fraction):
         accuracy, steps = history[-1]["val_accuracy"], steps + FINE_TUNE_CHUNK
     folder.mkdir(parents=True, exist_ok=True)
     models.save_model(model, folder / "model.npz")
-    record = dict(spec=name, model_class=model_class, seed=seed, fraction=fraction, width=model.config.width,
+    record = dict(spec=name, model_class=compressed_class, source_class=model_class, seed=seed, fraction=fraction,
+                  width=model.config.width,
                   original_width=source.config.width, accuracy_after_compression=start,
                   token_accuracy=float(accuracy), fine_tune_steps=steps,
                   checkpoint_sha256=hashlib.sha256((folder / "model.npz").read_bytes()).hexdigest())
