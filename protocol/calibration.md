@@ -44,8 +44,8 @@ output-loss-only), at three levels.
 
 | Level | Test | Pass threshold (proposed) |
 | --- | --- | --- |
-| L1, above null | AUROC separating real models from each null in section 5.3 | AUROC ≥ 0.90 against every null |
-| L2, calibrated | Leave-program-out Spearman correlation with each ground-truth quantity in section 5.1 | ρ ≥ 0.70, and the partial correlation controlling for summed cardinality has permutation p < 0.05 |
+| L1, above null | AUROC separating real models from each null in section 5.3 that applies to the metric | AUROC ≥ 0.90 against every applicable null |
+| L2, calibrated | Leave-program-out Spearman correlation with each ground-truth quantity in section 5.1 | ρ ≥ 0.70, and, for every quantity other than summed cardinality, the partial correlation controlling for summed cardinality has permutation p < 0.05 |
 | L3, algorithm-specific | Across same-function pairs, between-algorithm distance compared with between-seed distance | Permutation p < 0.05 over pairs, and the median ratio of between-algorithm to between-seed distance ≥ 2 |
 
 Verdict for a metric on a model class:
@@ -58,14 +58,19 @@ The headline answer is the verdict on SIIT models. On compiled models the
 residual layout is the compiled algorithm, so a compiled-only result answers a
 nearly circular question.
 
+Summed cardinality is the control variable, so its own partial correlation is
+undefined. It is graded on ρ alone.
+
 Multiple comparisons: p-values within each level are Holm-corrected across
 metrics × ground-truth quantities.
 
 ## 4. Scope
 
 The answer will hold for small transformers with known circuits on RASP tasks
-(vocabulary up to 12 values, sequences up to 10 tokens). It does not establish
-how these metrics behave in large language models.
+(vocabulary up to 12 values, sequences up to 10 tokens). The L3 verdict holds
+only on the domain where each pair's equivalence is checked exhaustively
+(section 5.2). It does not establish how these metrics behave in large language
+models.
 
 ## 5. Design
 
@@ -96,7 +101,8 @@ and each variable's output basis:
    1–4 × branches 1–4 × vocabulary sizes 4, 8 and 12 (48 programs). Varying
    vocabulary at a fixed algorithm isolates the cardinality confound.
 2. **Same function, different algorithm.** At least 20 RASP program pairs with
-   identical outputs on every input and different compiled schedules. Candidate
+   identical outputs on every input in the checked domain below and different
+   compiled schedules. Candidate
    pairs: sorting via two selector schemes; reverse via mirrored index and via
    length minus index; palindrome via reverse-and-compare and via mismatch
    count; histogram via selector width and via aggregate count.
@@ -104,9 +110,11 @@ and each variable's output basis:
    functions, matched on cardinality and depth, so that L3 cannot pass from
    output differences alone.
 
-Every same-function pair is checked exhaustively (vocabulary 8, length 6 is
-262,144 sequences). A pair whose compiled schedules are identical is dropped
-before any metric is computed, and the drop is logged.
+Every same-function pair is checked exhaustively on vocabulary 8, length 6
+(262,144 sequences). "Same function" means equal outputs on that domain and
+nothing wider. Pair models are trained, measured and scored for L3 on that
+domain only. A pair whose compiled schedules are identical is dropped before
+any metric is computed, and the drop is logged.
 
 ### 5.3 Null models
 
@@ -116,6 +124,12 @@ before any metric is computed, and the drop is logged.
 3. A within-model null: observations shuffled independently at each stage,
    which keeps each stage's geometry and breaks the relation between stages.
 
+Nulls 1 and 2 apply to every metric. Null 3 leaves each stage's covariance
+spectrum unchanged, so it applies only to the metrics that relate two
+representations: CKA, Procrustes distance and SVCCA. The single-stage spectrum
+metrics (PR, spectral entropy, effective rank, explained variance) are graded
+at L1 against nulls 1 and 2.
+
 ### 5.4 Trained models with known circuits
 
 1. SIIT models (`bench/train_siit.py`) for every grid program and every
@@ -124,8 +138,13 @@ before any metric is computed, and the drop is logged.
 2. Output-loss-only twins: same architecture, seeds and data, no interchange or
    strictness loss, required to reach the same task accuracy within 0.01.
 
-SIIT pairs share one architecture, so differences between them cannot come
-from residual width, which is a confound for compiled pairs.
+Both members of a SIIT pair, and their output-loss-only twins, are trained with
+the same layer count, head count, residual width and MLP width. The layer count
+is the larger of the two compiled depths, because `bench/siit.py` otherwise
+sets depth from each program's own compiled model. The saved configurations are
+compared before any L3 distance is computed; a pair whose members differ is
+excluded and the exclusion is logged. Differences within a pair then cannot
+come from architecture, which is a confound for compiled pairs.
 
 ### 5.5 Superposition with behaviour preserved
 
@@ -152,7 +171,7 @@ mix but the computation survives.
 | Phase | Work | Output |
 | --- | --- | --- |
 | 0 | Merge this protocol | binding decision rules |
-| 1 | `raspformer/calibration.py`: metric suite, ground-truth extractor, unit tests (rotation and scale invariance; PR = k−1 on balanced one-hot data) | module and tests |
+| 1 | `raspformer/calibration.py`: metric suite, ground-truth extractor, unit tests (rotation invariance; scale invariance for scale factors that keep total variance above the absolute `1e-12` floor; PR = k−1 on balanced one-hot data) | module and tests |
 | Pilot | L3 on five algorithm pairs, compiled and SIIT | go / redesign decision for 5.2 |
 | 2 | Program grid and algorithm pairs, exhaustive equivalence checks | program library |
 | 3 | Null models | null metric distributions |
