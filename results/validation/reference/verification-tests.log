@@ -1,3 +1,23 @@
+test_artifacts_verified (test_bench.BenchTest.test_artifacts_verified) ... ok
+test_attended_keys_ignores_softmax_dust (test_bench.BenchTest.test_attended_keys_ignores_softmax_dust) ... ok
+test_balanced_sampler_covers_both_predicate_values (test_bench.BenchTest.test_balanced_sampler_covers_both_predicate_values) ... ok
+test_checkpoint_reader_matches_config_shapes (test_bench.BenchTest.test_checkpoint_reader_matches_config_shapes) ... ok
+test_circuit_edges_load (test_bench.BenchTest.test_circuit_edges_load) ... ok
+test_compiled_matches_rasp_where_defined (test_bench.BenchTest.test_compiled_matches_rasp_where_defined) ... ok
+test_compiled_spaces_match_trained_config (test_bench.BenchTest.test_compiled_spaces_match_trained_config) ... ok
+test_das_finds_compiled_lanes (test_bench.BenchTest.test_das_finds_compiled_lanes) ... ok
+test_decompiler_recovers_compiled_histogram (test_bench.BenchTest.test_decompiler_recovers_compiled_histogram) ... ok
+test_eap_universe_and_truth (test_bench.BenchTest.test_eap_universe_and_truth) ... ok
+test_every_method_scores_the_eap_edge_universe (test_bench.BenchTest.test_every_method_scores_the_eap_edge_universe) ... ok
+test_exact_patching_ranks_case_44_circuit_near_the_top (test_bench.BenchTest.test_exact_patching_ranks_case_44_circuit_near_the_top) ... ok
+test_manifest_lists_every_case (test_bench.BenchTest.test_manifest_lists_every_case) ... ok
+test_overlap_with_raspformer_programs (test_bench.BenchTest.test_overlap_with_raspformer_programs) ... ok
+test_probe_recovers_compiled_variable (test_bench.BenchTest.test_probe_recovers_compiled_variable) ... ok
+test_rotation_keeps_trained_model_outputs (test_bench.BenchTest.test_rotation_keeps_trained_model_outputs) ... ok
+test_six_cases_registered (test_bench.BenchTest.test_six_cases_registered) ... ok
+test_target_slot_maps_every_eap_target (test_bench.BenchTest.test_target_slot_maps_every_eap_target) ... ok
+test_trained_models_reproduce_compiled_outputs (test_bench.BenchTest.test_trained_models_reproduce_compiled_outputs) ... ok
+test_variables_and_values (test_bench.BenchTest.test_variables_and_values) ... ok
 test_attention_scaling_and_after_stage_patch (test_models.ExecutableModelsTest.test_attention_scaling_and_after_stage_patch) ... ok
 test_import_matches_full_tracr_trace_and_scores (test_models.ExecutableModelsTest.test_import_matches_full_tracr_trace_and_scores) ... ok
 test_rotation_and_compression_execute_in_new_state (test_models.ExecutableModelsTest.test_rotation_and_compression_execute_in_new_state) ... ok
@@ -14,6 +34,8 @@ test_run_directories_use_utc_and_preserve_manifest (test_numerics.ProvenanceChec
 test_blind_detector_sees_write_and_ignores_unchanged_stage (test_research.ResearchTests.test_blind_detector_sees_write_and_ignores_unchanged_stage) ... ok
 test_family_output_uses_bounded_support (test_research.ResearchTests.test_family_output_uses_bounded_support) ... ok
 test_inactive_geometry_does_not_create_cka_event (test_research.ResearchTests.test_inactive_geometry_does_not_create_cka_event) ... ok
+test_patch_stage_selection_sees_detector_rows_only (test_research.ResearchTests.test_patch_stage_selection_sees_detector_rows_only) ... ok
+test_patch_stage_selector_is_adjacent_cka_change_by_default (test_research.ResearchTests.test_patch_stage_selector_is_adjacent_cka_change_by_default) ... ok
 test_perfect_recovery_and_null_are_distinct (test_research.ResearchTests.test_perfect_recovery_and_null_are_distinct) ... ok
 test_recovery_interface_has_no_truth_dependency (test_research.ResearchTests.test_recovery_interface_has_no_truth_dependency) ... ok
 test_variance_floor_changes_detector_activity (test_research.ResearchTests.test_variance_floor_changes_detector_activity) ... ok
@@ -28,11 +50,36 @@ test_program_study_matches_reference (test_studies.StudyChecks.test_program_stud
 test_trace_study_matches_reference (test_studies.StudyChecks.test_trace_study_matches_reference) ... ok
 
 ----------------------------------------------------------------------
-Ran 28 tests in 33.884s
+Ran 50 tests in 90.452s
 
 OK
+2/edges.pkl: ok (1251 bytes)
+2/ll_model.pth: ok (647458 bytes)
+2/ll_model_cfg.pkl: ok (1102 bytes)
+2/meta.json: ok (691 bytes)
+7/edges.pkl: ok (546 bytes)
+7/ll_model.pth: ok (42474 bytes)
+7/ll_model_cfg.pkl: ok (1048 bytes)
+7/meta.json: ok (382 bytes)
+13/edges.pkl: ok (937 bytes)
+13/ll_model.pth: ok (53162 bytes)
+13/ll_model_cfg.pkl: ok (1047 bytes)
+13/meta.json: ok (239 bytes)
+21/edges.pkl: ok (656 bytes)
+21/ll_model.pth: ok (507554 bytes)
+21/ll_model_cfg.pkl: ok (1043 bytes)
+21/meta.json: ok (258 bytes)
+44/edges.pkl: ok (546 bytes)
+44/ll_model.pth: ok (72426 bytes)
+44/ll_model_cfg.pkl: ok (1100 bytes)
+44/meta.json: ok (692 bytes)
+124/edges.pkl: ok (1110 bytes)
+124/ll_model.pth: ok (105478 bytes)
+124/ll_model_cfg.pkl: ok (1100 bytes)
+124/meta.json: ok (693 bytes)
+all verified
 A_prev_token_class: 8 classes × 2 targets
-A_prev_token_class: 3 stages; width=25; 0.6s
+A_prev_token_class: 3 stages; width=25; 0.8s
 P01_absolute: 183 matched sequences × 3 positions
 P05_histogram: 183 matched sequences × 3 positions
 P01_absolute: 6 classes × 64 targets
@@ -49,20 +96,20 @@ P11_check_palindrome: 2 classes × 64 targets
 P12_sorting: 8 classes × 64 targets
 A_prev_token_class: 8 classes × 64 targets
 B_histogram_then_repeated_class: 2 classes × 64 targets
-P01_absolute: 3 stages; width=22; 0.6s
-P02_index_parity: 3 stages; width=19; 0.5s
-P03_increment_by_index: 3 stages; width=30; 0.5s
+P01_absolute: 3 stages; width=22; 1.0s
+P02_index_parity: 3 stages; width=19; 0.7s
+P03_increment_by_index: 3 stages; width=30; 0.8s
 P04_first_element: 3 stages; width=25; 0.1s
-P05_histogram: 3 stages; width=25; 0.7s
+P05_histogram: 3 stages; width=25; 1.1s
 P06_count_greater_than: 3 stages; width=25; 0.1s
-P07_sum_with_next: 7 stages; width=55; 0.9s
-P08_pairwise_sum: 7 stages; width=54; 0.7s
-P09_check_increasing: 7 stages; width=37; 0.6s
-P10_rotate_left: 7 stages; width=39; 0.7s
-P11_check_palindrome: 13 stages; width=69; 0.6s
-P12_sorting: 7 stages; width=81; 0.7s
-A_prev_token_class: 3 stages; width=25; 0.1s
-B_histogram_then_repeated_class: 5 stages; width=27; 0.7s
+P07_sum_with_next: 7 stages; width=55; 1.2s
+P08_pairwise_sum: 7 stages; width=54; 1.1s
+P09_check_increasing: 7 stages; width=37; 1.0s
+P10_rotate_left: 7 stages; width=39; 1.1s
+P11_check_palindrome: 13 stages; width=69; 1.0s
+P12_sorting: 7 stages; width=81; 1.0s
+A_prev_token_class: 3 stages; width=25; 0.2s
+B_histogram_then_repeated_class: 5 stages; width=27; 1.1s
 P01_absolute: alignment recorded
 P02_index_parity: alignment recorded
 P03_increment_by_index: alignment recorded
@@ -94,17 +141,17 @@ P11_check_palindrome: 2 classes × 64 targets
 P12_sorting: 8 classes × 64 targets
 A_prev_token_class: 8 classes × 64 targets
 B_histogram_then_repeated_class: 2 classes × 64 targets
-P01_absolute: 3 stages; width=22; 0.1s
+P01_absolute: 3 stages; width=22; 0.2s
 P02_index_parity: 3 stages; width=19; 0.1s
-P03_increment_by_index: 3 stages; width=30; 0.1s
+P03_increment_by_index: 3 stages; width=30; 0.2s
 P04_first_element: 3 stages; width=25; 0.1s
-P05_histogram: 3 stages; width=25; 0.1s
-P06_count_greater_than: 3 stages; width=25; 0.1s
-P07_sum_with_next: 7 stages; width=55; 0.1s
-P08_pairwise_sum: 7 stages; width=54; 0.1s
+P05_histogram: 3 stages; width=25; 0.2s
+P06_count_greater_than: 3 stages; width=25; 0.2s
+P07_sum_with_next: 7 stages; width=55; 0.2s
+P08_pairwise_sum: 7 stages; width=54; 0.2s
 P09_check_increasing: 7 stages; width=37; 0.1s
 P10_rotate_left: 7 stages; width=39; 0.1s
-P11_check_palindrome: 13 stages; width=69; 0.1s
+P11_check_palindrome: 13 stages; width=69; 0.2s
 P12_sorting: 7 stages; width=81; 0.1s
 A_prev_token_class: 3 stages; width=25; 0.1s
 B_histogram_then_repeated_class: 5 stages; width=27; 0.1s

@@ -112,24 +112,28 @@ Accuracy of executing compressed models, using disjoint calibration and test seq
 
 ## Geometry-directed causal patches
 
-Patch stages are selected from calibration geometric change and frozen before loading the compiler schedule. PCA fits calibration activations. A ridge decoder then maps the first three PCs to independently evaluated RASP variables. Decoder folds separate labels by whole sequence, but share an unsupervised PCA fitted on all calibration sequences. The final test sequences are independently held out from stage selection, PCA fitting, and decoder fitting. Donor-recipient pairs are sampled without selecting for different answers.
+Patch stages are selected from calibration activations as the transition with the largest adjacent-CKA change (1 minus linear CKA between consecutive residual states), then frozen before loading the compiler schedule. The stages that the residual-change and PR detectors would have chosen are recorded beside the selection. PCA fits calibration activations. A ridge decoder then maps the first three PCs to independently evaluated RASP variables. Decoder folds separate labels by whole sequence, but share an unsupervised PCA fitted on all calibration sequences. The final test sequences are independently held out from stage selection, PCA fitting, and decoder fitting. Donor-recipient pairs are sampled without selecting for different answers.
 
-PCA ranks one and three are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle. Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.
+Two geometry-derived direction sets are patched at that transition: the leading PCA directions of the residual state, and the leading PCA directions of the transition itself (the calibration delta between the state after and before the selected stage). Ranks one and three of each are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle. Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.
 
-| kind   |   rank |   behavior_changed |   full_counterfactual_match |
-|:-------|-------:|-------------------:|----------------------------:|
-| oracle |      2 |          0.0208333 |                    1        |
-| oracle |      6 |          0.8125    |                    1        |
-| oracle |      7 |          0.5       |                    0.84375  |
-| oracle |      8 |          0.8125    |                    1        |
-| oracle |     13 |          0.8125    |                    1        |
-| pca    |      1 |          0.0625    |                    0.520833 |
-| pca    |      3 |          0.135417  |                    0.588542 |
-| random |      1 |          0.015625  |                    0.463542 |
-| random |      3 |          0.0572917 |                    0.421875 |
-| self   |      0 |          0         |                    0.479167 |
+| kind       |   rank |   behavior_changed |   full_counterfactual_match |
+|:-----------|-------:|-------------------:|----------------------------:|
+| oracle     |      2 |          0.0208333 |                    1        |
+| oracle     |      6 |          0.8125    |                    1        |
+| oracle     |      7 |          0.5       |                    0.84375  |
+| oracle     |      8 |          0.8125    |                    1        |
+| oracle     |     13 |          0.8125    |                    1        |
+| pca        |      1 |          0.0625    |                    0.520833 |
+| pca        |      3 |          0.135417  |                    0.588542 |
+| random     |      1 |          0.015625  |                    0.463542 |
+| random     |      3 |          0.0572917 |                    0.421875 |
+| self       |      0 |          0         |                    0.479167 |
+| transition |      1 |          0.09375   |                    0.53125  |
+| transition |      3 |          0.286458  |                    0.692708 |
 
-The table includes 1152 patch conditions. Self patches are a baseline-preservation check. Per-program variable decoder results and all donor identities are saved next to the patch rows.
+The table includes 1536 patch conditions. Self patches are a baseline-preservation check. Per-program variable decoder results and all donor identities are saved next to the patch rows.
+
+Rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in 7 programs and equal in 5. Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.
 
 ## Sorting row diagnosis and attention sharpening
 

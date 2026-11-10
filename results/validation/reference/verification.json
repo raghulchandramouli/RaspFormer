@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-15T07:48:17.441762+00:00",
+  "checked_at": "2026-10-27T08:21:16.387030+00:00",
   "canonical_manifests": {
     "programs": "completed",
     "trace": "completed",
@@ -13,8 +13,8 @@
   "checkpoint_hashes_verified": 36,
   "patch_stage_selection": "recomputed from calibration activations only",
   "tests": {
-    "count": 28,
-    "seconds": 33.884,
+    "count": 50,
+    "seconds": 90.452,
     "result": "passed"
   },
   "notebooks": [

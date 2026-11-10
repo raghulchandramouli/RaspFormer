@@ -52,7 +52,7 @@
         }
       ],
       "predictions_sha256": "868ddf1011b375eedff20b53142193cad468ecc82dd586f7b379c1389ed1adb2",
-      "predictions_frozen_at": "2026-10-15T07:44:40.112906+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:37.489610+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -442,6 +442,7 @@
       "transformed_predictions_sha256": "263c07b2cda422eff0b8906fdd7b28304fa426f332643366dd78cb2c6babb4c4",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "absolute_1",
         "controls": [
           {
@@ -479,6 +480,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.1875
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.25,
+            "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.75,
+            "full_counterfactual_match": 0.6875
           }
         ]
       },
@@ -662,7 +675,7 @@
         }
       ],
       "predictions_sha256": "6ad14ba0bc6305df8e0cb91752a3d6d7379a2e571ded850d1bfa67769d9ff44d",
-      "predictions_frozen_at": "2026-10-15T07:44:41.570378+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:39.943475+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -1052,6 +1065,7 @@
       "transformed_predictions_sha256": "303532fc0975cbd601760a4e55751ded11118ee38739cf831247cb99c8cd62ac",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "index_parity_2",
         "controls": [
           {
@@ -1087,6 +1101,18 @@
           {
             "kind": "self",
             "rank": 0,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 1.0
           }
@@ -1272,7 +1298,7 @@
         }
       ],
       "predictions_sha256": "9f1be0d022a48ecdd3a0ecfa55deb46a90d0d3830eee099b0869317796472967",
-      "predictions_frozen_at": "2026-10-15T07:44:42.910370+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:42.195551+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -1662,6 +1688,7 @@
       "transformed_predictions_sha256": "e97cfb9beb19fec541bb63bb718845968e95c1af5babc1d18b3487ca58393a9a",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "increment_by_index_3",
         "controls": [
           {
@@ -1699,6 +1726,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.1875
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.125,
+            "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.375,
+            "full_counterfactual_match": 0.5
           }
         ]
       },
@@ -1882,7 +1921,7 @@
         }
       ],
       "predictions_sha256": "1c0f7ae04ce0662ba6dde100e5a901b8b63b04c7ca92dd6a97ad8c1d93f10557",
-      "predictions_frozen_at": "2026-10-15T07:44:44.337690+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:44.603429+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -2272,6 +2311,7 @@
       "transformed_predictions_sha256": "905bc9173204e16a3e839ab30728cc990875103066e3a00484bc9b7de060142e",
       "patches": {
         "selected_stage": 1,
+        "selector": "cka",
         "variable": "first_element_4",
         "controls": [
           {
@@ -2309,6 +2349,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.125,
+            "full_counterfactual_match": 0.3125
           }
         ]
       },
@@ -2492,7 +2544,7 @@
         }
       ],
       "predictions_sha256": "ee1c9e26f269489815953c37983393d5051bdeb5b0be9ae0b6218564926022c8",
-      "predictions_frozen_at": "2026-10-15T07:44:45.869986+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:46.998729+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -2882,6 +2934,7 @@
       "transformed_predictions_sha256": "2168c2fc46a45db555610e1784ea894c520eec8d9c69c056f6c65fe6f3b5b38b",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "histogram_6",
         "controls": [
           {
@@ -2919,6 +2972,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.3125,
+            "full_counterfactual_match": 0.5
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.75,
+            "full_counterfactual_match": 1.0
           }
         ]
       },
@@ -3102,7 +3167,7 @@
         }
       ],
       "predictions_sha256": "b15f304daab6f033e8b8455f6f5f86b934747b20085dd7d1cdd497f739360a75",
-      "predictions_frozen_at": "2026-10-15T07:44:46.185117+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:47.524587+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -3492,6 +3557,7 @@
       "transformed_predictions_sha256": "ad7d117bbcb4025cd101d3244c4f0121c9bf2fa19d642c99a8982200a04a35d0",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "count_greater_than_8",
         "controls": [
           {
@@ -3529,6 +3595,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.25
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.3125,
+            "full_counterfactual_match": 0.4375
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.6875,
+            "full_counterfactual_match": 0.75
           }
         ]
       },
@@ -3712,7 +3790,7 @@
         }
       ],
       "predictions_sha256": "e47e88ec323f726f6baf00646eee7c8bd290d8dbc72793bdb0c2101f25198904",
-      "predictions_frozen_at": "2026-10-15T07:44:47.188662+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:49.154444+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -4102,6 +4180,7 @@
       "transformed_predictions_sha256": "9d973a913bff6ba128cbfd134832d91691ca8aac5c95f127239188cbe92f4e23",
       "patches": {
         "selected_stage": 4,
+        "selector": "cka",
         "variable": "next_clamped_index_13",
         "controls": [
           {
@@ -4137,6 +4216,18 @@
           {
             "kind": "self",
             "rank": 0,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 1.0
           }
@@ -4322,7 +4413,7 @@
         }
       ],
       "predictions_sha256": "565424c0aa703a245ff311e640ba72b0eb07c79bd3732e57d4a57393548e6df9",
-      "predictions_frozen_at": "2026-10-15T07:44:48.641633+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:51.512866+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -4712,6 +4803,7 @@
       "transformed_predictions_sha256": "d2cd0bf41c5ba65d0dfa57a87d1a598ea8583765c422db7a97b2b74448f9ebba",
       "patches": {
         "selected_stage": 5,
+        "selector": "cka",
         "variable": "previous_value_17",
         "controls": [
           {
@@ -4749,6 +4841,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.125
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 0.125
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.375,
+            "full_counterfactual_match": 0.375
           }
         ]
       },
@@ -4932,7 +5036,7 @@
         }
       ],
       "predictions_sha256": "2d2ff65aba8c713a70f48c981462520510b453211cabfd6baa43da9a1cc314df",
-      "predictions_frozen_at": "2026-10-15T07:44:50.055129+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:53.796462+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -5322,6 +5426,7 @@
       "transformed_predictions_sha256": "175f94af3096d3dff58bc2b718e2f81a07d84f9b7b2ce08736d37c02b3c54a0f",
       "patches": {
         "selected_stage": 2,
+        "selector": "cka",
         "variable": "locally_increasing_25",
         "controls": [
           {
@@ -5357,6 +5462,18 @@
           {
             "kind": "self",
             "rank": 0,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 1.0
           }
@@ -5542,7 +5659,7 @@
         }
       ],
       "predictions_sha256": "ceb18239fb9626c283764d557e3c487ca4dbcb2bc6884387189db6ea9e1973c4",
-      "predictions_frozen_at": "2026-10-15T07:44:51.535459+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:56.109630+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -5932,6 +6049,7 @@
       "transformed_predictions_sha256": "240ba175c03dabe03636c6e3dbff02f93f77362d2ade587e63d7c139bf40560f",
       "patches": {
         "selected_stage": 5,
+        "selector": "cka",
         "variable": "rotate_left_28",
         "controls": [
           {
@@ -5969,6 +6087,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.1875
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0625,
+            "full_counterfactual_match": 0.1875
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.3125,
+            "full_counterfactual_match": 0.3125
           }
         ]
       },
@@ -6152,7 +6282,7 @@
         }
       ],
       "predictions_sha256": "0a4982b2bde40705aaf1667c5f4d25eb02432820490f5519076e33198d3b7ce9",
-      "predictions_frozen_at": "2026-10-15T07:44:53.085850+00:00",
+      "predictions_frozen_at": "2026-10-27T08:13:58.558815+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -6542,6 +6672,7 @@
       "transformed_predictions_sha256": "f88d2fcddfa5a5e26fd1f7473ea484bd699c38909afa095173f3c27443af6e54",
       "patches": {
         "selected_stage": 8,
+        "selector": "cka",
         "variable": "mirror_matches_36",
         "controls": [
           {
@@ -6579,6 +6710,18 @@
             "rank": 0,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.9375
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0625,
+            "full_counterfactual_match": 1.0
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
+            "behavior_changed": 0.0625,
+            "full_counterfactual_match": 1.0
           }
         ]
       },
@@ -6762,7 +6905,7 @@
         }
       ],
       "predictions_sha256": "43540bc27c64d8d55d0679be1f4f47ec4e23a1028c46d52cfebf56a3ebb9f69f",
-      "predictions_frozen_at": "2026-10-15T07:44:54.967318+00:00",
+      "predictions_frozen_at": "2026-10-27T08:14:01.621488+00:00",
       "transformed_recovery": [
         {
           "kind": "rotation",
@@ -7152,6 +7295,7 @@
       "transformed_predictions_sha256": "11038c05f28580cf7ceb251ad2c6bb437eb0254c4271710ff078cc3177f2adfe",
       "patches": {
         "selected_stage": 4,
+        "selector": "cka",
         "variable": "target_pos_45",
         "controls": [
           {
@@ -7187,6 +7331,18 @@
           {
             "kind": "self",
             "rank": 0,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 0.375
+          },
+          {
+            "kind": "transition",
+            "rank": 1,
+            "behavior_changed": 0.0,
+            "full_counterfactual_match": 0.375
+          },
+          {
+            "kind": "transition",
+            "rank": 3,
             "behavior_changed": 0.0,
             "full_counterfactual_match": 0.375
           }
