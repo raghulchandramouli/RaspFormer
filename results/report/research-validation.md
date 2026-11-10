@@ -116,24 +116,24 @@ Patch stages are selected from calibration activations as the transition with th
 
 Two geometry-derived direction sets are patched at that transition: the leading PCA directions of the residual state, and the leading PCA directions of the transition itself (the calibration delta between the state after and before the selected stage). Ranks one and three of each are compared with equal-rank random subspaces, self patches, and a compiler-variable oracle. Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.
 
-| kind       |   rank |   behavior_changed |   full_counterfactual_match |
-|:-----------|-------:|-------------------:|----------------------------:|
-| oracle     |      2 |          0.0208333 |                    1        |
-| oracle     |      6 |          0.8125    |                    1        |
-| oracle     |      7 |          0.5       |                    0.84375  |
-| oracle     |      8 |          0.8125    |                    1        |
-| oracle     |     13 |          0.8125    |                    1        |
-| pca        |      1 |          0.0625    |                    0.520833 |
-| pca        |      3 |          0.135417  |                    0.588542 |
-| random     |      1 |          0.015625  |                    0.463542 |
-| random     |      3 |          0.0572917 |                    0.421875 |
-| self       |      0 |          0         |                    0.479167 |
-| transition |      1 |          0.09375   |                    0.53125  |
-| transition |      3 |          0.286458  |                    0.692708 |
+| kind       |   rank |   pairs |   behavior_changed |   full_counterfactual_match |   output_changing_pairs |   output_changing_match |
+|:-----------|-------:|--------:|-------------------:|----------------------------:|------------------------:|------------------------:|
+| oracle     |      2 |      48 |          0.0208333 |                    1        |                       1 |               1         |
+| oracle     |      6 |      16 |          0.8125    |                    1        |                      13 |               1         |
+| oracle     |      7 |      64 |          0.5       |                    0.84375  |                      24 |               1         |
+| oracle     |      8 |      48 |          0.8125    |                    1        |                      39 |               1         |
+| oracle     |     13 |      16 |          0.8125    |                    1        |                      13 |               1         |
+| pca        |      1 |     192 |          0.0625    |                    0.520833 |                      90 |               0.0888889 |
+| pca        |      3 |     192 |          0.135417  |                    0.588542 |                      90 |               0.233333  |
+| random     |      1 |     192 |          0.015625  |                    0.463542 |                      90 |               0         |
+| random     |      3 |     192 |          0.0572917 |                    0.421875 |                      90 |               0         |
+| self       |      0 |     192 |          0         |                    0.479167 |                      90 |               0         |
+| transition |      1 |     192 |          0.09375   |                    0.53125  |                      90 |               0.111111  |
+| transition |      3 |     192 |          0.286458  |                    0.692708 |                      90 |               0.455556  |
 
-The table includes 1536 patch conditions. Self patches are a baseline-preservation check. Per-program variable decoder results and all donor identities are saved next to the patch rows.
+The table includes 1536 patch conditions over 192 donor-recipient pairs. `full_counterfactual_match` scores every pair. In 102 pairs the substitution leaves the symbolic output unchanged or undefined, so a model that is not patched at all already matches or cannot match; the self-patch row measures that floor. `output_changing_match` scores only the 90 pairs whose counterfactual output is defined and differs from the recipient's own output. A self patch cannot match there, so that column has no floor. Per-program variable decoder results and all donor identities are saved next to the patch rows.
 
-Rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in 7 programs and equal in 5. Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.
+Over all pairs, rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in 7 programs and equal in 5. Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.
 
 ## Sorting row diagnosis and attention sharpening
 
@@ -148,21 +148,21 @@ At the first output write, all 8 lanes have the same failing-probe set **False**
 
 Sources are [every scalar error](../validation/reference/p12-sorting/per-observation-errors.csv), [attention sweep](../validation/reference/p12-sorting/attention-sharpening.csv), and [failing probe identities](../validation/reference/p12-sorting/failing-probe-sets.json).
 
-## Separate depth and branch-count controls
+## Separate depth and variable-count controls
 
-|   requested_depth |   requested_branches |   computed_variable_count |   max_dependency_depth |   residual_width |   transformer_layers |   token_accuracy |
-|------------------:|---------------------:|--------------------------:|-----------------------:|-----------------:|---------------------:|-----------------:|
-|                 1 |                    1 |                         1 |                      1 |               24 |                    1 |                1 |
-|                 1 |                    2 |                         3 |                      2 |               41 |                    2 |                1 |
-|                 1 |                    3 |                         5 |                      3 |               57 |                    3 |                1 |
-|                 2 |                    1 |                         2 |                      2 |               32 |                    2 |                1 |
-|                 2 |                    2 |                         5 |                      3 |               57 |                    3 |                1 |
-|                 2 |                    3 |                         8 |                      4 |               81 |                    4 |                1 |
-|                 3 |                    1 |                         3 |                      3 |               40 |                    3 |                1 |
-|                 3 |                    2 |                         7 |                      4 |               73 |                    4 |                1 |
-|                 3 |                    3 |                        11 |                      5 |              105 |                    5 |                1 |
+|   requested_depth |   requested_variables |   computed_variable_count |   max_dependency_depth |   residual_width |   transformer_layers |   token_accuracy |
+|------------------:|----------------------:|--------------------------:|-----------------------:|-----------------:|---------------------:|-----------------:|
+|                 3 |                     5 |                         5 |                      3 |               57 |                    2 |                1 |
+|                 3 |                     6 |                         6 |                      3 |               65 |                    2 |                1 |
+|                 3 |                     7 |                         7 |                      3 |               73 |                    2 |                1 |
+|                 4 |                     5 |                         5 |                      4 |               57 |                    3 |                1 |
+|                 4 |                     6 |                         6 |                      4 |               65 |                    3 |                1 |
+|                 4 |                     7 |                         7 |                      4 |               73 |                    3 |                1 |
+|                 5 |                     5 |                         5 |                      5 |               57 |                    4 |                1 |
+|                 5 |                     6 |                         6 |                      5 |               65 |                    4 |                1 |
+|                 5 |                     7 |                         7 |                      5 |               73 |                    4 |                1 |
 
-The centered realized depth and variable-count design matrix has rank **2**. Branch depth and branch count are crossed, and every branch contributes to the output. Serial merges also add depth, so requested branch depth is not identical to realized dependency depth. These token-local modulo programs are controlled structural examples, not a universal complexity scale. Their full schedules and geometry are preserved.
+Dependency depth and computed-variable count are crossed. Their correlation over the nine programs is **0.000** and the centered design matrix has rank **2**. Each program is a binary tree whose leaves read the token at different cyclic offsets, so its variables depend on different inputs. RASP operations read at most two sequence variables, so a program of depth D holds between D and 2^D - 1 computed variables; the crossing therefore starts at depth three. These modulo programs are controlled structural examples, not a universal complexity scale. Their full schedules and geometry are preserved.
 
 ## Learned models on the same programs
 
@@ -231,7 +231,7 @@ Full and computed residual views on the same matched observations. Computed view
 
 ## Relation to InterpBench
 
-Gupta and colleagues' [InterpBench paper](https://papers.nips.cc/paper_files/paper/2024/hash/a8f7d43ae092d9a5295775eb17f3f4f7-Abstract-Datasets_and_Benchmarks_Track.html) trains semi-synthetic transformers with known circuits using Strict Interchange Intervention Training and evaluates circuit-discovery methods. Its [implementation](https://github.com/FlyingPumba/InterpBench) supports ACDC, subnetwork probing, and edge attribution patching. RaspFormer evaluates representation measurements and transition detection, with additional supervised learned-model comparisons. Its learned models use ordinary output supervision and do not inherit known internal causal circuits. No InterpBench model or circuit-discovery benchmark was run here.
+Gupta and colleagues' [InterpBench paper](https://papers.nips.cc/paper_files/paper/2024/hash/a8f7d43ae092d9a5295775eb17f3f4f7-Abstract-Datasets_and_Benchmarks_Track.html) trains semi-synthetic transformers with known circuits using Strict Interchange Intervention Training and evaluates circuit-discovery methods. Its [implementation](https://github.com/FlyingPumba/InterpBench) supports ACDC, subnetwork probing, and edge attribution patching. The studies in this report evaluate representation measurements and transition detection, with additional supervised learned-model comparisons. Their learned models use ordinary output supervision and do not inherit known internal causal circuits. Six InterpBench models, SIIT models for the twelve programs, and circuit-discovery baselines are run separately in `bench/`; their results are in [the bench reports](../bench/reference/) and are not part of this report.
 
 ## Evidence and limitations
 

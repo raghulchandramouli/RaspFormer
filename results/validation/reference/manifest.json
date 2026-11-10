@@ -34,8 +34,8 @@
     "mlp_exactness": 100,
     "rel_tol": 0.0001,
     "abs_tol": 0.0001,
-    "git_commit": "0230f16799a6d872f0409bbc60f88221a03c538f",
-    "git_dirty": true,
+    "git_commit": "b44238b6e82f5de67ed0195d96ad52f844de929b",
+    "git_dirty": false,
     "tracr_version": "1.0.0",
     "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
     "python_version": "3.12.15",
@@ -60,8 +60,8 @@
       "geometry.py": "af2a737622f82e5a5e3bb71622fa5b1f89df8829722362fc749fcd5f989c0e20",
       "models.py": "f5be86d0031cf2adc9fd8ba7ef253b801fe9c43c6425340a065c342182ab8973",
       "programs.py": "c6a404f02deacc48a86644b9ec59b22ad6ed8ef3add2d2b0861e7485550377c4",
-      "report.py": "cb76cf8922cf79aa5027dc97655b2e22f367159d57bcb82ccddbf90b365849d1",
-      "research.py": "70b6bce8a12ec6470bccbc8c59d21a31366ec9153ecae456c8c500ac6981c876",
+      "report.py": "d1c3c94222169b9db53daa1583256659c6e5ffd845e8d1ea78faebdafce82e9b",
+      "research.py": "01f48f7348b1ce84eb11004775dfeb0b38c09c21b324cd158c76a2cf7432754f",
       "study.py": "082961f0ea39745eabe0e1ef6fa8c6a43301def418a45aed254240245c984412"
     },
     "notebook_source_sha256": {
@@ -183,7 +183,7 @@
           }
         ],
         "predictions_sha256": "868ddf1011b375eedff20b53142193cad468ecc82dd586f7b379c1389ed1adb2",
-        "predictions_frozen_at": "2026-10-27T08:13:37.489610+00:00",
+        "predictions_frozen_at": "2026-11-10T06:19:49.836756+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -579,50 +579,74 @@
             {
               "kind": "oracle",
               "rank": 6,
+              "pairs": 16,
               "behavior_changed": 0.8125,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 13,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.25,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.07692307692307693
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 0.6875
+              "full_counterfactual_match": 0.6875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.6153846153846154
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.25,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.07692307692307693
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 0.6875
+              "full_counterfactual_match": 0.6875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.6153846153846154
             }
           ]
         },
@@ -806,7 +830,7 @@
           }
         ],
         "predictions_sha256": "6ad14ba0bc6305df8e0cb91752a3d6d7379a2e571ded850d1bfa67769d9ff44d",
-        "predictions_frozen_at": "2026-10-27T08:13:39.943475+00:00",
+        "predictions_frozen_at": "2026-11-10T06:19:55.060133+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -1202,50 +1226,74 @@
             {
               "kind": "oracle",
               "rank": 2,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             }
           ]
         },
@@ -1429,7 +1477,7 @@
           }
         ],
         "predictions_sha256": "9f1be0d022a48ecdd3a0ecfa55deb46a90d0d3830eee099b0869317796472967",
-        "predictions_frozen_at": "2026-10-27T08:13:42.195551+00:00",
+        "predictions_frozen_at": "2026-11-10T06:19:59.713131+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -1825,50 +1873,74 @@
             {
               "kind": "oracle",
               "rank": 13,
+              "pairs": 16,
               "behavior_changed": 0.8125,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 13,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.125,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.07692307692307693
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.375,
-              "full_counterfactual_match": 0.5
+              "full_counterfactual_match": 0.5,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.38461538461538464
             }
           ]
         },
@@ -2052,7 +2124,7 @@
           }
         ],
         "predictions_sha256": "1c0f7ae04ce0662ba6dde100e5a901b8b63b04c7ca92dd6a97ad8c1d93f10557",
-        "predictions_frozen_at": "2026-10-27T08:13:44.603429+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:03.642548+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -2448,50 +2520,74 @@
             {
               "kind": "oracle",
               "rank": 8,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 12,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.125,
-              "full_counterfactual_match": 0.3125
+              "full_counterfactual_match": 0.3125,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.08333333333333333
             }
           ]
         },
@@ -2675,7 +2771,7 @@
           }
         ],
         "predictions_sha256": "ee1c9e26f269489815953c37983393d5051bdeb5b0be9ae0b6218564926022c8",
-        "predictions_frozen_at": "2026-10-27T08:13:46.998729+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:06.250345+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -3071,50 +3167,74 @@
             {
               "kind": "oracle",
               "rank": 7,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 12,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.5
+              "full_counterfactual_match": 0.5,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.3333333333333333
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.5625,
-              "full_counterfactual_match": 0.75
+              "full_counterfactual_match": 0.75,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.6666666666666666
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.5
+              "full_counterfactual_match": 0.5,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.3333333333333333
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 12,
+              "output_changing_match": 1.0
             }
           ]
         },
@@ -3298,7 +3418,7 @@
           }
         ],
         "predictions_sha256": "b15f304daab6f033e8b8455f6f5f86b934747b20085dd7d1cdd497f739360a75",
-        "predictions_frozen_at": "2026-10-27T08:13:47.524587+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:06.816136+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -3694,50 +3814,74 @@
             {
               "kind": "oracle",
               "rank": 7,
+              "pairs": 16,
               "behavior_changed": 0.75,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 12,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.1875,
-              "full_counterfactual_match": 0.4375
+              "full_counterfactual_match": 0.4375,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.25
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.5625
+              "full_counterfactual_match": 0.5625,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.4166666666666667
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.25
+              "full_counterfactual_match": 0.25,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.4375
+              "full_counterfactual_match": 0.4375,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.25
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.6875,
-              "full_counterfactual_match": 0.75
+              "full_counterfactual_match": 0.75,
+              "output_changing_pairs": 12,
+              "output_changing_match": 0.6666666666666666
             }
           ]
         },
@@ -3921,7 +4065,7 @@
           }
         ],
         "predictions_sha256": "e47e88ec323f726f6baf00646eee7c8bd290d8dbc72793bdb0c2101f25198904",
-        "predictions_frozen_at": "2026-10-27T08:13:49.154444+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:08.620561+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -4317,50 +4461,74 @@
             {
               "kind": "oracle",
               "rank": 7,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             }
           ]
         },
@@ -4544,7 +4712,7 @@
           }
         ],
         "predictions_sha256": "565424c0aa703a245ff311e640ba72b0eb07c79bd3732e57d4a57393548e6df9",
-        "predictions_frozen_at": "2026-10-27T08:13:51.512866+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:14.022494+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -4940,50 +5108,74 @@
             {
               "kind": "oracle",
               "rank": 8,
+              "pairs": 16,
               "behavior_changed": 0.875,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 14,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.125
+              "full_counterfactual_match": 0.125,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.375,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 14,
+              "output_changing_match": 0.2857142857142857
             }
           ]
         },
@@ -5167,7 +5359,7 @@
           }
         ],
         "predictions_sha256": "2d2ff65aba8c713a70f48c981462520510b453211cabfd6baa43da9a1cc314df",
-        "predictions_frozen_at": "2026-10-27T08:13:53.796462+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:18.911077+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -5563,50 +5755,74 @@
             {
               "kind": "oracle",
               "rank": 2,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0625,
-              "full_counterfactual_match": 0.9375
+              "full_counterfactual_match": 0.9375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.6875
+              "full_counterfactual_match": 0.6875,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             }
           ]
         },
@@ -5790,7 +6006,7 @@
           }
         ],
         "predictions_sha256": "ceb18239fb9626c283764d557e3c487ca4dbcb2bc6884387189db6ea9e1973c4",
-        "predictions_frozen_at": "2026-10-27T08:13:56.109630+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:23.629856+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -6186,50 +6402,74 @@
             {
               "kind": "oracle",
               "rank": 8,
+              "pairs": 16,
               "behavior_changed": 0.8125,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 13,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0625,
-              "full_counterfactual_match": 0.1875
+              "full_counterfactual_match": 0.1875,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.3125,
-              "full_counterfactual_match": 0.3125
+              "full_counterfactual_match": 0.3125,
+              "output_changing_pairs": 13,
+              "output_changing_match": 0.15384615384615385
             }
           ]
         },
@@ -6413,7 +6653,7 @@
           }
         ],
         "predictions_sha256": "0a4982b2bde40705aaf1667c5f4d25eb02432820490f5519076e33198d3b7ce9",
-        "predictions_frozen_at": "2026-10-27T08:13:58.558815+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:29.082373+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -6809,50 +7049,74 @@
             {
               "kind": "oracle",
               "rank": 2,
+              "pairs": 16,
               "behavior_changed": 0.0625,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 1,
+              "output_changing_match": 1.0
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.9375
+              "full_counterfactual_match": 0.9375,
+              "output_changing_pairs": 1,
+              "output_changing_match": 0.0
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.9375
+              "full_counterfactual_match": 0.9375,
+              "output_changing_pairs": 1,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.125,
-              "full_counterfactual_match": 0.8125
+              "full_counterfactual_match": 0.8125,
+              "output_changing_pairs": 1,
+              "output_changing_match": 0.0
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.375,
-              "full_counterfactual_match": 0.5625
+              "full_counterfactual_match": 0.5625,
+              "output_changing_pairs": 1,
+              "output_changing_match": 0.0
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.9375
+              "full_counterfactual_match": 0.9375,
+              "output_changing_pairs": 1,
+              "output_changing_match": 0.0
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0625,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 1,
+              "output_changing_match": 1.0
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0625,
-              "full_counterfactual_match": 1.0
+              "full_counterfactual_match": 1.0,
+              "output_changing_pairs": 1,
+              "output_changing_match": 1.0
             }
           ]
         },
@@ -7036,7 +7300,7 @@
           }
         ],
         "predictions_sha256": "43540bc27c64d8d55d0679be1f4f47ec4e23a1028c46d52cfebf56a3ebb9f69f",
-        "predictions_frozen_at": "2026-10-27T08:14:01.621488+00:00",
+        "predictions_frozen_at": "2026-11-10T06:20:35.505358+00:00",
         "transformed_recovery": [
           {
             "kind": "rotation",
@@ -7432,50 +7696,74 @@
             {
               "kind": "oracle",
               "rank": 7,
+              "pairs": 16,
               "behavior_changed": 0.5,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "pca",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "random",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "self",
               "rank": 0,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 1,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             },
             {
               "kind": "transition",
               "rank": 3,
+              "pairs": 16,
               "behavior_changed": 0.0,
-              "full_counterfactual_match": 0.375
+              "full_counterfactual_match": 0.375,
+              "output_changing_pairs": 0,
+              "output_changing_match": null
             }
           ]
         },
@@ -8158,115 +8446,118 @@
   "families": {
     "families": [
       {
-        "requested_depth": 1,
-        "requested_branches": 1,
-        "transformer_layers": 1,
-        "residual_width": 24,
-        "sequence_variable_count": 2,
-        "computed_variable_count": 1,
-        "selector_count": 0,
-        "max_dependency_depth": 1,
-        "token_accuracy": 1.0,
-        "sequence_accuracy": 1.0
-      },
-      {
-        "requested_depth": 1,
-        "requested_branches": 2,
+        "requested_depth": 3,
+        "requested_variables": 5,
         "transformer_layers": 2,
-        "residual_width": 41,
-        "sequence_variable_count": 4,
-        "computed_variable_count": 3,
-        "selector_count": 0,
-        "max_dependency_depth": 2,
-        "token_accuracy": 1.0,
-        "sequence_accuracy": 1.0
-      },
-      {
-        "requested_depth": 1,
-        "requested_branches": 3,
-        "transformer_layers": 3,
         "residual_width": 57,
-        "sequence_variable_count": 6,
+        "sequence_variable_count": 7,
         "computed_variable_count": 5,
-        "selector_count": 0,
+        "selector_count": 2,
         "max_dependency_depth": 3,
         "token_accuracy": 1.0,
         "sequence_accuracy": 1.0
       },
       {
-        "requested_depth": 2,
-        "requested_branches": 1,
+        "requested_depth": 3,
+        "requested_variables": 6,
         "transformer_layers": 2,
-        "residual_width": 32,
-        "sequence_variable_count": 3,
-        "computed_variable_count": 2,
-        "selector_count": 0,
-        "max_dependency_depth": 2,
-        "token_accuracy": 1.0,
-        "sequence_accuracy": 1.0
-      },
-      {
-        "requested_depth": 2,
-        "requested_branches": 2,
-        "transformer_layers": 3,
-        "residual_width": 57,
-        "sequence_variable_count": 6,
-        "computed_variable_count": 5,
-        "selector_count": 0,
+        "residual_width": 65,
+        "sequence_variable_count": 8,
+        "computed_variable_count": 6,
+        "selector_count": 3,
         "max_dependency_depth": 3,
         "token_accuracy": 1.0,
         "sequence_accuracy": 1.0
       },
       {
-        "requested_depth": 2,
-        "requested_branches": 3,
-        "transformer_layers": 4,
-        "residual_width": 81,
+        "requested_depth": 3,
+        "requested_variables": 7,
+        "transformer_layers": 2,
+        "residual_width": 73,
         "sequence_variable_count": 9,
-        "computed_variable_count": 8,
-        "selector_count": 0,
+        "computed_variable_count": 7,
+        "selector_count": 4,
+        "max_dependency_depth": 3,
+        "token_accuracy": 1.0,
+        "sequence_accuracy": 1.0
+      },
+      {
+        "requested_depth": 4,
+        "requested_variables": 5,
+        "transformer_layers": 3,
+        "residual_width": 57,
+        "sequence_variable_count": 7,
+        "computed_variable_count": 5,
+        "selector_count": 2,
         "max_dependency_depth": 4,
         "token_accuracy": 1.0,
         "sequence_accuracy": 1.0
       },
       {
-        "requested_depth": 3,
-        "requested_branches": 1,
+        "requested_depth": 4,
+        "requested_variables": 6,
         "transformer_layers": 3,
-        "residual_width": 40,
-        "sequence_variable_count": 4,
-        "computed_variable_count": 3,
-        "selector_count": 0,
-        "max_dependency_depth": 3,
+        "residual_width": 65,
+        "sequence_variable_count": 8,
+        "computed_variable_count": 6,
+        "selector_count": 2,
+        "max_dependency_depth": 4,
         "token_accuracy": 1.0,
         "sequence_accuracy": 1.0
       },
       {
-        "requested_depth": 3,
-        "requested_branches": 2,
+        "requested_depth": 4,
+        "requested_variables": 7,
+        "transformer_layers": 3,
+        "residual_width": 73,
+        "sequence_variable_count": 9,
+        "computed_variable_count": 7,
+        "selector_count": 3,
+        "max_dependency_depth": 4,
+        "token_accuracy": 1.0,
+        "sequence_accuracy": 1.0
+      },
+      {
+        "requested_depth": 5,
+        "requested_variables": 5,
+        "transformer_layers": 4,
+        "residual_width": 57,
+        "sequence_variable_count": 7,
+        "computed_variable_count": 5,
+        "selector_count": 1,
+        "max_dependency_depth": 5,
+        "token_accuracy": 1.0,
+        "sequence_accuracy": 1.0
+      },
+      {
+        "requested_depth": 5,
+        "requested_variables": 6,
+        "transformer_layers": 4,
+        "residual_width": 65,
+        "sequence_variable_count": 8,
+        "computed_variable_count": 6,
+        "selector_count": 2,
+        "max_dependency_depth": 5,
+        "token_accuracy": 1.0,
+        "sequence_accuracy": 1.0
+      },
+      {
+        "requested_depth": 5,
+        "requested_variables": 7,
         "transformer_layers": 4,
         "residual_width": 73,
-        "sequence_variable_count": 8,
+        "sequence_variable_count": 9,
         "computed_variable_count": 7,
-        "selector_count": 0,
-        "max_dependency_depth": 4,
-        "token_accuracy": 1.0,
-        "sequence_accuracy": 1.0
-      },
-      {
-        "requested_depth": 3,
-        "requested_branches": 3,
-        "transformer_layers": 5,
-        "residual_width": 105,
-        "sequence_variable_count": 12,
-        "computed_variable_count": 11,
-        "selector_count": 0,
+        "selector_count": 2,
         "max_dependency_depth": 5,
         "token_accuracy": 1.0,
         "sequence_accuracy": 1.0
       }
     ],
     "realized_axes_rank": 2,
-    "realized_axes_noncollinear": true
+    "realized_axes_noncollinear": true,
+    "depth_variable_correlation": 0.0,
+    "depth_matches_request": true,
+    "variables_match_request": true
   }
 }

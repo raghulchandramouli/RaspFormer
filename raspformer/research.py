@@ -1,6 +1,7 @@
 """Executable controls for representation geometry and blind write detection."""
 
 import hashlib
+import itertools
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -323,6 +324,9 @@ def geometry_patches(program, assembled, model, config, split, calibration, stat
     for pair_id, (recipient, donor, position) in enumerate(pairs):
         donor_values = evaluator.evaluate(expression, split.test[donor])
         counterfactual = np.asarray(rasp_with_patch(program, expression, split.test[recipient], position, donor_values[position]))
+        defined = all(value is not None for value in counterfactual)
+        unpatched = np.asarray(evaluator.evaluate(program, split.test[recipient]), dtype=float)
+        changes_output = bool(defined and not np.allclose(counterfactual.astype(float), unpatched, atol=config.abs_tol, rtol=config.rel_tol))
         delta = np.asarray(states[chosen])[donor, position+1] - np.asarray(states[chosen])[recipient, position+1]
         for kind, rank in [("pca", 1), ("pca", 3), ("transition", 1), ("transition", 3), ("random", 1), ("random", 3), ("self", 0), ("oracle", len(variable["residual_lane_indices"]))]:
             change = np.zeros_like(delta)
@@ -339,11 +343,32 @@ def geometry_patches(program, assembled, model, config, split, calibration, stat
                 position=position, kind=kind, rank=rank, stage=stage_name(chosen), variable=variable["variable"],
                 decoded_outputs=actual.tolist(), symbolic_counterfactual=counterfactual.tolist(),
                 behavior_changed=bool(not np.allclose(actual, baseline[recipient], atol=config.abs_tol, rtol=config.rel_tol)),
-                symbolic_counterfactual_defined=bool(all(value is not None for value in counterfactual)),
-                full_counterfactual_match=bool(all(value is not None for value in counterfactual) and np.allclose(actual, counterfactual.astype(float), atol=config.abs_tol, rtol=config.rel_tol))))
-    pd.DataFrame(rows).to_csv(output / "patches.csv", index=False)
+                symbolic_counterfactual_defined=defined, counterfactual_changes_output=changes_output,
+                full_counterfactual_match=bool(defined and np.allclose(actual, counterfactual.astype(float), atol=config.abs_tol, rtol=config.rel_tol))))
+    frame = pd.DataFrame(rows)
+    frame.to_csv(output / "patches.csv", index=False)
     return dict(selected_stage=chosen, selector=selector, variable=variable["variable"],
-                controls=pd.DataFrame(rows).groupby(["kind", "rank"])[["behavior_changed", "full_counterfactual_match"]].mean().reset_index().to_dict("records"))
+                controls=[{key: None if isinstance(value, float) and np.isnan(value) else value for key, value in row.items()}
+                          for row in summarize_patches(frame).to_dict("records")])
+
+
+def summarize_patches(frame):
+    """Patch scores over all pairs and over the pairs whose counterfactual changes the output.
+
+    A pair whose substitution leaves the output unchanged is matched by doing
+    nothing, so the all-pairs score has a floor. The output-changing subset has
+    none: an unpatched model cannot match there.
+    """
+    keys = ["kind", "rank"]
+    overall = frame.groupby(keys).agg(pairs=("full_counterfactual_match", "size"),
+                                      behavior_changed=("behavior_changed", "mean"),
+                                      full_counterfactual_match=("full_counterfactual_match", "mean"))
+    changing = frame[frame.counterfactual_changes_output].groupby(keys).agg(
+        output_changing_pairs=("full_counterfactual_match", "size"),
+        output_changing_match=("full_counterfactual_match", "mean"))
+    summary = overall.join(changing)
+    summary["output_changing_pairs"] = summary.output_changing_pairs.fillna(0).astype(int)
+    return summary.reset_index()
 
 
 def sharpening(program, assembled, model, config, probe_config, output, program_index):
@@ -443,21 +468,47 @@ def run_diagnostics(programs, config, probe_config, output: Path, seeds=(42, 43,
     return summary
 
 
-def family_program(depth, branches, vocab_size):
-    branch_outputs = []
-    for branch in range(branches):
-        value = rasp.tokens
-        for level in range(depth):
-            offset = branch + level + 1
-            sign = -1 if level % 2 else 1
-            value = rasp.Map(lambda token, a=sign, b=offset: (a * token + b) % vocab_size,
-                             value, simplify=False).named(f"branch_{branch}_step_{level}")
-        branch_outputs.append(value)
-    result = branch_outputs[0]
-    for branch, value in enumerate(branch_outputs[1:], 1):
-        result = rasp.SequenceMap(lambda left, right: (left + right) % vocab_size,
-                                  result, value).named(f"merge_{branch}")
-    return result
+def family_program(depth, variables, vocab_size, *, length=6, variant=0):
+    """A modulo program with exactly ``variables`` computed variables at dependency depth ``depth``.
+
+    The program is a binary tree. Every leaf reads the token at a different
+    cyclic offset, so leaves depend on different inputs, and inner nodes are
+    single-input maps or two-input merges. RASP operations read at most two
+    sequence variables, which bounds ``variables`` by ``2**depth - 1``.
+    ``variant`` changes the constants, giving a different function on the same
+    structure. The offsets assume sequences of exactly ``length`` tokens.
+    """
+    if not 2 <= depth <= variables <= 2 ** depth - 1:
+        raise ValueError("Require 2 <= depth <= variables <= 2**depth - 1.")
+    ids = itertools.count()
+
+    def leaf():
+        index = next(ids)
+        offset = rasp.Select(rasp.indices, rasp.indices,
+                             lambda key, query, shift=index + 1: key == (query + shift) % length)
+        return rasp.Aggregate(offset.named(f"offset_{index}"), rasp.tokens).named(f"read_{index}")
+
+    def affine(source):
+        index = next(ids)
+        return rasp.Map(lambda value, a=-1 if (index + variant) % 2 else 1, b=index + 1 + variant:
+                        (a * value + b) % vocab_size, source, simplify=False).named(f"map_{index}")
+
+    def build(levels, nodes):
+        if levels == 1:
+            return leaf()
+        side_nodes = min(nodes - levels, 2 ** (levels - 1) - 1)
+        spine = build(levels - 1, nodes - 1 - side_nodes)
+        if side_nodes == 0:
+            return affine(spine)
+        side = build(side_nodes.bit_length(), side_nodes)
+        return rasp.SequenceMap(lambda left, right: (left + right + variant) % vocab_size,
+                                spine, side).named(f"merge_{next(ids)}")
+
+    return build(depth, variables)
+
+
+FAMILY_DEPTHS = (3, 4, 5)
+FAMILY_VARIABLES = (5, 6, 7)
 
 
 def run_families(config, probe_config, output: Path):
@@ -465,27 +516,30 @@ def run_families(config, probe_config, output: Path):
     split = split_sequences(config, probe_config, output)
     rows, stages = [], []
     evaluator = rasp.DefaultRASPEvaluator()
-    for depth in (1, 2, 3):
-        for branches in (1, 2, 3):
-            program = family_program(depth, branches, len(config.vocab))
+    for depth in FAMILY_DEPTHS:
+        for variables in FAMILY_VARIABLES:
+            program = family_program(depth, variables, len(config.vocab), length=probe_config.length)
             assembled = compile_program(program, config)
-            metadata, variables, _ = extract_schedule(program, assembled, config)
+            metadata, schedule, _ = extract_schedule(program, assembled, config)
             model = models.from_compiled(assembled)
             logits, states = models.forward(model, encode(assembled, split.test, config))
             expected = np.asarray([evaluator.evaluate(program, seq) for seq in split.test])
-            row = dict(requested_depth=depth, requested_branches=branches, **metadata,
+            row = dict(requested_depth=depth, requested_variables=variables, **metadata,
                        **accuracy(decode(assembled, logits), expected, config))
             rows.append(row)
             for index, state in enumerate(states):
                 profile = pca_profile(flat(state))
-                stages.append(dict(requested_depth=depth, requested_branches=branches,
+                stages.append(dict(requested_depth=depth, requested_variables=variables,
                                    stage=stage_name(index), pr=profile["participation_ratio"],
                                    total_variance=profile["total_variance"], variance_active=profile["variance_active"]))
-            write_json(output / f"schedule-d{depth}-b{branches}.json", variables)
+            write_json(output / f"schedule-d{depth}-v{variables}.json", schedule)
     pd.DataFrame(rows).to_csv(output / "factorial-families.csv", index=False)
     pd.DataFrame(stages).to_csv(output / "family-geometry.csv", index=False)
-    axes = np.asarray([[row["max_dependency_depth"], row["computed_variable_count"]] for row in rows])
+    axes = np.asarray([[row["max_dependency_depth"], row["computed_variable_count"]] for row in rows], dtype=float)
     rank = int(np.linalg.matrix_rank(axes - axes.mean(axis=0)))
-    result = dict(families=rows, realized_axes_rank=rank, realized_axes_noncollinear=rank == 2)
+    result = dict(families=rows, realized_axes_rank=rank, realized_axes_noncollinear=rank == 2,
+                  depth_variable_correlation=float(np.corrcoef(axes.T)[0, 1]),
+                  depth_matches_request=all(row["max_dependency_depth"] == row["requested_depth"] for row in rows),
+                  variables_match_request=all(row["computed_variable_count"] == row["requested_variables"] for row in rows))
     write_json(output / "summary.json", result)
     return result

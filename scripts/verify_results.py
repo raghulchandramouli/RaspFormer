@@ -10,6 +10,7 @@ import shutil
 import sys
 
 import numpy as np
+import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -54,7 +55,7 @@ def main():
                 raise AssertionError("Calibration and test sequences overlap.")
         if stage["source_split"] != "calibration" or predictions != stage["predictions"]:
             raise AssertionError("Patch stage did not use calibration activations.")
-        selector = stage.get("selector", "cka")
+        selector = stage.get("selector")
         if selector != "cka":
             raise AssertionError(f"Patch stage selector is {selector!r}; the canonical selector is adjacent-CKA change.")
         selected_stage = select_patch_stage(predictions, selector)
@@ -62,6 +63,12 @@ def main():
             raise AssertionError("Patch stage is not the calibration adjacent-CKA-change argmax.")
         if stage["selected_stage"] != item["patches"]["selected_stage"]:
             raise AssertionError("Patch stage changed after calibration selection.")
+        patches = folder / "patches.csv"
+        if patches.exists():
+            frame = pd.read_csv(patches)
+            floor = frame[(frame.kind == "self") & frame.counterfactual_changes_output]
+            if floor.full_counterfactual_match.any():
+                raise AssertionError("A self patch matched a counterfactual that changes the output.")
     learning = args.results / "learning/reference"
     replay = read_json(learning / "replay.json")
     checked_count = len(replay["checkpoints"])
