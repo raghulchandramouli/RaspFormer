@@ -308,3 +308,64 @@ counted.
 logarithmic grid that maximises mean F1 over the compiled calibration programs
 (P01–P06 and the grid). It is scored once on compiled P07–P12 and on the SIIT
 models.
+
+### 2026-11-10: training length, pilot rule and verdict labels (before any metric was computed)
+
+These three entries were written after timing SIIT on six grid programs and
+before any geometry metric was computed on a trained calibration model.
+
+**Training length (deviation).** SIIT runs for 6,000 steps, not 3,000. In the
+timing runs the depth-three programs reached interchange accuracy 1.00 by step
+3,000, but the depth-four program `d4 v6 k8` still had an interchange loss of
+0.13 at step 2,000 and 0.009 at step 4,000. At 6,000 steps the four deepest
+programs tried reached interchange accuracy 0.986 to 1.00. Every calibration
+model, including output-loss-only twins and shuffled-label nulls, uses 6,000
+steps.
+
+**Pilot rule (clarification).** The pilot's decision is go when at least four of
+the five pilot pairs have two or more SIIT seeds per member at mean interchange
+accuracy ≥ 0.95 and the analysis runs end to end. Otherwise the pairs are
+redesigned.
+
+**Verdict labels (clarification).** Section 3 names three verdicts and leaves
+two combinations open. A metric that passes L1 but not L2 is labelled "above
+null, not calibrated", or "separates algorithms, not calibrated" when it also
+passes L3. On compiled models, where L3 is not gradable, a metric that passes
+L1 and L2 is labelled "above null and calibrated; algorithm-specificity not
+gradable".
+
+### 2026-11-10: changes after the pilot (before any full-run metric was computed)
+
+The pilot trained SIIT models and output-loss-only twins for the five pilot
+pairs. Its ratios are descriptive. It led to three changes, all made before the
+full pool was measured.
+
+**Balanced data for rare yes/no programs (deviation).** The pilot's palindrome
+models, trained on uniform inputs, answered "no" to everything: they were right
+on 2% to 5% of the 512 palindromes while scoring 0.995 token accuracy and 0.996
+interchange accuracy. Palindromes are 0.2% of inputs, so both checks were
+vacuous. A whole-sequence yes/no program whose rarer answer covers under a
+tenth of the 262,144 inputs is now trained and tested on data with half of each
+answer. This applies to palindrome, check-nondecreasing and has-duplicate.
+Probe sequences stay uniform. Retrained on balanced data, the palindrome SIIT
+models reach interchange accuracy 0.993 to 0.997 and the output-loss-only twins
+0.59 to 0.62.
+
+**Further training rounds (deviation).** One pilot program, `sort` algorithm B,
+reached interchange accuracy 0.65 to 0.73 at 6,000 steps and 0.94 to 0.98 at
+18,000. A SIIT model below the 0.95 threshold now trains in further rounds of
+6,000 steps, up to 24,000 in total, and stops at the first round that reaches
+the threshold. Output-loss-only twins and shuffled-label nulls keep 6,000
+steps.
+
+**Output-loss-only twins of a pair (clarification).** The two members of a pair
+compute the same function, so their output-loss-only twins with the same seed
+receive the same initial weights, data and labels and are the same model. Over
+all cross-algorithm seed pairs their ratio is 2/3 by construction. The ratio
+over cross pairs with different seeds is reported as well; for this class it is
+the baseline with no algorithm difference and should be near one. The L3 pass
+rule is unchanged.
+
+**Pilot decision.** Go. Four of five pairs had two or more SIIT seeds per
+member above the threshold once palindrome was retrained on balanced data; the
+fifth, `sort`, is retrained under the further-rounds rule.
