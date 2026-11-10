@@ -6,6 +6,8 @@ The original studies check agreement with known compiler representations. The va
 
 Read the generated [research validation report](results/report/research-validation.md) for measured results and limitations.
 
+The next study is pre-registered in [the calibration protocol](protocol/calibration.md): whether CKA, PR, and spectrum summaries track a known algorithm, against null models, calibration curves, and same-function program pairs.
+
 PDFs include the [complete change report](output/pdf/raspformer-research-upgrade-report.pdf) and the [point-by-point response to review](output/pdf/raspformer-response-to-review.pdf).
 
 ## Run the studies
