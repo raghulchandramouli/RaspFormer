@@ -1,0 +1,89 @@
+{
+  "status": "completed",
+  "recorded_utc": "2026-11-10T08:07:19.879054+00:00",
+  "pilot": true,
+  "settings": {
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "steps": [
+      6000,
+      12000,
+      18000,
+      24000
+    ],
+    "width": 32,
+    "heads": 4,
+    "probe_sequences": 256,
+    "probe_seed": 2026,
+    "iia_threshold": 0.95,
+    "max_training_rounds": 4,
+    "l1_threshold": 0.9,
+    "l2_threshold": 0.7,
+    "l3_ratio": 2.0,
+    "alpha": 0.05,
+    "permutation_draws": 10000,
+    "bootstraps": 2000,
+    "git_commit": "b752d42a85e3aef6be6d7a606a059b08284b7d4f",
+    "git_dirty": true,
+    "tracr_version": "1.0.0",
+    "tracr_commit": "9ce2b8c82b6ba10e62e86cf6f390e7536d4fd2cd",
+    "python_version": "3.12.15",
+    "dependencies": {
+      "tracr": "1.0.0",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2",
+      "numpy": "2.5.3",
+      "dm-haiku": "0.0.17",
+      "networkx": "3.7",
+      "pandas": "3.0.6",
+      "matplotlib": "3.11.2",
+      "ipywidgets": "8.1.9"
+    },
+    "devices": [
+      "cpu:0"
+    ],
+    "source_sha256": {
+      "__init__.py": "bcf02f54983a9dadfe4a790e7bbb9a88c75a1e8021c947228365b4865410b17e",
+      "alignment.py": "85e46c7910db528ccd8d61b452708958d80db8195cb2bbe22748c7683fe4833a",
+      "calibration.py": "fc87503050e048a22ce2bd7886fde5b10c5021b93452b3c8fa9741843825173e",
+      "compiler.py": "1583ad8c2e5d0cb8e6afb6eeac3276c6b5d31d971b971877cf02833e75e3c8cb",
+      "geometry.py": "af2a737622f82e5a5e3bb71622fa5b1f89df8829722362fc749fcd5f989c0e20",
+      "models.py": "f5be86d0031cf2adc9fd8ba7ef253b801fe9c43c6425340a065c342182ab8973",
+      "programs.py": "c6a404f02deacc48a86644b9ec59b22ad6ed8ef3add2d2b0861e7485550377c4",
+      "report.py": "d1c3c94222169b9db53daa1583256659c6e5ffd845e8d1ea78faebdafce82e9b",
+      "research.py": "01f48f7348b1ce84eb11004775dfeb0b38c09c21b324cd158c76a2cf7432754f",
+      "study.py": "082961f0ea39745eabe0e1ef6fa8c6a43301def418a45aed254240245c984412"
+    },
+    "notebook_source_sha256": {
+      "notebooks/01_programs.ipynb": "8cd640e56f19f468ca4f3a0175721aca84255c3aefe3dfd7f6c5822b975e46cf",
+      "notebooks/02_trace.ipynb": "cd05eb9a49a1cc4a4ad1967195f9dcfcbb04c61de125db394a1e81a1fb68a89f",
+      "notebooks/03_geometry.ipynb": "7d3ac997a084066f801a8fd5afa00c73149d3376982df086eed1270a662507d9",
+      "notebooks/04_alignment.ipynb": "dc8c40123f1fa137f66b105ed02125316840c8b7ec1feeb2c439ecfb94f4bfc8",
+      "notebooks/05_comparison.ipynb": "af312da190b1ef70a85f199cb3cb6947ee0f2894fdd8b5a30d3d341aaaa2298d"
+    }
+  },
+  "models": 60,
+  "excluded": 3,
+  "twin_pairs": [
+    "sort",
+    "reverse",
+    "palindrome",
+    "histogram",
+    "count-greater-than"
+  ],
+  "tables": [
+    "exclusions",
+    "l3",
+    "l3-pairs",
+    "models"
+  ],
+  "pilot_decision": {
+    "pairs": 5,
+    "pairs_with_two_siit_seeds_per_member": 5,
+    "required": 4,
+    "decision": "go"
+  }
+}

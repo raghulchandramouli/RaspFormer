@@ -1,0 +1,4 @@
+spec,model_class,seed,reason
+pair-sort-b,siit,1,mean interchange accuracy 0.947 < 0.95
+pair-palindrome-a,output-only,2,task accuracy not within 0.01 of the SIIT model
+pair-palindrome-b,output-only,2,task accuracy not within 0.01 of the SIIT model

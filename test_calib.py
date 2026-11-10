@@ -86,6 +86,14 @@ class StatisticsTests(unittest.TestCase):
         self.assertEqual(set(tables(True, True, 1.0).verdict), {"tracks representational structure, not the algorithm"})
         self.assertEqual(set(tables(True, False, 1.0).verdict), {"above null, not calibrated"})
 
+    def test_l3_is_not_gradable_when_no_pair_has_a_ratio(self):
+        pairs = pair_frame(3.0).assign(ratio=np.nan, ratio_cross_seed=np.nan)
+        l1 = pd.DataFrame([dict(model_class="siit", metric=metric, passed=True) for metric in METRICS])
+        l2 = pd.DataFrame([dict(model_class="siit", metric=metric, passed=True, tracks_cardinality=False) for metric in METRICS])
+        table = analysis.verdicts(l1, l2, analysis.level_three(pairs), classes=("siit",))
+        self.assertTrue(table.L3.isna().all())
+        self.assertEqual(set(table.verdict), {"above null and calibrated; algorithm-specificity not gradable"})
+
     def test_hardened_threshold_is_learned_on_calibration_programs_only(self):
         truth = np.array([True, False, True, False])
         clean = pd.DataFrame(dict(change=[1.0, 1e-4, 1.0, 1e-4], pr=[1.0, 1e-4, 1.0, 1e-4], cka=[1.0, 1e-4, 1.0, 1e-4]))

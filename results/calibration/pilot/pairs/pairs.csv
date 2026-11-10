@@ -1,0 +1,28 @@
+name,a_label,b_label,pilot,inputs_checked,compiled_outputs_equal,mismatches,output_classes_equal,rasp_agreement_a,rasp_agreement_b,schedules_differ,layers_a,layers_b,heads_a,heads_b,computed_variables_a,computed_variables_b,residual_width_a,residual_width_b,output_values,valid,status
+sort,tiebroken-key,rank-parts,True,262144,True,0,True,1.0,1.0,True,3,4,1,1,3,5,81,102,-2 -1 0 1 2 3 4 5,True,valid
+reverse,mirrored-index,length-minus-index,True,262144,True,0,True,1.0,1.0,True,1,3,1,1,1,3,25,45,-2 -1 0 1 2 3 4 5,True,valid
+palindrome,reverse-and-compare,mismatch-count,True,262144,True,0,True,1.0,1.0,True,3,4,1,1,5,4,31,83,0 1,True,valid
+histogram,selector-width,aggregate-count,True,262144,True,0,True,1.0,1.0,True,1,4,1,1,1,7,25,58,1 2 3 4 5 6,True,valid
+count-greater-than,strict-selector,at-least-minus-equal,True,262144,True,0,True,1.0,1.0,True,1,2,1,2,1,3,25,40,0 1 2 3 4 5,True,valid
+first-element,position-selector,flag-selector,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,25,27,-2 -1 0 1 2 3 4 5,True,valid
+last-element,fixed-index,first-of-reversed,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,25,33,-2 -1 0 1 2 3 4 5,True,valid
+rotate-left,cyclic-selector,clamp-and-repair,False,262144,True,0,True,1.0,1.0,True,1,2,1,2,1,4,25,57,-2 -1 0 1 2 3 4 5,True,valid
+rotate-two,single-hop,double-hop,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,25,33,-2 -1 0 1 2 3 4 5,True,valid
+previous-token,position-selector,reverse-shift-reverse,False,262144,True,0,True,1.0,1.0,True,1,3,1,1,1,3,25,41,-2 -1 0 1 2 3 4 5,True,valid
+token-repeated,histogram-threshold,earlier-or-later-copy,False,262144,True,0,True,1.0,1.0,True,2,3,1,2,2,4,27,83,0 1,True,valid
+equals-first,fetch-then-compare,match-selector,False,262144,True,0,True,1.0,1.0,True,1,3,1,1,2,3,27,43,0 1,True,valid
+check-nondecreasing,adjacent-comparison,inversion-count,False,262144,True,0,True,1.0,1.0,True,3,4,1,1,4,4,37,83,0 1,True,valid
+sum-with-next,clamped-selector,wrap-then-repair,False,262144,True,0,True,1.0,1.0,True,1,3,1,1,2,4,40,96,-4 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10,True,valid
+maximum,no-greater-token,last-of-sorted,False,262144,True,0,True,1.0,1.0,True,2,4,1,1,2,4,33,89,-2 -1 0 1 2 3 4 5,True,valid
+minimum,no-smaller-token,first-in-tiebroken-order,False,262144,True,0,True,1.0,1.0,True,2,3,1,1,2,3,33,81,-2 -1 0 1 2 3 4 5,True,valid
+swap-adjacent,xor-selector,fetch-both-then-choose,False,262144,True,0,True,1.0,1.0,True,1,2,1,2,1,4,25,57,-2 -1 0 1 2 3 4 5,True,valid
+has-duplicate,repeated-positions,distinct-count,False,262144,True,0,True,1.0,1.0,True,3,4,1,1,3,4,35,83,0 1,True,valid
+distinct-count,first-occurrences,last-occurrences,False,262144,True,0,True,1.0,1.0,False,3,3,1,1,3,3,81,81,1 2 3 4 5 6,False,"dropped: identical schedule signature: both members are 3 layers writing (stage 1, 48 lanes), (stage 3, 7 lanes), (stage 5, 7 lanes); the selectors differ only in the direction of one comparison"
+absolute,direct,rectified-parts,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,3,22,32,0 1 2 3 4 5,True,valid
+mod-four,direct,two-bits,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,3,20,25,0 1 2 3,True,valid
+sign,direct,two-flags,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,3,19,24,-1 0 1,True,valid
+clamp,direct,floor-then-cap,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,20,26,0 1 2 3,True,valid
+increment-by-index,direct,partial-sums,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,30,40,-2 -1 0 1 2 3 4 5 6 7 8 9 10,True,valid
+parity-sum,direct,xor-of-bits,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,3,19,23,0 1,True,valid
+exceeds-index,direct,rectified-token,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,19,25,0 1,True,valid
+index-distance,direct,signed-gap,False,262144,True,0,True,1.0,1.0,True,1,2,1,1,1,2,25,38,0 1 2 3 4 5 6 7,True,valid

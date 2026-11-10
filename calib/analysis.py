@@ -301,7 +301,7 @@ def verdicts(l1, l2, l3, classes=REAL_CLASSES):
         for metric in METRICS:
             above = l1[(l1.model_class == model_class) & (l1.metric == metric)]
             calibrated = l2[(l2.model_class == model_class) & (l2.metric == metric)]
-            specific = l3[(l3.model_class == model_class) & (l3.metric == metric) & (l3.kind == "twin")]
+            specific = l3[(l3.model_class == model_class) & (l3.metric == metric) & (l3.kind == "twin") & (l3.pairs > 0)]
             if above.empty or calibrated.empty:
                 continue
             one, two = bool(above.passed.all()), bool(calibrated.passed.any())
