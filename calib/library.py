@@ -18,6 +18,7 @@ CONTROL_VOCABULARY = 8
 SEQUENCE_LENGTH = 6
 PROBE_SEQUENCES = 256
 PROBE_SEED = 2026
+RARE_OUTCOME_SHARE = 0.10
 
 
 @dataclass(frozen=True)
@@ -113,12 +114,20 @@ def probe_tokens(config):
     return rng.choice(np.asarray(config.vocab), size=(PROBE_SEQUENCES, SEQUENCE_LENGTH))
 
 
-def training_tokens(config, seed, count):
-    """Uniform sequences with every probe sequence removed."""
+def training_tokens(config, seed, count, *, strata=None):
+    """Training sequences with every probe sequence removed.
+
+    Sequences are uniform by default. ``strata`` is a list of arrays of
+    sequences; each then supplies an equal share, in shuffled order.
+    """
     held_out = {tuple(row) for row in probe_tokens(config).tolist()}
     rng = np.random.default_rng(seed)
-    rows = []
-    while len(rows) < count:
-        batch = rng.choice(np.asarray(config.vocab), size=(count, SEQUENCE_LENGTH))
-        rows.extend(row for row in batch.tolist() if tuple(row) not in held_out)
-    return np.asarray(rows[:count])
+    if strata is None:
+        rows = []
+        while len(rows) < count:
+            batch = rng.choice(np.asarray(config.vocab), size=(count, SEQUENCE_LENGTH))
+            rows.extend(row for row in batch.tolist() if tuple(row) not in held_out)
+        return np.asarray(rows[:count])
+    allowed = [np.asarray([row for row in stratum.tolist() if tuple(row) not in held_out]) for stratum in strata]
+    stratum_of = rng.permutation(np.arange(count) % len(allowed))
+    return np.stack([allowed[index][rng.integers(len(allowed[index]))] for index in stratum_of])

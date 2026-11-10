@@ -36,7 +36,7 @@ def stage_frame(seed=0):
 def pair_frame(ratio):
     return pd.DataFrame([dict(pairing=f"pair{index}", kind="twin", model_class="siit", metric=metric,
                               models_a=3, models_b=3, between=ratio * (1 + 0.05 * (index % 5)), within=1.0,
-                              ratio=ratio * (1 + 0.05 * (index % 5)), identified=1.0, identification_trials=6)
+                              ratio=ratio * (1 + 0.05 * (index % 5)), ratio_cross_seed=ratio, identified=1.0, identification_trials=6)
                          for index in range(20) for metric in METRICS])
 
 

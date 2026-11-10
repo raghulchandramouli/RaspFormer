@@ -6,6 +6,7 @@ interrupted pool run resumes where it stopped.
 """
 
 import hashlib
+import itertools
 import json
 import multiprocessing
 import os
@@ -23,6 +24,8 @@ from raspformer.research import flat
 TRAINED_CLASSES = ("siit", "output-only", "shuffled-label")
 SEEDS = (0, 1, 2)
 STEPS = 6000
+MAX_ROUNDS = 4
+IIA_THRESHOLD = 0.95
 TRAIN_SEQUENCES = 4096
 TEST_SEQUENCES = 512
 COMPRESSION_FRACTIONS = (0.75, 0.5, 0.25)
@@ -64,8 +67,33 @@ def initial_model(name, seed):
                                seed=seed, width=siit.WIDTH, layers=spec.layers, heads=siit.HEADS)
 
 
+@cache
+def rare_outcome_strata(name):
+    """Inputs of each answer, for a whole-sequence yes/no program whose rarer answer is under a tenth of inputs.
+
+    Uniform sampling almost never shows such a program its rare answer, and a
+    model that always gives the common answer then passes every accuracy and
+    interchange check. Other programs return None and train on uniform inputs.
+    """
+    spec = library.spec(name)
+    if spec.kind != "pair":
+        return None
+    _, _, hl_model = compiled(name)
+    tokens = np.asarray(list(itertools.product(spec.config.vocab, repeat=library.SEQUENCE_LENGTH)))
+    encoded = encode(name, tokens)
+    labels = np.concatenate([np.asarray(models.forward(hl_model, encoded[start:start + 16384])[0])[:, 1:].argmax(-1)
+                             for start in range(0, len(encoded), 16384)])
+    answers = np.unique(labels)
+    if len(answers) != 2 or not (labels == labels[:, :1]).all():
+        return None
+    strata = [tokens[labels[:, 0] == answer] for answer in answers]
+    return strata if min(map(len, strata)) < library.RARE_OUTCOME_SHARE * len(tokens) else None
+
+
 def _data(name, seed):
-    encoded = encode(name, library.training_tokens(library.spec(name).config, seed, TRAIN_SEQUENCES + TEST_SEQUENCES))
+    tokens = library.training_tokens(library.spec(name).config, seed, TRAIN_SEQUENCES + TEST_SEQUENCES,
+                                     strata=rare_outcome_strata(name))
+    encoded = encode(name, tokens)
     return encoded[:TRAIN_SEQUENCES], encoded[TRAIN_SEQUENCES:]
 
 
@@ -83,10 +111,17 @@ def train_task(root, name, model_class, seed, steps=STEPS):
         trained, history = models.train_model(model, train, shuffled, test, siit.hl_labels(hl_model, test),
                                               steps=steps, seed=seed, batch_size=64, lr=1e-3)
         history = [row for row in history if "val_accuracy" in row][-6:]
-    elif model_class in ("siit", "output-only"):
-        weights = {} if model_class == "siit" else dict(iit_weight=0.0, strict_weight=0.0)
+    elif model_class == "output-only":
         trained, history = siit.train_siit(hl_model, model, train, circuit_nodes, steps=steps, seed=seed,
-                                           log_every=max(1, steps // 6), verbose=False, **weights)
+                                           log_every=max(1, steps // 6), verbose=False, iit_weight=0.0, strict_weight=0.0)
+    elif model_class == "siit":
+        trained, history, rounds = model, [], 0
+        while rounds < MAX_ROUNDS and (not rounds or siit.evaluate_siit(hl_model, trained, test, circuit_nodes)["mean_iia"] < IIA_THRESHOLD):
+            trained, added = siit.train_siit(hl_model, trained, train, circuit_nodes, steps=steps, seed=seed + 1000 * rounds,
+                                             log_every=max(1, steps // 6), verbose=False)
+            history += [dict(row, step=row["step"] + steps * rounds) for row in added]
+            rounds += 1
+        steps *= rounds
     else:
         raise ValueError(f"model_class must be one of {TRAINED_CLASSES}")
     metrics = siit.evaluate_siit(hl_model, trained, test, circuit_nodes)

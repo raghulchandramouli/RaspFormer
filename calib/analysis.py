@@ -15,7 +15,6 @@ from raspformer.calibration import (GROUND_TRUTH, METRICS, RELATIONAL_METRICS, m
 from raspformer.research import infer_writes, pr
 
 REAL_CLASSES = ("compiled", "siit", "output-only")
-IIA_THRESHOLD = 0.95
 TWIN_ACCURACY_TOLERANCE = 0.01
 L1_THRESHOLD = 0.90
 L2_THRESHOLD = 0.70
@@ -93,8 +92,8 @@ def included(root, name, model_class, seed):
     record = pool.load_metrics(root, name, model_class, seed)
     if record is None:
         return False, "not trained"
-    if model_class == "siit" and record["mean_iia"] < IIA_THRESHOLD:
-        return False, f"mean interchange accuracy {record['mean_iia']:.3f} < {IIA_THRESHOLD}"
+    if model_class == "siit" and record["mean_iia"] < pool.IIA_THRESHOLD:
+        return False, f"mean interchange accuracy {record['mean_iia']:.3f} < {pool.IIA_THRESHOLD}"
     if model_class == "output-only":
         twin = pool.load_metrics(root, name, "siit", seed)
         if twin is None or abs(record["token_accuracy"] - twin["token_accuracy"]) > TWIN_ACCURACY_TOLERANCE:
@@ -250,6 +249,8 @@ def pair_distances(root, pairing, model_class):
                     for i in range(len(labelled)) for j in range(i + 1, len(labelled))}
         between = [value for (i, j), value in distance.items() if labelled[i][0] != labelled[j][0]]
         within = [value for (i, j), value in distance.items() if labelled[i][0] == labelled[j][0]]
+        cross_seed = [value for (i, j), value in distance.items()
+                      if labelled[i][0] != labelled[j][0] and labelled[i][1] != labelled[j][1]]
         correct = []
         for index, (member, _, _) in enumerate(labelled):
             others = {other: distance[tuple(sorted((index, other)))] for other in range(len(labelled)) if other != index}
@@ -263,6 +264,7 @@ def pair_distances(root, pairing, model_class):
                          models_a=len(members["a"]), models_b=len(members["b"]),
                          between=between_mean, within=within_mean,
                          ratio=between_mean / within_mean if within and within_mean > 0 else float("nan"),
+                         ratio_cross_seed=float(np.mean(cross_seed)) / within_mean if cross_seed and within and within_mean > 0 else float("nan"),
                          identified=float(np.mean(correct)) if correct else float("nan"),
                          identification_trials=len(correct)))
     return rows
@@ -277,6 +279,7 @@ def level_three(pairs, seed=0):
         trials = group.identification_trials.sum()
         rows.append(dict(model_class=model_class, kind=kind, metric=metric, pairs=len(usable),
                          median_ratio=float(usable.ratio.median()) if len(usable) else float("nan"),
+                         median_ratio_cross_seed=float(usable.ratio_cross_seed.median()) if len(usable) else float("nan"),
                          mean_log_ratio=float(np.log(usable.ratio).mean()) if len(usable) else float("nan"),
                          p=sign_flip_p(np.log(usable.ratio), rng) if kind == "twin" else float("nan"),
                          identification_accuracy=float((group.identified * group.identification_trials).sum() / trials) if trials else float("nan"),

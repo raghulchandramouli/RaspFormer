@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from calib import analysis
+from calib import analysis, pool
 
 
 def _table(frame, columns=None):
@@ -28,13 +28,15 @@ def _pilot(tables, manifest):
     return [
         "# Calibration pilot\n",
         f"Decision: **{decision['decision']}**. {decision['pairs_with_two_siit_seeds_per_member']} of {decision['pairs']} pilot pairs "
-        f"have at least two SIIT seeds per member at mean interchange accuracy ≥ {analysis.IIA_THRESHOLD}; the rule needs {decision['required']}. "
+        f"have at least two SIIT seeds per member at mean interchange accuracy ≥ {pool.IIA_THRESHOLD}; the rule needs {decision['required']}. "
         "The pilot decides only whether the pairs train and the pipeline runs. Five pairs cannot support the L3 test, so the ratios below are descriptive.\n",
         "## Training\n", _table(_training(tables["models"])),
         "## Excluded models\n", _table(tables["exclusions"]) if len(tables["exclusions"]) else "None.\n",
         "## Between-algorithm over between-seed distance, SIIT models\n", _table(siit),
         "## Summary over the five pairs\n",
-        _table(tables["l3"], ["model_class", "metric", "pairs", "median_ratio", "identification_accuracy", "mean_between"]),
+        "Output-loss-only twins of the two members share a seed, training data and target function, so twins with the same seed are the same model. "
+        "Their ratio over all cross pairs is 2/3 by construction; `median_ratio_cross_seed` leaves same-seed cross pairs out and should be near one.\n",
+        _table(tables["l3"], ["model_class", "metric", "pairs", "median_ratio", "median_ratio_cross_seed", "identification_accuracy", "mean_between"]),
     ]
 
 
@@ -62,8 +64,10 @@ def _full(tables, manifest):
         f"A metric passes on the twin pairs when the Holm-corrected sign-flip p is below {analysis.ALPHA} and the median ratio of "
         f"between-algorithm to between-seed distance is at least {analysis.L3_RATIO}. Control pairs have different functions on an identical "
         "structure and carry no pass rule. Identification accuracy is how often a model is nearer to the other seeds of its own algorithm; chance is 0.5. "
-        "Compiled models have no seeds, so only their between-algorithm distance is listed.\n",
-        _table(l3, ["model_class", "kind", "metric", "pairs", "median_ratio", "p_holm", "identification_accuracy", "mean_between", "passed"]),
+        "Compiled models have no seeds, so only their between-algorithm distance is listed. "
+        "Output-loss-only twins of a pair's two members share a seed, training data and target function, so twins with the same seed are the same model: "
+        "their ratio over all cross pairs is 2/3 by construction, and `median_ratio_cross_seed`, which leaves same-seed cross pairs out, is the no-algorithm baseline.\n",
+        _table(l3, ["model_class", "kind", "metric", "pairs", "median_ratio", "median_ratio_cross_seed", "p_holm", "identification_accuracy", "mean_between", "passed"]),
         "## Detector thresholds learned on calibration programs\n",
         "Each threshold maximises mean F1 on compiled P01–P06 and the compiled grid, and is then scored once on the held-out pools.\n",
         _table(tables["detectors"]),

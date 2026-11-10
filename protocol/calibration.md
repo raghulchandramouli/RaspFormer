@@ -333,3 +333,39 @@ null, not calibrated", or "separates algorithms, not calibrated" when it also
 passes L3. On compiled models, where L3 is not gradable, a metric that passes
 L1 and L2 is labelled "above null and calibrated; algorithm-specificity not
 gradable".
+
+### 2026-11-10: changes after the pilot (before any full-run metric was computed)
+
+The pilot trained SIIT models and output-loss-only twins for the five pilot
+pairs. Its ratios are descriptive. It led to three changes, all made before the
+full pool was measured.
+
+**Balanced data for rare yes/no programs (deviation).** The pilot's palindrome
+models, trained on uniform inputs, answered "no" to everything: they were right
+on 2% to 5% of the 512 palindromes while scoring 0.995 token accuracy and 0.996
+interchange accuracy. Palindromes are 0.2% of inputs, so both checks were
+vacuous. A whole-sequence yes/no program whose rarer answer covers under a
+tenth of the 262,144 inputs is now trained and tested on data with half of each
+answer. This applies to palindrome, check-nondecreasing and has-duplicate.
+Probe sequences stay uniform. Retrained on balanced data, the palindrome SIIT
+models reach interchange accuracy 0.993 to 0.997 and the output-loss-only twins
+0.59 to 0.62.
+
+**Further training rounds (deviation).** One pilot program, `sort` algorithm B,
+reached interchange accuracy 0.65 to 0.73 at 6,000 steps and 0.94 to 0.98 at
+18,000. A SIIT model below the 0.95 threshold now trains in further rounds of
+6,000 steps, up to 24,000 in total, and stops at the first round that reaches
+the threshold. Output-loss-only twins and shuffled-label nulls keep 6,000
+steps.
+
+**Output-loss-only twins of a pair (clarification).** The two members of a pair
+compute the same function, so their output-loss-only twins with the same seed
+receive the same initial weights, data and labels and are the same model. Over
+all cross-algorithm seed pairs their ratio is 2/3 by construction. The ratio
+over cross pairs with different seeds is reported as well; for this class it is
+the baseline with no algorithm difference and should be near one. The L3 pass
+rule is unchanged.
+
+**Pilot decision.** Go. Four of five pairs had two or more SIIT seeds per
+member above the threshold once palindrome was retrained on balanced data; the
+fifth, `sort`, is retrained under the further-rounds rule.

@@ -31,6 +31,8 @@ from raspformer.programs import build_programs
 from raspformer.research import flat
 
 BENCH_SIIT = Path("results/bench/siit")
+# These two SIIT models answer "no" on almost every input and do not compute their program (issue #20).
+INVALID_BENCH_SIIT = {"P09_check_increasing", "P11_check_palindrome"}
 PILOT_GO_PAIRS = 4
 
 
@@ -81,8 +83,8 @@ def detector_inputs(root):
         else:
             held_out[name] = entry("compiled P07-P12", models.from_compiled(assembled))
         checkpoint = BENCH_SIIT / name.lower().replace("_", "-") / "model.npz"
-        if checkpoint.exists():
-            held_out[f"{name}:siit"] = entry("SIIT twelve programs", models.load_model(checkpoint))
+        if checkpoint.exists() and name not in INVALID_BENCH_SIIT:
+            held_out[f"{name}:siit"] = entry("SIIT original programs", models.load_model(checkpoint))
     for spec in library.grid_specs():
         program, assembled, hl_model = pool.compiled(spec.name)
         truth = np.asarray([row["first_write"] for row in stage_ground_truth(program, assembled, spec.config)][1:])
@@ -138,7 +140,7 @@ def analyze(root, pilot):
     manifest = dict(status="completed", recorded_utc=datetime.now(UTC).isoformat(), pilot=pilot,
                     settings=dict(seeds=list(pool.SEEDS), steps=sorted(int(value) for value in tables["models"].steps.dropna().unique()), width=32, heads=4,
                                   probe_sequences=library.PROBE_SEQUENCES, probe_seed=library.PROBE_SEED,
-                                  iia_threshold=analysis.IIA_THRESHOLD, l1_threshold=analysis.L1_THRESHOLD,
+                                  iia_threshold=pool.IIA_THRESHOLD, max_training_rounds=pool.MAX_ROUNDS, l1_threshold=analysis.L1_THRESHOLD,
                                   l2_threshold=analysis.L2_THRESHOLD, l3_ratio=analysis.L3_RATIO, alpha=analysis.ALPHA,
                                   permutation_draws=analysis.DRAWS, bootstraps=analysis.BOOTSTRAPS,
                                   **environment_metadata()),
