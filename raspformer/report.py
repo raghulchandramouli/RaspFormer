@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from .research import summarize_patches
+
 
 def _read_json(path):
     return json.loads(path.read_text())
@@ -141,13 +143,22 @@ def generate_report(results):
         direction_text + " Counterfactual agreement is evaluated against a single mapped-variable substitution. Some symbolic substitutions can make RASP outputs undefined. Those cases remain explicit failures of that comparison rather than being dropped. Behavioral effects alone do not establish recovery of a named variable.\n",
     ])
     if len(patches):
-        table(patches.groupby(["kind", "rank"])[["behavior_changed", "full_counterfactual_match"]].mean().reset_index())
-        text.append(f"The table includes {len(patches)} patch conditions. Self patches are a baseline-preservation check. Per-program variable decoder results and all donor identities are saved next to the patch rows.\n")
+        table(summarize_patches(patches))
+        changing = int(patches[patches.kind == "self"].counterfactual_changes_output.sum())
+        pair_count = int((patches.kind == "self").sum())
+        text.append(f"The table includes {len(patches)} patch conditions over {pair_count} donor-recipient pairs. `full_counterfactual_match` scores every pair. "
+                    f"In {pair_count - changing} pairs the substitution leaves the symbolic output unchanged or undefined, so a model that is not patched at all already matches or cannot match; the self-patch row measures that floor. "
+                    f"`output_changing_match` scores only the {changing} pairs whose counterfactual output is defined and differs from the recipient's own output. A self patch cannot match there, so that column has no floor. "
+                    "Per-program variable decoder results and all donor identities are saved next to the patch rows.\n")
         if has_transition:
             by_program = patches[patches["rank"] == 3].groupby(["program", "kind"])["full_counterfactual_match"].mean().unstack()
             higher = int((by_program["transition"] > by_program["pca"]).sum())
             equal = int((by_program["transition"] == by_program["pca"]).sum())
-            text.append(f"Rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in {higher} programs and equal in {equal}. Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.\n")
+            lower = len(by_program) - higher - equal
+            comparison_text = (f"Over all pairs, rank-three transition patches match the symbolic counterfactual at least as often as rank-three PCA patches in every program: higher in {higher} programs and equal in {equal}."
+                               if lower == 0 else
+                               f"Over all pairs, rank-three transition patches match the symbolic counterfactual more often than rank-three PCA patches in {higher} programs, equally often in {equal}, and less often in {lower}.")
+            text.append(comparison_text + " Both direction sets are chosen from calibration geometry alone; the transition basis is the more specific description of what the high-CKA transition writes. Neither reaches the compiler-variable oracle.\n")
 
     text.append("## Sorting row diagnosis and attention sharpening\n")
     sorting = next(item for item in program_rows if item["program"] == "P12_sorting")
@@ -166,11 +177,12 @@ def generate_report(results):
 
     families = pd.read_csv(results / "validation/reference/complexity/factorial-families.csv")
     family_summary = _read_json(results / "validation/reference/complexity/summary.json")
-    text.append("## Separate depth and branch-count controls\n")
-    table(families[["requested_depth", "requested_branches", "computed_variable_count", "max_dependency_depth", "residual_width", "transformer_layers", "token_accuracy"]])
-    text.append(f"The centered realized depth and variable-count design matrix has rank **{family_summary['realized_axes_rank']}**. "
-                "Branch depth and branch count are crossed, and every branch contributes to the output. Serial merges also add depth, so requested branch depth is not identical to realized dependency depth. "
-                "These token-local modulo programs are controlled structural examples, not a universal complexity scale. Their full schedules and geometry are preserved.\n")
+    text.append("## Separate depth and variable-count controls\n")
+    table(families[["requested_depth", "requested_variables", "computed_variable_count", "max_dependency_depth", "residual_width", "transformer_layers", "token_accuracy"]])
+    text.append(f"Dependency depth and computed-variable count are crossed. Their correlation over the nine programs is **{family_summary['depth_variable_correlation']:.3f}** and the centered design matrix has rank **{family_summary['realized_axes_rank']}**. "
+                "Each program is a binary tree whose leaves read the token at different cyclic offsets, so its variables depend on different inputs. "
+                "RASP operations read at most two sequence variables, so a program of depth D holds between D and 2^D - 1 computed variables; the crossing therefore starts at depth three. "
+                "These modulo programs are controlled structural examples, not a universal complexity scale. Their full schedules and geometry are preserved.\n")
 
     text.append("## Learned models on the same programs\n")
     learning = pd.read_csv(results / "learning/reference/summary.csv")
@@ -216,7 +228,7 @@ def generate_report(results):
         "## Relation to InterpBench\n",
         "Gupta and colleagues' [InterpBench paper](https://papers.nips.cc/paper_files/paper/2024/hash/a8f7d43ae092d9a5295775eb17f3f4f7-Abstract-Datasets_and_Benchmarks_Track.html) trains semi-synthetic transformers with known circuits using Strict Interchange Intervention Training and evaluates circuit-discovery methods. "
         "Its [implementation](https://github.com/FlyingPumba/InterpBench) supports ACDC, subnetwork probing, and edge attribution patching. "
-        "RaspFormer evaluates representation measurements and transition detection, with additional supervised learned-model comparisons. Its learned models use ordinary output supervision and do not inherit known internal causal circuits. No InterpBench model or circuit-discovery benchmark was run here.\n",
+        "The studies in this report evaluate representation measurements and transition detection, with additional supervised learned-model comparisons. Their learned models use ordinary output supervision and do not inherit known internal causal circuits. Six InterpBench models, SIIT models for the twelve programs, and circuit-discovery baselines are run separately in `bench/`; their results are in [the bench reports](../bench/reference/) and are not part of this report.\n",
         "## Evidence and limitations\n",
         "Every study has a completed canonical manifest under `results/<study>/reference`. New disposable runs live under `results/<study>/runs/<UTC>-<id>`. Manifests record numerical policy, dependencies, compiler revision, source hashes, notebook source hashes, and Git state. A dirty Git state is recorded explicitly.\n",
         "The new experiments do not prove universal computation recovery. Learned models lack internal ground truth. The compressed models retain attention and MLP hidden dimensions. Transition detection does not identify variable names. PCA-to-variable decoding uses supervised labels after geometry selection. No experiment establishes variable erasure or general lifetime recovery. Negative results and unavailable metrics remain in the data.\n",

@@ -7,12 +7,13 @@ from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
+import pandas as pd
 
-from raspformer.compiler import CompilerConfig
+from raspformer.compiler import CompilerConfig, compile_program, extract_schedule
 from raspformer.geometry import ProbeConfig
 from raspformer.research import (PATCH_STAGE_SELECTORS, family_program, infer_writes,
                                 patch_stage_record, recovery_scores, select_patch_stage,
-                                split_sequences)
+                                split_sequences, summarize_patches)
 from tracr.rasp import rasp
 
 
@@ -90,13 +91,38 @@ class ResearchTests(unittest.TestCase):
         with patch("raspformer.research.extract_schedule", side_effect=AssertionError("truth accessed")):
             self.assertEqual(select_patch_stage(rows), 1)
 
-    def test_family_output_uses_bounded_support(self):
-        evaluator = rasp.DefaultRASPEvaluator()
-        for depth in (1, 2, 3):
-            for branches in (1, 2, 3):
-                values = evaluator.evaluate(family_program(depth, branches, 8), [-2, -1, 0, 1, 4, 5])
-                self.assertTrue(all(0 <= value < 8 for value in values))
+    def test_family_depth_and_variable_count_are_set_independently(self):
+        config = CompilerConfig()
+        for depth, variables in ((3, 5), (3, 7), (5, 5), (5, 7)):
+            program = family_program(depth, variables, 8)
+            summary, _, _ = extract_schedule(program, compile_program(program, config), config)
+            self.assertEqual(summary["max_dependency_depth"], depth)
+            self.assertEqual(summary["computed_variable_count"], variables)
 
+    def test_family_output_uses_bounded_support_and_variants_differ(self):
+        evaluator = rasp.DefaultRASPEvaluator()
+        tokens = [-2, -1, 0, 1, 4, 5]
+        for depth, variables in ((2, 2), (3, 6), (4, 7)):
+            values = evaluator.evaluate(family_program(depth, variables, 8), tokens)
+            self.assertTrue(all(0 <= value < 8 for value in values))
+            self.assertNotEqual(values, evaluator.evaluate(family_program(depth, variables, 8, variant=1), tokens))
+
+    def test_family_rejects_shapes_binary_operations_cannot_hold(self):
+        for depth, variables in ((1, 1), (3, 2), (3, 8)):
+            with self.assertRaises(ValueError):
+                family_program(depth, variables, 8)
+
+    def test_unpatched_model_scores_zero_on_output_changing_pairs(self):
+        rows = [dict(kind=kind, rank=rank, behavior_changed=changed, full_counterfactual_match=match,
+                     counterfactual_changes_output=changes)
+                for changes, by_kind in ((False, {"self": (False, True), "oracle": (False, True)}),
+                                         (True, {"self": (False, False), "oracle": (True, True)}))
+                for kind, (changed, match) in by_kind.items() for rank in (0,)]
+        summary = summarize_patches(pd.DataFrame(rows)).set_index("kind")
+        self.assertEqual(summary.loc["self", "full_counterfactual_match"], 0.5)
+        self.assertEqual(summary.loc["self", "output_changing_match"], 0)
+        self.assertEqual(summary.loc["oracle", "output_changing_match"], 1)
+        self.assertEqual(summary.loc["self", "output_changing_pairs"], 1)
 
 if __name__ == "__main__":
     unittest.main()
