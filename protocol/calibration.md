@@ -1,8 +1,8 @@
 # Calibrating representational-geometry metrics against known circuits
 
-Status: **proposed**. This protocol is a pre-registration. The decision rules
-in section 3 become binding when this file is merged to `main`, before any
-calibration run is made. Changes after that point must be recorded in
+Status: **binding** since 2026-11-10. This protocol is a pre-registration. The decision rules
+in section 3 became binding when this file was merged to `main`, before any
+calibration run was made. Changes after that point are recorded in
 section 9 with a reason.
 
 ## 1. Question
@@ -201,4 +201,110 @@ with source hashes.
 
 ## 9. Deviations
 
-None yet.
+Every entry below was written before any calibration model was trained or
+measured, unless it says otherwise. The baseline for existing evidence is the
+tag `calibration-baseline` (commit `4a08794`).
+
+### 2026-11-10: L2 pass rule (clarification)
+
+Section 3 did not say how the four ground-truth quantities combine. A metric
+passes L2 on a model class when, for at least one quantity other than summed
+cardinality, the leave-program-out ρ is ≥ 0.70 and the Holm-corrected
+partial-correlation p is < 0.05. Summed cardinality is graded on its own: ρ ≥
+0.70 is reported as "tracks cardinality" beside the verdict and does not count
+towards L2.
+
+Reason: without this rule a metric that only counts values would pass as
+calibrated, which is the confound the study exists to isolate.
+
+### 2026-11-10: the pilot is go or redesign only (clarification)
+
+With five pairs the smallest sign-flip p-value is 1/32 ≈ 0.031, which cannot
+stay below 0.05 after Holm correction across the metrics. The pilot checks that
+pairs train and the pipeline runs end to end. The L3 verdict comes from the
+full set of pairs.
+
+### 2026-11-10: program family rebuilt, grid levels changed (deviation from 5.2)
+
+In the existing family, realised dependency depth is requested depth + branches
+− 1 in every program, and depth correlates with computed-variable count at
+0.956 (`results/validation/reference/complexity/factorial-families.csv` at the
+baseline tag). A grid built on it could not separate the two.
+
+Every RASP operation reads at most two sequence variables, so a program of
+dependency depth D holds between D and 2^D − 1 computed variables. A full
+crossing from depth 1 is therefore impossible. The grid is now dependency depth
+3, 4, 5 × computed variables 5, 6, 7 × vocabulary 4, 8, 12, which is 27
+programs with depth and variable count exactly uncorrelated.
+
+Each leaf now reads the token at a different cyclic offset through attention.
+In the old family every variable was a function of the same single token, so
+the number of live variables could not be identified from activations by any
+measurement. All grid programs compile with `max_seq_len` 10, because Tracr
+needs the value width to fit the key size at vocabulary 12, and are measured at
+length 6.
+
+### 2026-11-10: operational definitions (clarification)
+
+The protocol left these choices open. They are fixed here.
+
+**Measurement.** Each model is run on 256 held-out sequences of length 6 drawn
+uniformly with a fixed seed, the same sequences for every model of a program or
+pair. An observation is one non-BOS position. A trained model's stage s is
+compared with the compiled stage s (the identity layer correspondence SIIT
+trains). Padded layers carry the ground truth of the last compiled stage.
+Relational metrics are turned into one value per stage: 1 − linear CKA, the
+Procrustes distance and 1 − SVCCA between stage s − 1 and stage s.
+
+**Training.** SIIT follows `bench/siit.py`: residual width 32, four heads,
+3,000 steps, seeds 0, 1, 2. An output-loss-only twin uses the same code with
+the interchange and strictness weights set to zero. Shuffled-label nulls use
+the twin's architecture and steps, with labels permuted across sequences.
+Untrained nulls use the real model's depth and width.
+
+**L1.** Run on the grid programs. Units are (program, seed, stage) values.
+AUROC is direction-free (the larger of a and 1 − a). The interval is a
+bootstrap over programs with 2,000 resamples. The pass rule uses the point
+estimate.
+
+**L2.** Run on the grid programs. Rows are (program, stage), with seeds
+averaged. For each held-out program the sign of the relation is taken from the
+other programs; ρ is the pooled Spearman correlation over all held-out rows.
+The partial correlation is a Spearman correlation of rank residuals after
+regressing on the ranks of Σ(k−1), with a two-sided permutation p-value from
+10,000 draws.
+
+**L3.** A metric defines a distance between two models: for CKA, Procrustes and
+SVCCA the dissimilarity between the two models' representations of the same
+inputs, for single-stage spectrum metrics the absolute difference of the metric
+value. Distances are averaged over stages after the embedding. For each pair,
+the between-algorithm distance is the mean over all cross-algorithm seed pairs
+and the between-seed distance is the mean over same-algorithm seed pairs. The
+test statistic is the mean log ratio over pairs, with a one-sided sign-flip
+test of 10,000 draws.
+
+Compiled models have no seeds, so their between-seed distance is zero and the
+ratio is undefined. L3 is reported as not gradable on compiled models, with the
+between-algorithm distances listed.
+
+**Identification accuracy.** For each trained model in a pair, the metric names
+the algorithm whose other seeds are nearer on average. Chance is 0.5. It is
+reported beside L3 and is not part of the pass rule.
+
+**Control pairs.** The nine grid cells at vocabulary 8, each built twice with
+different constants, give pairs with different functions and identical
+structure. Their ratio is reported beside the twin pairs and has no pass rule.
+
+**Equivalence.** A same-function pair must give equal compiled outputs on all
+262,144 inputs, and each compiled member must agree with the RASP evaluator on
+2,000 sampled inputs.
+
+**Phase 6.** Models are compressed onto the leading PCA directions of their
+calibration activations, then every parameter is fine-tuned on the output loss
+for at most 2,000 steps. Models below 0.99 token accuracy are excluded and
+counted.
+
+**Detector hardening.** Each detector's threshold is the value on a fixed
+logarithmic grid that maximises mean F1 over the compiled calibration programs
+(P01–P06 and the grid). It is scored once on compiled P07–P12 and on the SIIT
+models.
