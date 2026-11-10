@@ -109,8 +109,12 @@ def hl_labels(hl_model, inputs, patches=None):
 
 
 def train_siit(hl_model, ll_model, train_inputs, circuit_nodes, *, steps=1500, batch=64,
-               lr=1e-3, iit_weight=1.0, strict_weight=0.4, seed=0, log_every=100):
-    """Return the trained LL model and a training history."""
+               lr=1e-3, iit_weight=1.0, strict_weight=0.4, seed=0, log_every=100, verbose=True):
+    """Return the trained LL model and a training history.
+
+    A weight of zero skips that loss entirely, so both weights at zero train on
+    the output loss alone.
+    """
     all_nodes = []
     for l in range(ll_model.config.layers):
         all_nodes += [f"blocks.{l}.attn.hook_result[{h}]" for h in range(ll_model.config.heads)]
@@ -130,11 +134,11 @@ def train_siit(hl_model, ll_model, train_inputs, circuit_nodes, *, steps=1500, b
         _, source_out, _ = circuit_forward(model, source)
         behaviour = ce(base_logits, base_labels)
         iit = 0.0
-        for i, node in enumerate(circuit_nodes):
+        for i, node in enumerate(circuit_nodes if iit_weight else ()):
             patched, _, _ = circuit_forward(model, base, {node: (source_out[node], full)})
             iit = iit + ce(patched, iit_labels[i])
         strict = 0.0
-        for node in outside:
+        for node in outside if strict_weight else ():
             patched, _, _ = circuit_forward(model, base, {node: (source_out[node], full)})
             strict = strict + ce(patched, base_labels)
         iit = iit / max(1, len(circuit_nodes))
@@ -164,13 +168,14 @@ def train_siit(hl_model, ll_model, train_inputs, circuit_nodes, *, steps=1500, b
         s_idx = rng.integers(0, len(train_inputs), size=batch)
         base, source = train_inputs[b_idx], train_inputs[s_idx]
         iit_labels = np.stack([hl_labels(hl_model, base, {node: (jnp.asarray(hl_outputs_all[node][s_idx]), jnp.asarray(full))})
-                               for node in circuit_nodes]) if circuit_nodes else np.zeros((0, batch, length - 1), dtype=np.int32)
+                               for node in circuit_nodes]) if circuit_nodes and iit_weight else np.zeros((0, batch, length - 1), dtype=np.int32)
         params, m, v, value, parts = step(params, m, v, t, jnp.asarray(base), jnp.asarray(source),
                                           jnp.asarray(labels_all[b_idx]), jnp.asarray(iit_labels))
         if t % log_every == 0 or t == steps:
             history.append(dict(step=t, loss=float(value), behaviour=float(parts[0]),
                                 iit=float(parts[1]), strict=float(parts[2])))
-            print(f"  step {t}: loss {float(value):.4f} behaviour {float(parts[0]):.4f} iit {float(parts[1]):.4f} strict {float(parts[2]):.4f}", flush=True)
+            if verbose:
+                print(f"  step {t}: loss {float(value):.4f} behaviour {float(parts[0]):.4f} iit {float(parts[1]):.4f} strict {float(parts[2]):.4f}", flush=True)
     return models.Model(params, cfg), history
 
 
@@ -209,11 +214,12 @@ def sample_sequences(config, count, rng, length=None):
 
 
 def train_program(name, program, output, *, config=None, steps=1500, seed=0, train_count=4096, test_count=512,
-                  train_length=None):
+                  train_length=None, layers=None):
     """``config.max_seq_len`` sizes the compiled reference and the LL position
     embeddings; ``train_length`` (default the same) is the token count of every
     training and held-out sequence, so a smaller value leaves longer positions
-    untrained for length-generalization tests."""
+    untrained for length-generalization tests. ``layers`` (default the compiled
+    depth) sets the LL depth; extra layers lie outside the circuit."""
     config = config or CompilerConfig()
     train_length = config.max_seq_len if train_length is None else train_length
     assembled = compile_program(program, config)
@@ -223,10 +229,13 @@ def train_program(name, program, output, *, config=None, steps=1500, seed=0, tra
     encoded = np.asarray([assembled.input_encoder.encode([config.bos, *s]) for s in seqs], dtype=np.int32)
     train, test = encoded[:train_count], encoded[train_count:]
     circuit_nodes = active_nodes(hl_model, train[:256])
+    layers = hl_model.config.layers if layers is None else layers
+    if layers < hl_model.config.layers:
+        raise ValueError("The trained model cannot be shallower than the compiled program.")
     ll_model = models.random_model(vocab_size=hl_model.params["token_embed"].shape[0], max_length=config.max_seq_len + 1,
                                    output_classes=hl_model.params["unembed"].shape[1], seed=seed, width=WIDTH,
-                                   layers=hl_model.config.layers, heads=HEADS)
-    print(f"{name}: HL layers {hl_model.config.layers}, circuit nodes {circuit_nodes}", flush=True)
+                                   layers=layers, heads=HEADS)
+    print(f"{name}: HL layers {hl_model.config.layers}, LL layers {layers}, circuit nodes {circuit_nodes}", flush=True)
     trained, history = train_siit(hl_model, ll_model, train, circuit_nodes, steps=steps, seed=seed)
     metrics = evaluate_siit(hl_model, trained, test, circuit_nodes)
     folder = Path(output) / name.lower().replace("_", "-")
@@ -236,7 +245,7 @@ def train_program(name, program, output, *, config=None, steps=1500, seed=0, tra
     with open(folder / "edges.pkl", "wb") as handle:
         pickle.dump(edges, handle)
     write_json(folder / "siit.json", dict(program=name, circuit_nodes=circuit_nodes, heads=HEADS, width=WIDTH,
-                                          layers=hl_model.config.layers, steps=steps, seed=seed,
+                                          layers=layers, compiled_layers=hl_model.config.layers, steps=steps, seed=seed,
                                           max_seq_len=config.max_seq_len, train_length=train_length,
                                           train_sequences=train_count, test_sequences=test_count,
                                           history=history, metrics=metrics, edges=len(edges)))

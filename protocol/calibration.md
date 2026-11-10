@@ -308,3 +308,28 @@ counted.
 logarithmic grid that maximises mean F1 over the compiled calibration programs
 (P01–P06 and the grid). It is scored once on compiled P07–P12 and on the SIIT
 models.
+
+### 2026-11-10: training length, pilot rule and verdict labels (before any metric was computed)
+
+These three entries were written after timing SIIT on six grid programs and
+before any geometry metric was computed on a trained calibration model.
+
+**Training length (deviation).** SIIT runs for 6,000 steps, not 3,000. In the
+timing runs the depth-three programs reached interchange accuracy 1.00 by step
+3,000, but the depth-four program `d4 v6 k8` still had an interchange loss of
+0.13 at step 2,000 and 0.009 at step 4,000. At 6,000 steps the four deepest
+programs tried reached interchange accuracy 0.986 to 1.00. Every calibration
+model, including output-loss-only twins and shuffled-label nulls, uses 6,000
+steps.
+
+**Pilot rule (clarification).** The pilot's decision is go when at least four of
+the five pilot pairs have two or more SIIT seeds per member at mean interchange
+accuracy ≥ 0.95 and the analysis runs end to end. Otherwise the pairs are
+redesigned.
+
+**Verdict labels (clarification).** Section 3 names three verdicts and leaves
+two combinations open. A metric that passes L1 but not L2 is labelled "above
+null, not calibrated", or "separates algorithms, not calibrated" when it also
+passes L3. On compiled models, where L3 is not gradable, a metric that passes
+L1 and L2 is labelled "above null and calibrated; algorithm-specificity not
+gradable".
