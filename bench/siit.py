@@ -154,11 +154,16 @@ def train_siit(hl_model, ll_model, train_inputs, circuit_nodes, *, steps=1500, b
             lambda q, a, b: q - lr * (a / (1 - 0.9 ** t)) / (jnp.sqrt(b / (1 - 0.999 ** t)) + 1e-8), params, m, v)
         return params, m, v, value, parts
 
+    @jax.jit
+    def counterfactual_labels(base, replacements):
+        everywhere = jnp.ones(base.shape, dtype=bool)
+        return jnp.stack([circuit_forward(hl_model, base, {node: (replacement, everywhere)})[0].argmax(-1)[:, 1:]
+                          for node, replacement in zip(circuit_nodes, replacements)])
+
     rng = np.random.default_rng(seed)
     params = ll_model.params
     m = jax.tree_util.tree_map(jnp.zeros_like, params)
     v = jax.tree_util.tree_map(jnp.zeros_like, params)
-    full = np.ones((batch, length), dtype=bool)
     history = []
     _, hl_outputs_all, _ = circuit_forward(hl_model, jnp.asarray(train_inputs))
     hl_outputs_all = {k: np.asarray(val) for k, val in hl_outputs_all.items()}
@@ -167,8 +172,8 @@ def train_siit(hl_model, ll_model, train_inputs, circuit_nodes, *, steps=1500, b
         b_idx = rng.integers(0, len(train_inputs), size=batch)
         s_idx = rng.integers(0, len(train_inputs), size=batch)
         base, source = train_inputs[b_idx], train_inputs[s_idx]
-        iit_labels = np.stack([hl_labels(hl_model, base, {node: (jnp.asarray(hl_outputs_all[node][s_idx]), jnp.asarray(full))})
-                               for node in circuit_nodes]) if circuit_nodes and iit_weight else np.zeros((0, batch, length - 1), dtype=np.int32)
+        iit_labels = (counterfactual_labels(jnp.asarray(base), tuple(jnp.asarray(hl_outputs_all[node][s_idx]) for node in circuit_nodes))
+                      if circuit_nodes and iit_weight else np.zeros((0, batch, length - 1), dtype=np.int32))
         params, m, v, value, parts = step(params, m, v, t, jnp.asarray(base), jnp.asarray(source),
                                           jnp.asarray(labels_all[b_idx]), jnp.asarray(iit_labels))
         if t % log_every == 0 or t == steps:
