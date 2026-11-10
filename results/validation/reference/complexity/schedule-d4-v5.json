@@ -1,0 +1,180 @@
+[
+  {
+    "variable": "merge_4_75",
+    "residual_lane_indices": [
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "residual_lane_labels": [
+      "merge_4_75:0",
+      "merge_4_75:1",
+      "merge_4_75:2",
+      "merge_4_75:3",
+      "merge_4_75:4",
+      "merge_4_75:5",
+      "merge_4_75:6",
+      "merge_4_75:7"
+    ],
+    "first_write_half_layer_index": 5,
+    "first_write_after": "after mlp3",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "map_2_76",
+    "residual_lane_indices": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "residual_lane_labels": [
+      "map_2_76:0",
+      "map_2_76:1",
+      "map_2_76:2",
+      "map_2_76:3",
+      "map_2_76:4",
+      "map_2_76:5",
+      "map_2_76:6",
+      "map_2_76:7"
+    ],
+    "first_write_half_layer_index": 3,
+    "first_write_after": "after mlp2",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "read_3_77",
+    "residual_lane_indices": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "residual_lane_labels": [
+      "read_3_77:-2",
+      "read_3_77:-1",
+      "read_3_77:0",
+      "read_3_77:1",
+      "read_3_77:2",
+      "read_3_77:3",
+      "read_3_77:4",
+      "read_3_77:5"
+    ],
+    "first_write_half_layer_index": 0,
+    "first_write_after": "after attention1",
+    "compiled_block": "AttentionHead"
+  },
+  {
+    "variable": "map_1_78",
+    "residual_lane_indices": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "residual_lane_labels": [
+      "map_1_78:0",
+      "map_1_78:1",
+      "map_1_78:2",
+      "map_1_78:3",
+      "map_1_78:4",
+      "map_1_78:5",
+      "map_1_78:6",
+      "map_1_78:7"
+    ],
+    "first_write_half_layer_index": 1,
+    "first_write_after": "after mlp1",
+    "compiled_block": "MLP"
+  },
+  {
+    "variable": "tokens",
+    "residual_lane_indices": [
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54
+    ],
+    "residual_lane_labels": [
+      "tokens:-2",
+      "tokens:-1",
+      "tokens:0",
+      "tokens:1",
+      "tokens:2",
+      "tokens:3",
+      "tokens:4",
+      "tokens:5"
+    ],
+    "first_write_half_layer_index": null,
+    "first_write_after": "input embedding",
+    "compiled_block": "input"
+  },
+  {
+    "variable": "read_0_80",
+    "residual_lane_indices": [
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38
+    ],
+    "residual_lane_labels": [
+      "read_0_80:-2",
+      "read_0_80:-1",
+      "read_0_80:0",
+      "read_0_80:1",
+      "read_0_80:2",
+      "read_0_80:3",
+      "read_0_80:4",
+      "read_0_80:5"
+    ],
+    "first_write_half_layer_index": 0,
+    "first_write_after": "after attention1",
+    "compiled_block": "AttentionHead"
+  },
+  {
+    "variable": "indices",
+    "residual_lane_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "residual_lane_labels": [
+      "indices:0",
+      "indices:1",
+      "indices:2",
+      "indices:3",
+      "indices:4",
+      "indices:5"
+    ],
+    "first_write_half_layer_index": null,
+    "first_write_after": "input embedding",
+    "compiled_block": "input"
+  }
+]
